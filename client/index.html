@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.socket.io/4.2.0/socket.io.min.js"></script>
+    <script defer src="script.js"></script>
+    <title>SocketIO example</title>
+</head>
+
+<body>
+    <!--Réception de messages du serveur-->
+    <div id='messageWrapper'>
+        <h1>Réception de messages du serveur</h1>
+        <span>Socket ID :</span><span id='socketIdField'></span> <br>
+        <span>Message du serveur :</span><span id='messageField'></span> <br>
+        <span>Horloge du serveur :</span> <span id='serverClock'></span> <br>
+        <button id='disconnect'>Déconnexion</button>
+    </div>
+    <hr>
+    <!--Validation d'un mot-->
+    <div>
+        <h1>Validation d'un mot</h1>
+        <label for='wordInput'>Mot à valider : </label>
+        <input id='wordInput' type="text">
+        <button id='validateByServer'>Valider!</button>
+        <p id='serverValidationResult'></p>
+    </div>
+    <hr>
+    <!--Communication avec serveur seulement-->
+    <div>
+        <h1>Communication avec serveur seulement</h1>
+        <label for='messageToServer'>Message à envoyer au serveur seulement </label>
+        <input id='messageToServer' type="text">
+        <button id='sendToServer'>Envoyer au serveur</button>
+    </div>
+    <hr>
+    <!--Communication avec tous les clients connectés au serveur-->
+    <div>
+        <h1>Communication avec tous les clients connectés au serveur</h1>
+        <label for='messageBroadcast'>Message à envoyer à tous </label>
+        <input id='messageBroadcast' type="text">
+        <button id='broadcastToServer'>Envoyer à tous!</button>
+        <ul id='serverBroadcastList'></ul>
+    </div>
+
+     <!--Communication dans une Room-->
+     <div>
+        <h1>Communication dans une Room</h1>
+        <button id='joinRoomBtn'>Rejoindre une salle</button>
+        <label for='messageRoom'>Message à envoyer dans la salle </label>
+        <input id='messageRoom' type="text">
+        <button id='messageToRoom'>Envoyer dans la salle!</button>
+        <ul id='roomMessageList'></ul>
+    </div>
+</body>
+
+</html>

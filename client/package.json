@@ -1,0 +1,14 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "Client SocketIO",
+  "main": "script.js",
+  "scripts": {
+    "start": "lite-server ."
+  },
+  "author": "Nikolay Radoev",
+  "license": "ISC",
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  }
+}
