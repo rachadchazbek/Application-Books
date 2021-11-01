@@ -52,9 +52,14 @@ function configureSendMessagesToServer() {
 
     // Envoyer un message destiné à être transmis à tous les clients connectés
     document.getElementById('broadcastToServer').addEventListener('click', () => {
-        const broadcastMessage = document.getElementById('messageBroadcast').value;
-        socket.emit('broadcastAll', broadcastMessage);
-        document.getElementById('messageBroadcast').value = '';
+        broadcastMessageToAll();
+    });
+
+    // Envoyer un message destiné à être transmis à tous les clients connectés en appyuant sur la touche entrée
+    document.getElementById('messageBroadcast').addEventListener('keyup', (e) => {
+        if(e.code === "Enter") {
+            broadcastMessageToAll();
+        }    
     });
 
     // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un client connecté
@@ -85,4 +90,10 @@ function configureRoomCommunication() {
         listItem.textContent = broadcastMessage;
         document.getElementById('roomMessageList').appendChild(listItem);
     });
+}
+
+function broadcastMessageToAll(){
+    const broadcastMessage = document.getElementById('messageBroadcast').value;
+    socket.emit('broadcastAll', broadcastMessage);
+    document.getElementById('messageBroadcast').value = '';
 }
