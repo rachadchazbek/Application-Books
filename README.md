@@ -8,7 +8,7 @@ Consultez la [documentation](https://socket.io/docs/v4/) pour une explication pl
 
 Lancer la commande `npm ci` dans chaque projet pour installer les dépendances nécessaires. 
 
-Dans le cas du client, seulement le serveur HTTP statique `lite-server` est nécessaire. Vous pouvez lancer le site web en ouvrant `index.html` dans votre navigateur directement. Le code de Socket.IO est obtenu à travers la balise `script` dans le fichier HTML.
+Le site web est fait à l'aide du cadriciel *Angular* et doit installer plusieurs dépendances.
 
 ## Lancement
 
@@ -16,7 +16,7 @@ Lancer la commande `npm start` dans chaque projet.
 
 Le serveur NodeJS sera déployé sur le port **5020** de la machine locale. Un changement dans le code source relancera le serveur à nouveau à l'aide de l'outil `nodemon`.
 
-Le site web sera déployé sur le port **5000** de la machine locale.
+Le serveur statique de WebPack pour le site web sera déployé sur le port **4200** de la machine locale.
 
 # Serveur
 Le projet dans `/server` contient un serveur NodeJS qui joue le rôle de serveur SocketIO.
@@ -35,7 +35,7 @@ Le serveur envoie également l'heure locale de sa machine à un intervalle de 10
 
 # Client
 
-Le projet dans `/client` contient une simple page Web qui permet de faire une démonstration rapide de la librairie client de SocketIO.
+Le projet dans `/client` contient une simple page Web qui permet de faire une démonstration rapide de la librairie client de SocketIO. 
 
 Lors du chargement de la page, le site se connecte au serveur NodeJS à travers une connexion SocketIO. 
 **Note** : le client assume que le serveur qui sert la page Web est déployé sur la même adresse IP que le serveur NodeJS et ne fonctionnera pas autrement.
