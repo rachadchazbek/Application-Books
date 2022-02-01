@@ -33,9 +33,8 @@ export class SocketManager {
             });
 
             socket.on('roomMessage', (message: string) => {
-                const roomSockets = this.sio.sockets.adapter.rooms.get(this.room);
                 // Seulement un membre de la salle peut envoyer un message aux autres
-                if (roomSockets?.has(socket.id)) {
+                if (socket.rooms.has(this.room)) {
                     this.sio.to(this.room).emit("roomMessage", `${socket.id} : ${message}`);
                 }
             });
