@@ -16,7 +16,7 @@ describe('SocketManager service tests', () => {
     beforeEach(async () => {
         server = Container.get(Server);
         server.init();
-        service = server['socketManger'];
+        service = server['socketManager'];
         clientSocket = ioClient(urlString);
     });
 
