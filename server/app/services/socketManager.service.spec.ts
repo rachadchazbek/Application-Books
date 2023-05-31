@@ -13,29 +13,19 @@ describe('SocketManager service tests', () => {
     let clientSocket: Socket;
 
     const urlString = 'http://localhost:5020';
+
     beforeEach(async () => {
         server = Container.get(Server);
         server.init();
         service = server['socketManager'];
         clientSocket = ioClient(urlString);
+        sinon.stub(console, "log"); //stop console.log
     });
 
     afterEach(() => {
         clientSocket.close();
         service['sio'].close();
         sinon.restore();
-    });
-
-    it('should handle a message event print it to console', (done) => {
-        const spy = sinon.spy(console, 'log');
-        const testMessage = 'Hello World';
-        clientSocket.emit('message', testMessage);
-        setTimeout(() => {
-            assert(spy.called);
-            assert(spy.calledWith(testMessage))
-            done();
-        }, RESPONSE_DELAY);
-
     });
 
     it('should handle a validate event and return true if word if longer than 5 letters', (done) => {
@@ -54,6 +44,15 @@ describe('SocketManager service tests', () => {
             expect(result).to.be.false;
             done();
         });
+    });
+
+    it('should handle a validateWithAck event and return an acknowledgment event', (done) => {
+        const testMessage = 'HelloABC';
+        const clientCallBack = (res: { isValid: boolean }) => {
+            expect(res.isValid).to.be.true;
+            done();
+        }
+        clientSocket.emit('validateWithAck', testMessage, clientCallBack);
     });
 
     it('should add the socket to the room after a join event', (done) => {
@@ -109,9 +108,9 @@ describe('SocketManager service tests', () => {
 
     it('should call emitTime on socket configuration', (done) => {
         const spy = sinon.spy(service, <any>'emitTime');
-        setTimeout(() => {
+        clientSocket.on('clock', () => {
             assert(spy.called);
             done();
-        }, RESPONSE_DELAY * 5); // 1 seconde
+        });
     });
 })

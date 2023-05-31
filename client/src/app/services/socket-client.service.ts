@@ -25,9 +25,9 @@ export class SocketClientService {
     this.socket.on(event, action);
   }
 
-  send<T>(event: string, data?: T): void {
+  send<T>(event: string, data?: T, callback?: Function): void {
     if (data) {
-      this.socket.emit(event, data);
+      this.socket.emit(event, data, callback);
     } else {
       this.socket.emit(event);
     }

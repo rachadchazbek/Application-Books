@@ -12,7 +12,8 @@ export class AppComponent implements OnInit {
 
   wordInput = "";
   serverValidationResult = "";
-  messageToServer = "";
+  serverValidationResultAck = "";
+  wordInputAck = "";
 
   broadcastMessage = "";
   serverMessages: string[] = [];
@@ -74,9 +75,12 @@ export class AppComponent implements OnInit {
     this.wordInput = "";
   }
 
-  sendToServer() {
-    this.socketService.send('message', this.messageToServer);
-    this.messageToServer = "";
+  sendWorldValidationAck() {
+    this.socketService.send('validateWithAck', this.wordInputAck, (res: { isValid: boolean }) => {
+      const validationString = `Le mot est ${res.isValid ? "valide" : "invalide"}`;
+      this.serverValidationResultAck = validationString;
+    });
+    this.wordInputAck = "";
   }
 
   broadcastMessageToAll() {
