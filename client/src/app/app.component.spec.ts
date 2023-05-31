@@ -32,7 +32,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should get the id of the socket',()=>{
+  it('should get the id of the socket', () => {
     socketServiceMock.socket.id = "123";
     const socketId = component.socketId;
     expect(socketId).toEqual("123");
@@ -110,14 +110,30 @@ describe('AppComponent', () => {
       expect(component.wordInput).toEqual('');
     });
 
-    it('should send a message to server and reset messageToServer with a message event', () => {
-      const spy = spyOn(component.socketService, "send");
-      const eventName = 'message';
+    it('should send an invalid word to server and handle the response with an acknowledgment', () => {
+      const spy = spyOn(component.socketService, "send").and.callFake((event, data, cb:Function) => {
+        cb({ isValid: false });
+      });
+      const eventName = 'validateWithAck';
       const testString = 'test';
-      component.messageToServer = testString;
-      component.sendToServer();
-      expect(spy).toHaveBeenCalledWith(eventName, testString);
-      expect(component.messageToServer).toEqual('');
+      component.wordInputAck = testString;
+      component.sendWorldValidationAck();
+      expect(spy).toHaveBeenCalledWith(eventName, testString, jasmine.any(Function));
+      expect(component.wordInputAck).toEqual('');
+      expect(component.serverValidationResultAck.endsWith(' invalide')).toBeTrue();
+    });
+
+    it('should send a valid word to server and handle the response with an acknowledgment', () => {
+      const spy = spyOn(component.socketService, "send").and.callFake((event, data, cb:Function) => {
+        cb({ isValid: true });
+      });
+      const eventName = 'validateWithAck';
+      const testString = 'test';
+      component.wordInputAck = testString;
+      component.sendWorldValidationAck();
+      expect(spy).toHaveBeenCalledWith(eventName, testString, jasmine.any(Function));
+      expect(component.wordInputAck).toEqual('');
+      expect(component.serverValidationResultAck.endsWith(' valide')).toBeTrue();
     });
 
     it('should send a broadcast message to server and reset broadcastMessage with a broadcastAll event', () => {

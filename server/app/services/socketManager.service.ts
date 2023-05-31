@@ -16,8 +16,9 @@ export class SocketManager {
             // message initial
             socket.emit("hello", "Hello World!");
 
-            socket.on('message', (message: string) => {
-                console.log(message);
+            socket.on('validateWithAck', (word: string, callback) => {
+                const isValid = word.length > 5;
+                callback({isValid});
             });
             socket.on('validate', (word: string) => {
                 const isValid = word.length > 5;

@@ -13,21 +13,22 @@
 
 <!--Communication bi-directionnelle-->
 <section>
-  <h1>Validation d'un mot</h1>
+  <h1>Validation d'un mot : 6 caractères ou plus</h1>
   <label for="wordInput">Mot à valider : </label>
-  <input id="wordInput" [(ngModel)]="wordInput" type="text" />
+  <input id="wordInput" [(ngModel)]="wordInput" (keydown.enter)="sendWordValidation()" type="text" />
   <button (click)="sendWordValidation()">Valider!</button>
   <p>{{ serverValidationResult }}</p>
 </section>
 
 <hr />
 
-<!--Communication avec serveur seulement-->
+<!--Communication bi-directionnelle avec une réponse directe-->
 <section>
-  <h1>Communication avec serveur seulement</h1>
-  <label for="messageToServer">Message à envoyer au serveur seulement </label>
-  <input id="messageToServer" [(ngModel)]="messageToServer" type="text" />
-  <button (click)="sendToServer()">Envoyer au serveur</button>
+  <h1>Validation d'un mot avec réponse directe (acknowledgement) : 6 caractères ou plus</h1>
+  <label for="wordInputAck">Mot à valider: </label>
+  <input id="wordInputAck" [(ngModel)]="wordInputAck" (keydown.enter)="sendWorldValidationAck()" type="text" />
+  <button (click)="sendWorldValidationAck()">Envoyer au serveur</button>
+  <p>{{ serverValidationResultAck }}</p>
 </section>
 
 <hr />
@@ -36,12 +37,7 @@
 <section>
   <h1>Communication avec tous les clients connectés au serveur</h1>
   <label for="broadcastMessage">Message à envoyer à tous </label>
-  <input
-    id="broadcastMessage"
-    [(ngModel)]="broadcastMessage"
-    (keydown.enter)="broadcastMessageToAll()"
-    type="text"
-  />
+  <input id="broadcastMessage" [(ngModel)]="broadcastMessage" (keydown.enter)="broadcastMessageToAll()" type="text" />
   <button (click)="broadcastMessageToAll()">Envoyer à tous!</button>
   <ul id="serverBroadcastList">
     <li *ngFor="let message of serverMessages">{{ message }}</li>
@@ -53,12 +49,7 @@
   <h1>Communication dans une Room</h1>
   <button id="joinRoomBtn" (click)="joinRoom()">Rejoindre une salle</button>
   <label for="roomMessage">Message à envoyer dans la salle </label>
-  <input
-    id="roomMessage"
-    [(ngModel)]="roomMessage"
-    (keydown.enter)="sendToRoom()"
-    type="text"
-  />
+  <input id="roomMessage" [(ngModel)]="roomMessage" (keydown.enter)="sendToRoom()" type="text" />
   <button (click)="sendToRoom()">Envoyer dans la salle!</button>
   <ul id="roomMessageList">
     <li *ngFor="let message of roomMessages">{{ message }}</li>

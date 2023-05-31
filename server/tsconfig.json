@@ -14,7 +14,6 @@
       "noFallthroughCasesInSwitch": true,
       "noUnusedLocals": true,
       "noImplicitReturns": true,
-      "suppressImplicitAnyIndexErrors": true,
       "strictNullChecks": true,
       "paths": {
           "@app/*": ["./app/*"]
