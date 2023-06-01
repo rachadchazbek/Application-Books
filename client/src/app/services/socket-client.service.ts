@@ -26,11 +26,7 @@ export class SocketClientService {
   }
 
   send<T>(event: string, data?: T, callback?: Function): void {
-    if (data) {
-      this.socket.emit(event, data, callback);
-    } else {
-      this.socket.emit(event);
-    }
+    this.socket.emit(event, ...([data, callback].filter(x => x)));
   }
 
 }
