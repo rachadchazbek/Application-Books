@@ -1,11 +1,10 @@
 import * as io from 'socket.io';
 import * as http from 'http';
-
+import axios from 'axios';
 
 export class SocketManager {
 
     private sio: io.Server;
-    private room: string = "serverRoom";
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ["GET", "POST"] } });
     }
@@ -13,48 +12,25 @@ export class SocketManager {
     public handleSockets(): void {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`)
-            // message initial
-            socket.emit("hello", "Hello World!");
 
-            socket.on('validateWithAck', (word: string, callback) => {
-                const isValid = word.length > 5;
-                callback({isValid});
+            socket.on('getSparqlData', (sparqlQuery: string) => {
+                console.log('In Server');
+                const repositoryUrl = 'http://localhost:7200/repositories/BookDB_PBS';  // <-- change made here
+                axios.post(repositoryUrl, sparqlQuery, {
+                    headers: {
+                        'Content-Type': 'application/sparql-query',
+                        'Accept': 'application/sparql-results+json'
+                    }
+                })
+                .then((response: any) => {
+                    socket.emit('sparqlResults', response.data);
+                    console.log(response.data);
+                })
+                .catch((error: any) => {
+                    console.error(error);
+                    socket.emit('sparqlError', error.message);
+                });
             });
-            socket.on('validate', (word: string) => {
-                const isValid = word.length > 5;
-                socket.emit('wordValidated', isValid);
-            })
-
-            socket.on('broadcastAll', (message: string) => {
-                this.sio.sockets.emit("massMessage", `${socket.id} : ${message}`)
-            })
-
-            socket.on('joinRoom', () => {
-                socket.join(this.room);
-            });
-
-            socket.on('roomMessage', (message: string) => {
-                // Seulement un membre de la salle peut envoyer un message aux autres
-                if (socket.rooms.has(this.room)) {
-                    this.sio.to(this.room).emit("roomMessage", `${socket.id} : ${message}`);
-                }
-            });
-
-
-            socket.on("disconnect", (reason) => {
-                console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
-                console.log(`Raison de deconnexion : ${reason}`)
-            });
-
-
         });
-
-        setInterval(() => {
-            this.emitTime();
-        }, 1000);
-    }
-
-    private emitTime() {
-        this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
     }
 }
