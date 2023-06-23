@@ -1,0 +1,234 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body::-webkit-scrollbar {
+  width: 5px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.page{
+  background-color:  #E6E6FA;
+  min-height: 100vh; 
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.search-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: center;
+  background-color: #FFFFFF;
+  margin-bottom: 30px;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.search-section .fas.fa-lg {
+  margin: auto;
+  padding: 10px;
+  font-size: 20px;
+  color: #9370DB;  /* Light purple color */
+  text-align: center;
+}
+
+.search-section .filter-input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.search-section .filter-input:hover {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  transform: scale(1.01);
+}
+
+.search-section .filter-input:focus {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 15px;
+  gap: 10px;
+  position: relative;
+  width: 100%;
+}
+
+.search-bar,
+.filter-input,
+.search-bar-author {
+  flex: 1;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.fas {
+  color: #5c6bc0;
+}
+
+.search-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #5c6bc0;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.book-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+}
+
+.book-card {
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.book-card:hover {
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-10px);
+}
+
+.book-title {
+  font-size: 24px;
+  color: #5c6bc0;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.book-title:hover {
+  text-decoration: underline;
+  color: #3f51b5;
+}
+
+.book-card p {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.book-card p i {
+  margin-right: 5px;
+}
+
+.award-section {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.award-name {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.award-name:hover {
+  color: #9370DB;
+  text-decoration: underline;
+}
+
+.award-name i {
+  color: #9370DB;
+  margin-right: 5px;
+}
+
+.autocomplete-items {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #fff;
+  box-sizing: border-box;
+  z-index: 1;
+  margin-top: -1px; /* Add this line */
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.autocomplete-items div:hover,
+.autocomplete-items div.active {
+  background-color: #ddd;
+}
+
+/* Adjust the margin for autocomplete items */
+.search-container .autocomplete-items {
+  margin-top: -1px;
+}
+
+
+
+.autocomplete-items div:hover,
+.autocomplete-items div.active {
+  background-color: #ddd;
+}
+
+span {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+span:hover {
+  color: #9370DB;
+  text-decoration: underline;
+}
+
+span i {
+  color: #9370DB;
+  margin-right: 5px;
+}
+
+
+.book-card span:hover {
+  color: #5c6bc0;
+  cursor: pointer;
+}
+
+.book-card span.selected {
+  color: #5c6bc0;
+}

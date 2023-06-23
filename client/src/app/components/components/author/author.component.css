@@ -1,0 +1,175 @@
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.author-information {
+background-color: #f9f9f9;
+padding: 20px;
+border-radius: 5px;
+margin-bottom: 20px;
+}
+
+.author-name {
+color: #5c6bc0;
+margin-bottom: 10px;
+}
+
+.author-information ul {
+list-style-type: none;
+}
+
+.author-information ul li {
+margin-bottom: 10px;
+display: flex;
+align-items: center;
+}
+
+.author-information ul li i {
+margin-right: 5px;
+}
+
+.book-list {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+grid-gap: 20px;
+}
+
+.book-card {
+background-color: #fff;
+border-radius: 5px;
+padding: 20px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.book-title {
+color: #5c6bc0;
+margin-bottom: 10px;
+}
+
+.book-card p {
+margin-bottom: 10px;
+display: flex;
+align-items: center;
+}
+
+.book-card p i {
+margin-right: 5px;
+}
+
+.award-section {
+border-top: 1px solid #ddd;
+padding-top: 10px;
+margin-top: 10px;
+}
+
+.search-section {
+margin-bottom: 30px; 
+}
+
+.search-container {
+display: flex;
+align-items: center; /* Align items vertically in the center */
+justify-content: flex-start;
+margin-bottom: 15px;
+gap: 10px;
+}
+
+.search-bar, .filter-input {
+flex: 1;
+padding: 10px;
+border-radius: 5px;
+border: 1px solid #ddd;
+font-size: 16px;
+}
+
+.fas {
+color: #5c6bc0;
+}
+
+.search-button {
+margin-left: 10px;
+padding: 10px 20px;
+border-radius: 5px;
+background-color: #5c6bc0;
+color: #fff;
+border: none;
+cursor: pointer;
+font-size: 16px;
+}
+
+.search-container {
+position: relative;
+display: flex;
+justify-content: space-between;
+width: 100%;
+}
+
+.search-bar-author {
+width: 100%;
+padding: 10px;
+border-radius: 5px;
+border: 1px solid #ddd;
+font-size: 16px;
+}
+
+.autocomplete-items {
+position: absolute;
+top: 100%;
+left: 0;
+width: 100%;
+border: 1px solid #ddd;
+border-radius: 5px;
+padding: 10px;
+background-color: #fff;
+box-sizing: border-box;
+z-index: 1;
+}
+
+body {
+overflow-y: scroll;
+margin-right: 15px;
+}
+
+html {
+overflow-y: overlay;
+}
+
+body::-webkit-scrollbar {
+width: 5px;
+}
+
+body::-webkit-scrollbar-track {
+background: #f1f1f1;
+}
+
+body::-webkit-scrollbar-thumb {
+background: #888;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+background: #555;
+}
+
+.autocomplete-items div {
+padding: 10px;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.page{
+  background-color:  #E6E6FA;
+  min-height: 100vh; 
+}
+
+.autocomplete-items div:hover, .autocomplete-items div.active {
+background-color: #ddd;
+}

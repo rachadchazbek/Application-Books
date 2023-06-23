@@ -20,6 +20,8 @@
     "@angular/platform-browser": "^16.0.3",
     "@angular/platform-browser-dynamic": "^16.0.3",
     "@angular/router": "^16.0.3",
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
     "rxjs": "~7.4.0",
     "socket.io-client": "4.6.2",
     "tslib": "^2.3.0",
