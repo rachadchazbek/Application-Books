@@ -23,11 +23,22 @@
             <span *ngIf="i === book.authors.length - 1">&nbsp;</span>
           </ng-container>
         </p>
-        <p>
+        <p *ngIf="book.publisher">
           <i class="fas fa-building"></i> {{book.publisher}}
         </p>
         <p>
           <i class="fas fa-globe"></i> {{book.inLanguage}}
+        </p>
+        <p *ngIf="book.illustrator && book.illustrator.length > 0">
+          <i class="fas fa-paint-brush"></i>
+          <ng-container *ngFor="let illustrator of book.illustrator; let i = index">
+            <span (click)="navigateToIllustrator(illustrator)">{{ illustrator }}</span>
+            <span *ngIf="i < book.illustrator.length - 1">, </span>
+            <span *ngIf="i === book.illustrator.length - 1">&nbsp;</span>
+          </ng-container>
+        </p>
+        <p *ngIf="book.countryOfOrigin">
+          <i class="fas fa-flag"></i> {{ book.countryOfOrigin }}
         </p>
         <div class="award-section" *ngFor="let award of book.awards">
           <p>

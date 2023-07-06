@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SocketClientService } from './socket-client.service';
 import { Book } from '../Book';
 import { Award } from '../Award';
-import { SPARQL_QUERY, SPARQL_WIKIDATA } from '../sparql';
+import { SPARQL_QUERY, SPARQL_QUERY_DESCRIPTION, SPARQL_WIKIDATA } from '../sparql';
 import { BehaviorSubject } from 'rxjs';
 import axios from 'axios';
 import cheerio, { load } from 'cheerio';
@@ -44,6 +44,18 @@ export class SocketSparqlService {
     private descriptionAwardSubject = new BehaviorSubject<any[]>([]);
     descriptionAward$ = this.descriptionAwardSubject.asObservable();
 
+    private bookSummarySubject = new BehaviorSubject<any>([]);
+    bookSummary$ = this.bookSummarySubject.asObservable();
+
+    private ratingSubject = new BehaviorSubject<any>([]);
+    rating$ = this.ratingSubject.asObservable();
+
+    private currentBookSubject = new BehaviorSubject<any[]>([]);
+    currentBook$ = this.currentBookSubject.asObservable();
+
+    private urlBabelioSubject = new BehaviorSubject<any>([]);
+    urlBabelio$ = this.urlBabelioSubject.asObservable();
+
     get socketId() {
         return this.socketService.socket.id ? this.socketService.socket.id : "";
     }
@@ -65,9 +77,9 @@ export class SocketSparqlService {
 
     filterBooksByAward(filterAward: any) {
         this.inAwardsComponent = true;
-        const sparqlQuery =  SPARQL_QUERY(`FILTER(?finalAwardName = "${filterAward}")`);
+        const sparqlQuery = SPARQL_QUERY_DESCRIPTION(`FILTER(CONTAINS(?finalAwardName, "${filterAward}"))`);
         this.socketService.send('getSparqlData', sparqlQuery);
-    }
+      }      
 
     filterAuthorBooks(filterAuthor: any) {
         this.inAuthorsComponent = true;
@@ -95,8 +107,9 @@ export class SocketSparqlService {
         this.socketService.send('getSparqlAuthorData', sparqlQuery);
      }
 
-     async bingSearchBook(bookName: string, authorName: string) {
-        const query = `${bookName} ${authorName} site:babelio.com`;
+     async bingSearchBook(book: any) {
+        this.currentBookSubject.next(book);
+        const query = `${book.title} ${book.authors[0]} site:babelio.com`;
         const encodedQuery = encodeURIComponent(query);
         const url = `https://api.bing.microsoft.com/v7.0/search?q=${encodedQuery}`;
       
@@ -106,13 +119,59 @@ export class SocketSparqlService {
               'Ocp-Apim-Subscription-Key': '4529dde1556f4695ae08290082c14988',
             },
           });
-      
           const firstLink = response.data.webPages.value[0].url;
-          window.location.href = firstLink;
+          this.scrapeWebsite(firstLink);
+          this.urlBabelioSubject.next(firstLink);
         } catch (error: any) {
           console.error(`An error occurred: ${error.message}`);
         }
-      }      
+      }
+
+      async bingSearchPublisher(publisher: string) {
+        const query = `Éditions ${publisher}`;
+        const encodedQuery = encodeURIComponent(query);
+        const url = `https://api.bing.microsoft.com/v7.0/search?q=${encodedQuery}`;
+      
+        try {
+          const response = await axios.get(url, {
+            headers: {
+              'Ocp-Apim-Subscription-Key': '4529dde1556f4695ae08290082c14988',
+            },
+          });
+          const firstLink = response.data.webPages.value[0].url;
+    
+          // Open the firstLink in a new browser window or tab
+          window.open(firstLink, '_blank');
+        } catch (error: any) {
+          console.error(`An error occurred: ${error.message}`);
+        }
+      }    
+    
+      async scrapeWebsite (url: string): Promise<void> {
+        const encodedUrl = encodeURIComponent(url);
+        const proxyUrl = `http://localhost:3000/proxy?url=${encodedUrl}`;
+      
+        try {
+          const response = await axios.get(proxyUrl, { responseType: 'text' });
+      
+          const rawHtml = response.data;
+          console.log(rawHtml);
+      
+          const $ = load(rawHtml, { decodeEntities: false });
+      
+          const bookSummary = $('.livre_resume').text().trim();
+          this.bookSummarySubject.next(bookSummary);
+          console.log(bookSummary);
+      
+          const rating = $('.grosse_note').text().trim();
+          this.ratingSubject.next(rating);
+          console.log(rating);
+        } catch (error: any) {
+          console.error(`An error occurred: ${error.message}`);
+        }
+      };
+      
+    
 
     updateFilters() {
         let filterQueries = [];
@@ -180,47 +239,56 @@ export class SocketSparqlService {
                 this.authorDataSubject.next(formattedData);
             });
 
-        this.socketService.on('sparqlResults', (responseData: any) => {
-            let bookMap: {
-                [key: string]: Book
-            } = {};
-            responseData.results.bindings.forEach((binding: any) => {
-                this.descriptionAwardSubject.next(binding.finalAwardDescription?.value);
-                let title = binding.title?.value;
-                if (bookMap[title]) {
-                    if (!bookMap[title].authors.includes(binding.author?.value)) {
-                        bookMap[title].authors.push(binding.author?.value);
-                    }
-                    if (binding.award) {
-                        const existingAward = bookMap[title].awards.find((award: Award) => award.name === binding.finalAwardName?.value && award.genre === binding.finalGenreName?.value && award.year === binding.awardYear?.value);
-                        if (!existingAward) {
-                            bookMap[title].awards.push({
+            this.socketService.on('sparqlResults', (responseData: any) => {
+                let bookMap: {
+                    [key: string]: Book
+                } = {};
+                responseData.results.bindings.forEach((binding: any, index: number) => {
+                    this.descriptionAwardSubject.next(binding.finalAwardDescription?.value);
+                    let title = binding.title?.value || `Empty Title ${index}`;
+                    if (bookMap[title]) {
+                        if (!bookMap[title].authors.includes(binding.author?.value)) {
+                            bookMap[title].authors.push(binding.author?.value);
+                        }
+                        if (binding.illustrator?.value && !bookMap[title].illustrator?.includes(binding.illustrator?.value)) {
+                            bookMap[title].illustrator?.push(binding.illustrator?.value);
+                        }
+                        if (binding.countryOfOrigin?.value) {
+                            bookMap[title].countryOfOrigin = binding.countryOfOrigin?.value;
+                        }
+                        if (binding.award) {
+                            const existingAward = bookMap[title].awards.find((award: Award) => award.name === binding.finalAwardName?.value && award.genre === binding.finalGenreName?.value && award.year === binding.awardYear?.value);
+                            if (!existingAward) {
+                                bookMap[title].awards.push({
+                                    year: binding.awardYear?.value,
+                                    name: binding.finalAwardName?.value,
+                                    genre: binding.finalGenreName?.value,
+                                    ageRange: binding.ageRange?.value ? [binding.ageRange?.value] : []
+                                });
+                            } else {
+                                if (binding.ageRange?.value && !existingAward.ageRange.includes(binding.ageRange?.value)) {
+                                    existingAward.ageRange.push(binding.ageRange?.value);
+                                }
+                            }
+                        }
+                    } else {
+                        bookMap[title] = {
+                            title: binding.title?.value || "",
+                            authors: [binding.author?.value],
+                            publisher: binding.publisherName?.value,
+                            inLanguage: binding.inLanguage?.value,
+                            illustrator: binding.illustrator?.value ? [binding.illustrator?.value] : [],
+                            countryOfOrigin: binding.countryOfOrigin?.value || "",
+                            awards: binding.award ? [{
                                 year: binding.awardYear?.value,
                                 name: binding.finalAwardName?.value,
                                 genre: binding.finalGenreName?.value,
                                 ageRange: binding.ageRange?.value ? [binding.ageRange?.value] : []
-                            });
-                        } else {
-                            if (binding.ageRange?.value && !existingAward.ageRange.includes(binding.ageRange?.value)) {
-                                existingAward.ageRange.push(binding.ageRange?.value);
-                            }
+                            }] : []
                         }
                     }
-                } else {
-                    bookMap[title] = {
-                        title: title,
-                        authors: [binding.author?.value],
-                        publisher: binding.publisherName?.value,
-                        inLanguage: binding.inLanguage?.value,
-                        awards: binding.award ? [{
-                            year: binding.awardYear?.value,
-                            name: binding.finalAwardName?.value,
-                            genre: binding.finalGenreName?.value,
-                            ageRange: binding.ageRange?.value ? [binding.ageRange?.value] : []
-                        }] : []
-                    }
-                }
-            });
+                });
+            
             if (this.inAuthorsComponent === true) {
                 this.booksAuthor = Object.values(bookMap);
                 this.booksSourceAuthor.next(this.booksAuthor);

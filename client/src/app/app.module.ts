@@ -8,13 +8,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { SearchComponent } from './components/components/search/search.component';
 import { AuthorComponent } from './components/components/author/author.component';
 import { AwardComponent } from './components/components/award/award.component';
+import { BookComponent } from './components/components/book/book.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthorComponent,
     SearchComponent,
-    AwardComponent
+    AwardComponent,
+    BookComponent
   ],
   imports: [
     BrowserModule,

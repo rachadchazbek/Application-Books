@@ -8,7 +8,7 @@
       <i class="fas fa-book fa-lg"></i>
       <input type="text"
              [formControl]="myControlTitles"
-             placeholder="Search for books by title...."
+             placeholder="Recherchez un livre par son titre..."
              class="search-bar"
              (blur)="onBlurTitle()"
              (focus)="isBlurredTitle = false"
@@ -26,7 +26,7 @@
       <i class="fas fa-award fa-lg"></i>
       <input type="text"
              [formControl]="myControlAwards"
-             placeholder="Search for books by award...."
+             placeholder="Recherchez un livre par son prix..."
              class="search-bar"
              (blur)="onBlurAward()"
              (focus)="isBlurredAward = false"
@@ -44,7 +44,7 @@
       <i class="fas fa-user fa-lg"></i>
       <input type="text"
              [formControl]="myControl"
-             placeholder="Search for books by author...."
+             placeholder="Recherchez un livre par son auteur..."
              class="search-bar"
              (blur)="onBlurAuthor()"
              (focus)="isBlurredAuthor = false"
@@ -63,56 +63,66 @@
     <div class="search-item">
         <i class="fas fa-theater-masks fa-lg"></i>
         <select [(ngModel)]="selectedGenre" (change)="selectGenre()" class="filter-input">
-            <option value="" disabled selected>Select a genre...</option>
-            <option value="No Genre Selected">No Genre Selected</option>
+            <option value="" disabled selected>Selectionnez un genre...</option>
+            <option value="Aucun genre sélectionné">Aucun genre sélectionné</option>
             <option *ngFor="let genre of genres">{{ genre }}</option>
         </select>
     </div>
     <div class="search-item">
         <i class="fas fa-child fa-lg"></i>
         <select [(ngModel)]="filterAge" (change)="filterBooksByAge()" class="filter-input">
-            <option value="" disabled>Select an age range...</option>
-            <option value="No Age Selected">No Age Selected</option>
+            <option value="" disabled>Selectionnez un age...</option>
+            <option value="Aucun age sélectionné">Aucun age sélectionné</option>
             <option *ngFor="let ageRange of ageRanges">{{ ageRange }}</option>
         </select>
     </div>
     <div class="search-item">
         <i class="fas fa-language fa-lg"></i>
         <select [(ngModel)]="selectedLanguage" (change)="filterLanguage()" class="filter-input">
-            <option value="" disabled>Select an language...</option>
-            <option value="No Language Selected">No Language Selected</option>
+            <option value="" disabled>Selectionnez une langue...</option>
+            <option value="Aucune langue sélectionnée">Aucune langue sélectionnée</option>
             <option *ngFor="let language of languages">{{ language }}</option>
         </select>
     </div>
 </div>
-  <div class="book-list">
-    <div *ngFor="let book of books" class="book-card">
-      <h2 class="book-title" (click)="onBookTitleClick(book.title, book.authors[0])">{{ book.title }}</h2>
-      <p>
-        <i class="fas fa-user"></i>
-        <ng-container *ngFor="let author of book.authors; let i = index">
-          <span (click)="navigateToAuthor(author)">{{ author }}</span>
-          <span *ngIf="i < book.authors.length - 1">, </span>
-          <span *ngIf="i === book.authors.length - 1">&nbsp;</span>
-        </ng-container>
+<div class="book-list">
+  <div *ngFor="let book of books" class="book-card">
+    <h2 class="book-title" (click)="navigateToBook(book)">{{ book.title }}</h2>
+    <p>
+      <i class="fas fa-user"></i>
+      <ng-container *ngFor="let author of book.authors; let i = index">
+        <span (click)="navigateToAuthor(author)">{{ author }}</span>
+        <span *ngIf="i < book.authors.length - 1">, </span>
+        <span *ngIf="i === book.authors.length - 1">&nbsp;</span>
+      </ng-container>
+    </p>
+    <p *ngIf="book.publisher" (click)="navigateToPublisher(book.publisher)" class="publisher-info">
+      <i class="fas fa-building"></i> {{ book.publisher }}
+    </p>    
+    <p>
+      <i class="fas fa-globe"></i> {{ book.inLanguage }}
+    </p>
+    <p *ngIf="book.illustrator && book.illustrator.length > 0">
+      <i class="fas fa-paint-brush"></i>
+      <ng-container *ngFor="let illustrator of book.illustrator; let i = index">
+        <span (click)="navigateToIllustrator(illustrator)">{{ illustrator }}</span>
+        <span *ngIf="i < book.illustrator.length - 1">, </span>
+        <span *ngIf="i === book.illustrator.length - 1">&nbsp;</span>
+      </ng-container>
+    </p>
+    <p *ngIf="book.countryOfOrigin">
+      <i class="fas fa-flag"></i> {{ book.countryOfOrigin }}
+    </p>
+    <div class="award-section" *ngFor="let award of book.awards">
+      <p class="award-name" (click)= "navigateToAward(award.name)">
+        <i class="fas fa-trophy"></i> {{ award.name }} ({{ award.year }})
       </p>
       <p>
-        <i class="fas fa-building"></i> {{ book.publisher }}
+        <strong>Genre:</strong> {{ award.genre }}
       </p>
-      <p>
-        <i class="fas fa-globe"></i> {{ book.inLanguage }}
+      <p *ngIf="award.ageRange && award.ageRange.length > 0">
+        <strong>Age:</strong> {{ award.ageRange.join(', ') }}
       </p>
-      <div class="award-section" *ngFor="let award of book.awards">
-        <p class="award-name" (click)= "navigateToAward(award.name)">
-          <i class="fas fa-trophy"></i> {{ award.name }} ({{ award.year }})
-        </p>
-        <p>
-          <strong>Genre:</strong> {{ award.genre }}
-        </p>
-        <p *ngIf="award.ageRange && award.ageRange.length > 0">
-          <strong>Age:</strong> {{ award.ageRange.join(', ') }}
-        </p>
-      </div>
     </div>
   </div>
 </div>

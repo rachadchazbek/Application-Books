@@ -1,0 +1,62 @@
+body {
+  background-color: #f5f5f5;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.book-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px 40px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.book-container h1 {
+  color: #444;
+  font-size: 2.4em;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.book-container .section {
+  margin-bottom: 30px;
+}
+
+.book-container h3 {
+  color: #333;
+  font-size: 1.6em;
+  margin-bottom: 15px;
+}
+
+.book-container p, .book-container ul {
+  color: #666;
+  line-height: 1.6;
+}
+
+.book-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.book-container ul li {
+  margin-bottom: 10px;
+}
+
+.book-container i {
+  margin-right: 10px;
+  color: #9370DB;  /* This is MediumPurple in HTML color names */
+}
+
+.view-more-link {
+  color: #6c757d;        /* A shade of gray color */
+  text-decoration: none; /* Remove the underline */
+}
+
+.view-more-link:hover {
+  color: #5a6268;        /* Darker gray color on hover */
+  text-decoration: underline; /* Underline on hover */
+}
+
+

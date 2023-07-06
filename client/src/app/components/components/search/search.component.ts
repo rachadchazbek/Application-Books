@@ -13,9 +13,9 @@ import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 export class SearchComponent implements OnInit {
   private destroy$ = new Subject<void>();
   books: any;
-  selectedGenre: string = 'No Genre Selected';
+  selectedGenre: string = 'Aucun genre sélectionné';
   selectedLanguage: string = 'No Language Selected';
-  filterAge: any = 'No Age Selected';
+  filterAge: any = 'Aucun age sélectionné';
   filterAuthor: any = '';
   searchAward: any = '';
   searchText: any = '';
@@ -53,7 +53,7 @@ export class SearchComponent implements OnInit {
 
     this.myControlAwards.valueChanges.subscribe(value => {
       this.filteredAwards = this.awards.filter(award =>
-        award.toLowerCase().startsWith(value.toLowerCase()));
+        award.toLowerCase().includes(value.toLowerCase()));
     });
 
     this.myControlTitles.valueChanges.subscribe(value => {
@@ -70,8 +70,13 @@ export class SearchComponent implements OnInit {
     this.router.navigate(['/award', awardName]);
   }
 
-  onBookTitleClick(bookTitle: string, authorName: string) {
-    this.socketService.bingSearchBook(bookTitle, authorName);
+  navigateToBook(book: any): void {
+    this.router.navigate(['/book', book.title]);
+    this.socketService.bingSearchBook(book);
+  }
+
+  navigateToPublisher(publisher: string) {
+    this.socketService.bingSearchPublisher(publisher);
   }
 
   selectGenre() {
