@@ -39,6 +39,18 @@ export class SearchComponent implements OnInit {
   isBlurredAward = false;
   isBlurredAuthor = false;
 
+  selectedSource: string = '';
+  selectedCategory: string = '';
+  bookAppreciation: string = ''; // 'highlyAppreciated' or 'notHighlyAppreciated'
+
+  // Define the categories for each source
+  sourceCategories = {
+    Babelio: ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles'],
+    Constellation: ['Coup de Coeur'],
+    BNF: ['Hélas !', 'Problème...', 'Pourquoi pas ?', 'Intéressant', 'Bravo !', 'Coup de coeur !', 'Réédition à signaler', 'Bibliothèque idéale'],
+    Lurelu: ['Coup de coeur']
+  };
+
   constructor(public socketService: SocketSparqlService, private router: Router) {
     this.socketService.books$.pipe(takeUntil(this.destroy$)).subscribe(books => {
       this.books = books;
@@ -60,6 +72,21 @@ export class SearchComponent implements OnInit {
       this.filteredTitles = this.titles.filter(title =>
         title.toLowerCase().startsWith(value.toLowerCase()));
     });
+  }
+
+  onSelectSource(source: string) {
+    this.selectedSource = source;
+    this.selectedCategory = ''; // Reset category when source changes
+  }
+
+  onSelectCategory(category: string) {
+    this.selectedCategory = category;
+    this.socketService.filterBooksByCategory(this.selectedSource, this.selectedCategory);
+  }
+
+  onSelectBookAppreciation(appreciation: string) {
+    this.bookAppreciation = appreciation;
+    this.socketService.filterBooksByAppreciation(this.bookAppreciation);
   }
 
   navigateToAuthor(authorName: string): void {

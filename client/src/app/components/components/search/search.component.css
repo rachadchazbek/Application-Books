@@ -253,3 +253,62 @@ span i {
 .book-card span.selected {
   color: #5c6bc0;
 }
+
+.search-review {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  background-color: #FFFFFF; /* White background */
+  margin-bottom: 30px;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Consistent shadow */
+}
+
+.search-review select, .search-review button {
+  padding: 10px 15px;
+  border: 1px solid #ddd; /* Light grey border */
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  width: 100%;
+  max-width: 300px; /* Adjust the width as needed */
+  background-color: white; /* White background for inputs */
+}
+
+.search-review button {
+  background-color: #5c6bc0; /* Consistent button color */
+  color: white;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.search-review button:hover {
+  background-color: #3f51b5; /* Darker shade on hover */
+}
+
+/* Dropdown Menu Styles for Search Review */
+.search-review select {
+  background-color: white;
+}
+
+/* Responsive adjustments for Search Review */
+@media (max-width: 600px) {
+  .search-review {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-review select, .search-review button {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+/* Style adjustments for autocomplete items in Search Review */
+.search-review .autocomplete-items div:hover,
+.search-review .autocomplete-items div.active {
+  background-color: #ddd; /* Light grey for hover and active states */
+}

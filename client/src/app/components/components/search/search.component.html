@@ -84,6 +84,26 @@
             <option *ngFor="let language of languages">{{ language }}</option>
         </select>
     </div>
+    <div class="search-review">
+      <!-- Source Selection Dropdown -->
+      <select [(ngModel)]="selectedSource" (change)="onSelectSource(selectedSource)">
+        <option value="">Select Source</option>
+        <option value="Babelio">Babelio</option>
+        <option value="Constellation">Constellation</option>
+        <option value="BNF">BNF</option>
+        <option value="Lurelu">Lurelu</option>
+      </select>
+    
+      <!-- Category Selection Dropdown (shown only if a source is selected) -->
+      <select *ngIf="selectedSource" [(ngModel)]="selectedCategory" (change)="onSelectCategory(selectedCategory)">
+        <option value="">Select Category</option>
+        <option *ngFor="let category of sourceCategories[selectedSource]" [value]="category">{{ category }}</option>
+      </select>
+    
+      <!-- Book Appreciation Selection -->
+      <button (click)="onSelectBookAppreciation('highlyAppreciated')">Livre très appréciés</button>
+      <button (click)="onSelectBookAppreciation('notHighlyAppreciated')">Livre pas très appréciés</button>
+    </div>
 </div>
 <div class="book-list">
   <div *ngFor="let book of books" class="book-card">

@@ -1,59 +1,244 @@
-     export const SPARQL_QUERY = (filter: any) => `
-     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+export const SPARQL_QUERY = (filter: any) => `
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ns1: <http://schema.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX mcc: <http://example.com/mcc#> 
+PREFIX pbs: <http://example.com/pbs#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        
+SELECT ?book ?title ?author ?publisherName ?inLanguage ?award ?awardYear ?finalAwardName ?finalGenreName ?ageRange ?illustrator  ?countryOfOrigin
+WHERE {
+  ?book rdf:type ns1:Book .
+  OPTIONAL { ?book ns1:name ?title . }
+  OPTIONAL { ?book ns1:author ?author . }
+  OPTIONAL { ?book ns1:illustrator ?illustrator . }
+  OPTIONAL { ?book ns1:countryOfOrigin ?countryOfOrigin . }
+  OPTIONAL { ?book ns1:publisher ?publisher .
+    ?publisher ns1:name ?publisherName . }
+  OPTIONAL { ?book ns1:inLanguage ?inLanguage . }
+  
+  OPTIONAL {
+    ?award mcc:R37 ?book .
+    ?award mcc:MCC-R35-4 ?awardYear .
+    ?award pbs:award ?awardName .
+    OPTIONAL {
+      ?awardName schema:name ?name .
+    }
+    OPTIONAL {
+      ?awardName pbs:genreLittéraire ?awardGenre .
+      ?awardGenre rdfs:label ?genreName .
+    }
+    OPTIONAL {
+      ?awardName pbs:groupeAge ?childAgeRange .
+    }
+    OPTIONAL {
+      ?parentAward skos:narrower ?awardName .
+      OPTIONAL {
+        ?parentAward schema:name ?parentName .
+      }
+      OPTIONAL {
+        ?parentAward pbs:groupeAge ?parentAgeRange .
+      }
+      OPTIONAL {
+        ?parentAward pbs:genreLittéraire ?parentGenre .
+        ?parentGenre rdfs:label ?parentGenreName .
+      }
+    }
+  }
+
+  BIND (COALESCE(?name, ?parentName, "") AS ?finalAwardName)
+  BIND (IF(BOUND(?genreName), ?genreName, IF(BOUND(?parentGenreName), ?parentGenreName, "")) AS ?finalGenreName)
+  BIND (IF(BOUND(?childAgeRange), ?childAgeRange, IF(BOUND(?parentAgeRange), ?parentAgeRange, "")) AS ?ageRange)
+
+  ${filter}
+}
+     `;
+     export const SPARQL_BABELIO = (filter: any) => `
      PREFIX ns1: <http://schema.org/>
-     PREFIX schema: <http://schema.org/>
-     PREFIX mcc: <http://example.com/mcc#> 
-     PREFIX pbs: <http://example.com/pbs#> 
-     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-             
-     SELECT ?book ?title ?author ?publisherName ?inLanguage ?award ?awardYear ?finalAwardName ?finalGenreName ?ageRange ?illustrator  ?countryOfOrigin
+     PREFIX pbs: <http://www.example.org/pbs#>
+     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+     
+     SELECT ?book (SAMPLE(?title) AS ?title) (SAMPLE(?author) AS ?author) (SAMPLE(?publisherName) AS ?publisherName) 
+            (SAMPLE(?inLanguage) AS ?inLanguage) (SAMPLE(?illustrator) AS ?illustrator) (SAMPLE(?countryOfOrigin) AS ?countryOfOrigin) 
+            (GROUP_CONCAT(DISTINCT ?citation; separator=", ") AS ?citation) (GROUP_CONCAT(DISTINCT ?pressReview; separator=", ") AS ?pressReview) 
+            (GROUP_CONCAT(DISTINCT ?review; separator=", ") AS ?review) (SAMPLE(?datePublished) AS ?datePublished) 
+            (GROUP_CONCAT(DISTINCT ?genre; separator=", ") AS ?genre) (SAMPLE(?ean) AS ?ean) (SAMPLE(?averageReview) AS ?averageReview)
+            (GROUP_CONCAT(DISTINCT ?keywords; separator=", ") AS ?keywords) (SAMPLE(?url) AS ?url) 
+            (GROUP_CONCAT(DISTINCT ?distribution; separator=", ") AS ?distribution)
      WHERE {
-       ?book rdf:type ns1:Book .
+       ?book rdf:type ns1:Book ;
+             pbs:infoSource pbs:Babelio .
        OPTIONAL { ?book ns1:name ?title . }
        OPTIONAL { ?book ns1:author ?author . }
        OPTIONAL { ?book ns1:illustrator ?illustrator . }
        OPTIONAL { ?book ns1:countryOfOrigin ?countryOfOrigin . }
-       OPTIONAL { ?book ns1:publisher ?publisher .
-         ?publisher ns1:name ?publisherName . }
-       OPTIONAL { ?book ns1:inLanguage ?inLanguage . }
-       
-       OPTIONAL {
-         ?award mcc:R37 ?book .
-         ?award mcc:MCC-R35-4 ?awardYear .
-         ?award pbs:award ?awardName .
-         OPTIONAL {
-           ?awardName schema:name ?name .
-         }
-         OPTIONAL {
-           ?awardName pbs:genreLittéraire ?awardGenre .
-           ?awardGenre rdfs:label ?genreName .
-         }
-         OPTIONAL {
-           ?awardName pbs:groupeAge ?childAgeRange .
-         }
-         OPTIONAL {
-           ?parentAward skos:narrower ?awardName .
-           OPTIONAL {
-             ?parentAward schema:name ?parentName .
-           }
-           OPTIONAL {
-             ?parentAward pbs:groupeAge ?parentAgeRange .
-           }
-           OPTIONAL {
-             ?parentAward pbs:genreLittéraire ?parentGenre .
-             ?parentGenre rdfs:label ?parentGenreName .
-           }
-         }
+       OPTIONAL { 
+         ?book ns1:publisher ?publisher .
+         ?publisher ns1:name ?publisherName . 
        }
+       OPTIONAL { ?book pbs:averageBabelioReview ?averageReview . } 
+       OPTIONAL { ?book ns1:inLanguage ?inLanguage . }
+       OPTIONAL { ?book ns1:datePublished ?datePublished . }
+       OPTIONAL { ?book ns1:genre ?genre . }
+       OPTIONAL { ?book pbs:ean ?ean . }
+       OPTIONAL { ?book ns1:keywords ?keywords . }
+       OPTIONAL { ?book ns1:url ?url . }
+       OPTIONAL {
+         ?book pbs:reviewDistribution ?distribution .
+         OPTIONAL { ?book pbs:citation ?citation . }
+         OPTIONAL { ?book pbs:pressReview ?pressReview . }
+         OPTIONAL { ?book pbs:review ?review . }
+       }
+          
+     ${filter}
+    }
+    GROUP BY ?book
+         `;
+
+          export const SPARQL_QUERY_CONSTELLATIONS = (filter: any) => `
+          PREFIX ns1: <http://schema.org/>
+          PREFIX pbs: <http://www.example.org/pbs#>
+          PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+          
+          SELECT ?book (SAMPLE(?name) AS ?title) 
+                 (GROUP_CONCAT(DISTINCT ?author; separator=", ") AS ?author) 
+                 (SAMPLE(?datePublished) AS ?datePublished) 
+                 (SAMPLE(?isbn) AS ?isbn) 
+                 (GROUP_CONCAT(DISTINCT ?keyword; separator=", ") AS ?keywords) 
+                 (SAMPLE(?numberOfPages) AS ?numberOfPages) 
+                 (SAMPLE(?publisherName) AS ?publisherName) 
+                 (GROUP_CONCAT(DISTINCT ?ageRange; separator=", ") AS ?ageRange) 
+                 (SAMPLE(?constellationLink) AS ?constellationLink) 
+                 (SAMPLE(?dateEdition) AS ?dateEdition) 
+                 (SAMPLE(?isCoupDeCoeur) AS ?isCoupDeCoeur) 
+                 (SAMPLE(?reviewAuthor) AS ?reviewAuthor) 
+                 (SAMPLE(?reviewContent) AS ?reviewContent) 
+                 (SAMPLE(?reviewURL) AS ?reviewURL)
+          WHERE {
+            ?book rdf:type ns1:Book ;
+                  pbs:infoSource pbs:Constellations .
+            OPTIONAL { ?book ns1:name ?name . }
+            OPTIONAL { ?book ns1:author ?author . }
+            OPTIONAL { 
+              ?book ns1:publisher ?publisher .
+              ?publisher ns1:name ?publisherName . 
+            }
+            OPTIONAL { ?book ns1:datePublished ?datePublished . }
+            OPTIONAL { ?book ns1:isbn ?isbn . }
+            OPTIONAL { ?book ns1:keywords ?keyword . }
+            OPTIONAL { ?book ns1:numberOfPages ?numberOfPages . }
+            OPTIONAL { ?book pbs:ageRange ?ageRange . }
+            OPTIONAL { ?book pbs:constellationLink ?constellationLink . }
+            OPTIONAL { ?book pbs:dateEdition ?dateEdition . }
+            OPTIONAL { ?book pbs:isCoupDeCoeur ?isCoupDeCoeur . }
+            OPTIONAL {
+              ?review a pbs:Review ;
+                      ns1:author ?reviewAuthor ;
+                      ns1:review ?reviewContent ;
+                      ns1:url ?reviewURL .
+              ?book pbs:review ?review .
+            }
      
-       BIND (COALESCE(?name, ?parentName, "") AS ?finalAwardName)
-       BIND (IF(BOUND(?genreName), ?genreName, IF(BOUND(?parentGenreName), ?parentGenreName, "")) AS ?finalGenreName)
-       BIND (IF(BOUND(?childAgeRange), ?childAgeRange, IF(BOUND(?parentAgeRange), ?parentAgeRange, "")) AS ?ageRange)
-     
-       ${filter}
-     }
-          `;
+          ${filter}
+          }
+          GROUP BY ?book
+               `;
+
+               export const SPARQL_QUERY_BNF = (filter: any) => `
+               PREFIX ns1: <http://schema.org/>
+               PREFIX pbs: <http://www.example.org/pbs#>
+               PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+               
+               SELECT 
+                 ?book 
+                 (GROUP_CONCAT(DISTINCT ?author; separator=", ") AS ?author) 
+                 (SAMPLE(?bookFormat) AS ?bookFormat)
+                 (SAMPLE(?datePublished) AS ?datePublished)
+                 (SAMPLE(?description) AS ?description)
+                 (SAMPLE(?genre) AS ?genre)
+                 (SAMPLE(?language) AS ?inLanguage)
+                 (SAMPLE(?isbn) AS ?isbn)
+                 (SAMPLE(?name) AS ?title)
+                 (SAMPLE(?publisherName) AS ?publisherName)
+                 (GROUP_CONCAT(DISTINCT ?ageRange; separator=", ") AS ?ageRange) 
+                 (SAMPLE(?bnfLink) AS ?bnfLink)
+                 (SAMPLE(?ean) AS ?ean)
+                 (SAMPLE(?reviewDatePublished) AS ?reviewDatePublished)
+                 (SAMPLE(?reviewContent) AS ?reviewContent)
+                 (SAMPLE(?reviewURL) AS ?reviewURL)
+                 (SAMPLE(?avis) AS ?avis)
+                 (SAMPLE(?source) AS ?source)
+               WHERE {
+                 ?book rdf:type ns1:Book ;
+                       pbs:infoSource pbs:BNF .
+                 
+                 OPTIONAL { ?book ns1:author ?author . }
+                 OPTIONAL { ?book ns1:bookFormat ?bookFormat . }
+                 OPTIONAL { ?book ns1:datePublished ?datePublished . }
+                 OPTIONAL { ?book ns1:description ?description . }
+                 OPTIONAL { ?book ns1:genre ?genre . }
+                 OPTIONAL { ?book ns1:inLanguage ?language . }
+                 OPTIONAL { ?book ns1:isbn ?isbn . }
+                 OPTIONAL { ?book ns1:name ?name . }
+                 OPTIONAL { ?book ns1:publisher ?publisher . ?publisher ns1:name ?publisherName . }
+                 OPTIONAL { ?book pbs:ageRange ?ageRange . }
+                 OPTIONAL { ?book pbs:bnfLink ?bnfLink . }
+                 OPTIONAL { ?book pbs:ean ?ean . }
+                 OPTIONAL {
+                   ?review a pbs:Review ;
+                             ns1:datePublished ?reviewDatePublished ;
+                             ns1:review ?reviewContent ;
+                             ns1:url ?reviewURL ;
+                             pbs:avis ?avis ;
+                             pbs:source ?source .
+                 }
+               ${filter}
+               }
+               GROUP BY ?book
+                    `;
+
+                    export const SPARQL_QUERY_LURELU = `
+                    PREFIX ns1: <http://schema.org/>
+                    PREFIX pbs: <http://www.example.org/pbs#>
+                    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+                    
+                    SELECT 
+                      (SAMPLE(?name) AS ?title) 
+                      (GROUP_CONCAT(DISTINCT ?bookAuthor; separator=", ") AS ?author) 
+                      (GROUP_CONCAT(DISTINCT ?illustrator; separator=", ") AS ?illustrator)
+                      (SAMPLE(?datePublished) AS ?datePublished) 
+                      (SAMPLE(?isbn) AS ?isbn) 
+                      (SAMPLE(?language) AS ?inLanguage)
+                      (SAMPLE(?publisherName) AS ?publisherName) 
+                      (SAMPLE(?eruditLink) AS ?eruditLink)
+                      (SAMPLE(?lureluLink) AS ?lureluLink)
+                      (GROUP_CONCAT(DISTINCT ?reviewAuthor; separator=", ") AS ?reviewAuthor)
+                      (GROUP_CONCAT(DISTINCT ?reviewContent; separator=" || ") AS ?reviewContent)
+                    WHERE {
+                      ?book rdf:type ns1:Book ;
+                            pbs:infoSource pbs:Lurelu .
+                      
+                      OPTIONAL { ?book ns1:author ?bookAuthor . }
+                      OPTIONAL { ?book ns1:illustrator ?illustrator . }
+                      OPTIONAL { ?book ns1:datePublished ?datePublished . }
+                      OPTIONAL { ?book ns1:isbn ?isbn . }
+                      OPTIONAL { ?book ns1:inLanguage ?language . }
+                      OPTIONAL { ?book ns1:name ?name . }
+                      OPTIONAL { ?book ns1:publisher ?publisher . ?publisher ns1:name ?publisherName . }
+                      OPTIONAL { ?book pbs:eruditLink ?eruditLink . }
+                      OPTIONAL { ?book pbs:lureluLink ?lureluLink . }
+                      OPTIONAL { 
+                        ?book pbs:review ?review .
+                        ?review a pbs:Review ;
+                                ns1:author ?reviewAuthor ;
+                                ns1:review ?reviewContent .
+                      }
+               
+                    }
+                    GROUP BY ?book
+                         `;
+    
      
           export const SPARQL_WIKIDATA = (authorName: string) => `
           SELECT 
