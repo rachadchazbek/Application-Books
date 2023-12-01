@@ -104,6 +104,50 @@
       <button (click)="onSelectBookAppreciation('highlyAppreciated')">Livre très appréciés</button>
       <button (click)="onSelectBookAppreciation('notHighlyAppreciated')">Livre pas très appréciés</button>
     </div>
+
+    <div class="education-levels">
+      <table>
+          <tr>
+              <th colspan="2">Préscolaire</th>
+              <th colspan="6">Primaire</th>
+              <th colspan="5">Secondaire</th>
+          </tr>
+          <tr>
+              <!-- Preschool cycles -->
+              <td colspan="2"> </td>
+              
+              <!-- Primary cycles -->
+              <td colspan="2">1<sup>er</sup> cycle</td>
+              <td colspan="2">2<sup>e</sup> cycle</td>
+              <td colspan="2">3<sup>e</sup> cycle</td>
+              
+              <!-- Secondary cycles -->
+              <td colspan="2">1<sup>er</sup> cycle</td>
+              <td colspan="3">2<sup>e</sup> cycle</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" id="preschool-4" name="preschool-4" (change)="handleCheckboxChange(4)"><label for="preschool-4">4 ans</label></td>
+            <td><input type="checkbox" id="preschool-5" name="preschool-5" (change)="handleCheckboxChange(5)"><label for="preschool-5">5 ans</label></td>
+            
+            <!-- Primary years -->
+            <td><input type="checkbox" id="primary-1" name="primary-1" (change)="handleCheckboxChange(6)"><label for="primary-1">1<sup>re</sup> ---   6 ans</label></td>
+            <td><input type="checkbox" id="primary-2" name="primary-2" (change)="handleCheckboxChange(7)"><label for="primary-2">2<sup>e</sup> ---   7 ans</label></td>
+            <td><input type="checkbox" id="primary-3" name="primary-3" (change)="handleCheckboxChange(8)"><label for="primary-3">3<sup>e</sup> ---   8 ans</label></td>
+            <td><input type="checkbox" id="primary-4" name="primary-4" (change)="handleCheckboxChange(9)"><label for="primary-4">4<sup>e</sup> ---   9 ans</label></td>
+            <td><input type="checkbox" id="primary-5" name="primary-5" (change)="handleCheckboxChange(10)"><label for="primary-5">5<sup>e</sup> --- 10 ans</label></td>
+            <td><input type="checkbox" id="primary-6" name="primary-6" (change)="handleCheckboxChange(11)"><label for="primary-6">6<sup>e</sup> --- 11 ans</label></td>
+            
+            <!-- Secondary years -->
+            <td><input type="checkbox" id="secondary-1" name="secondary-1" (change)="handleCheckboxChange(12)"><label for="secondary-1">1<sup>re</sup> --- 12 ans</label></td>
+            <td><input type="checkbox" id="secondary-2" name="secondary-2" (change)="handleCheckboxChange(13)"><label for="secondary-2">2<sup>e</sup> --- 13 ans</label></td>
+            <td><input type="checkbox" id="secondary-3" name="secondary-3" (change)="handleCheckboxChange(14)"><label for="secondary-3">3<sup>e</sup> --- 14 ans</label></td>
+            <td><input type="checkbox" id="secondary-4" name="secondary-4" (change)="handleCheckboxChange(15)"><label for="secondary-4">4<sup>e</sup> --- 15 ans</label></td>
+            <td><input type="checkbox" id="secondary-5" name="secondary-5" (change)="handleCheckboxChange(16)"><label for="secondary-5">5<sup>e</sup> --- 16 ans</label></td>
+          </tr>
+      </table>
+  </div>  
+  
+  
 </div>
 <div class="book-list">
   <div *ngFor="let book of books" class="book-card">
@@ -119,7 +163,7 @@
     <p *ngIf="book.publisher" (click)="navigateToPublisher(book.publisher)" class="publisher-info">
       <i class="fas fa-building"></i> {{ book.publisher }}
     </p>    
-    <p>
+    <p *ngIf="book.inLanguage">
       <i class="fas fa-globe"></i> {{ book.inLanguage }}
     </p>
     <p *ngIf="book.illustrator && book.illustrator.length > 0">
@@ -144,6 +188,21 @@
         <strong>Age:</strong> {{ award.ageRange.join(', ') }}
       </p>
     </div>
+    <div *ngIf="book.reviews && book.reviews.length > 0" class="reviews-section">
+      <h3>Critique</h3>
+      <ul>
+        <li *ngFor="let review of book.reviews">
+          <p *ngIf="review.reviewContent" class="review-content">{{ review.reviewContent }}</p>
+          <p *ngIf="review.reviewAuthor" class="review-author">Par {{ review.reviewAuthor }}</p>
+          <p *ngIf="review.reviewDatePublished" class="review-date">Publié le: {{ review.reviewDatePublished | date: 'mediumDate' }}</p>
+          <p *ngIf="review.reviewRating" class="review-rating">Note: {{ review.reviewRating }}</p>
+          <p *ngIf="review.averageReview" class="review-average">Note moyenne: {{ review.averageReview }}</p>
+          <p *ngIf="review.thumbsUp" class="review-thumbs-up">Pouces levés: {{ review.thumbsUp }}</p>
+          <p *ngIf="review.avis" class="review-avis">Avis: {{ review.avis }}</p>
+          <p *ngIf="review.source" class="review-source">Source: {{ review.source }}</p>
+          <a *ngIf="review.reviewURL" href="{{ review.reviewURL }}" target="_blank" class="review-link">Lire l'avis complet</a>
+        </li>        
+      </ul>
+    </div>
   </div>
-</div>
 </div>

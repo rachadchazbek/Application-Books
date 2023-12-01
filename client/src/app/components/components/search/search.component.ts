@@ -151,6 +151,10 @@ export class SearchComponent implements OnInit {
     this.filteredTitles = [];
   }
 
+  handleCheckboxChange(age: number) {
+    this.socketService.ageFilter(age);
+  }
+
   onBlurTitle() { setTimeout(() => { this.isBlurredTitle = true; }, 100); } 
   onBlurAward() { setTimeout(() => { this.isBlurredAward = true; }, 100); } 
   onBlurAuthor() { setTimeout(() => { this.isBlurredAuthor = true; }, 100); }

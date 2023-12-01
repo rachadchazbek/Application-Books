@@ -56,41 +56,47 @@ WHERE {
      `;
      export const SPARQL_BABELIO = (filter: any) => `
      PREFIX ns1: <http://schema.org/>
-     PREFIX pbs: <http://www.example.org/pbs#>
-     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-     
-     SELECT ?book (SAMPLE(?title) AS ?title) (SAMPLE(?author) AS ?author) (SAMPLE(?publisherName) AS ?publisherName) 
-            (SAMPLE(?inLanguage) AS ?inLanguage) (SAMPLE(?illustrator) AS ?illustrator) (SAMPLE(?countryOfOrigin) AS ?countryOfOrigin) 
-            (GROUP_CONCAT(DISTINCT ?citation; separator=", ") AS ?citation) (GROUP_CONCAT(DISTINCT ?pressReview; separator=", ") AS ?pressReview) 
-            (GROUP_CONCAT(DISTINCT ?review; separator=", ") AS ?review) (SAMPLE(?datePublished) AS ?datePublished) 
-            (GROUP_CONCAT(DISTINCT ?genre; separator=", ") AS ?genre) (SAMPLE(?ean) AS ?ean) (SAMPLE(?averageReview) AS ?averageReview)
-            (GROUP_CONCAT(DISTINCT ?keywords; separator=", ") AS ?keywords) (SAMPLE(?url) AS ?url) 
-            (GROUP_CONCAT(DISTINCT ?distribution; separator=", ") AS ?distribution)
-     WHERE {
-       ?book rdf:type ns1:Book ;
-             pbs:infoSource pbs:Babelio .
-       OPTIONAL { ?book ns1:name ?title . }
-       OPTIONAL { ?book ns1:author ?author . }
-       OPTIONAL { ?book ns1:illustrator ?illustrator . }
-       OPTIONAL { ?book ns1:countryOfOrigin ?countryOfOrigin . }
-       OPTIONAL { 
-         ?book ns1:publisher ?publisher .
-         ?publisher ns1:name ?publisherName . 
-       }
-       OPTIONAL { ?book pbs:averageBabelioReview ?averageReview . } 
-       OPTIONAL { ?book ns1:inLanguage ?inLanguage . }
-       OPTIONAL { ?book ns1:datePublished ?datePublished . }
-       OPTIONAL { ?book ns1:genre ?genre . }
-       OPTIONAL { ?book pbs:ean ?ean . }
-       OPTIONAL { ?book ns1:keywords ?keywords . }
-       OPTIONAL { ?book ns1:url ?url . }
-       OPTIONAL {
-         ?book pbs:reviewDistribution ?distribution .
-         OPTIONAL { ?book pbs:citation ?citation . }
-         OPTIONAL { ?book pbs:pressReview ?pressReview . }
-         OPTIONAL { ?book pbs:review ?review . }
-       }
-          
+PREFIX pbs: <http://www.example.org/pbs#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?book (SAMPLE(?title) AS ?title) (SAMPLE(?author) AS ?author) (SAMPLE(?publisherName) AS ?publisherName) 
+       (SAMPLE(?inLanguage) AS ?inLanguage) (SAMPLE(?illustrator) AS ?illustrator) (SAMPLE(?countryOfOrigin) AS ?countryOfOrigin) 
+       (GROUP_CONCAT(DISTINCT ?citation; separator=", ") AS ?citation) (GROUP_CONCAT(DISTINCT ?pressReview; separator=", ") AS ?pressReview) 
+       (GROUP_CONCAT(DISTINCT ?review; separator=", ") AS ?review) (SAMPLE(?datePublished) AS ?datePublished) 
+       (GROUP_CONCAT(DISTINCT ?genre; separator=", ") AS ?genre) (SAMPLE(?ean) AS ?ean) (SAMPLE(?averageReview) AS ?averageReview)
+       (GROUP_CONCAT(DISTINCT ?keywords; separator=", ") AS ?keywords) (SAMPLE(?url) AS ?url) 
+       (GROUP_CONCAT(DISTINCT ?distribution; separator=", ") AS ?distribution)
+       (GROUP_CONCAT(DISTINCT ?reviewAuthor; separator="@ ") AS ?reviewAuthor)
+       (GROUP_CONCAT(DISTINCT ?reviewContent; separator="@ ") AS ?reviewContent)
+       (GROUP_CONCAT(DISTINCT ?reviewDatePublished; separator="@ ") AS ?reviewDatePublished)
+       (GROUP_CONCAT(DISTINCT ?reviewRating; separator="@ ") AS ?reviewRating)
+       (GROUP_CONCAT(DISTINCT ?thumbsUp; separator="@ ") AS ?thumbsUp)
+WHERE {
+  ?book rdf:type ns1:Book ;
+        pbs:infoSource pbs:Babelio .
+  OPTIONAL { ?book ns1:name ?title . }
+  OPTIONAL { ?book ns1:author ?author . }
+  OPTIONAL { ?book ns1:illustrator ?illustrator . }
+  OPTIONAL { ?book ns1:countryOfOrigin ?countryOfOrigin . }
+  OPTIONAL { 
+    ?book ns1:publisher ?publisher .
+    ?publisher ns1:name ?publisherName . 
+  }
+  OPTIONAL { ?book ns1:inLanguage ?inLanguage . }
+  OPTIONAL { ?book ns1:datePublished ?datePublished . }
+  OPTIONAL { ?book ns1:genre ?genre . }
+  OPTIONAL { ?book pbs:averageBabelioReview ?averageReview . } 
+  OPTIONAL { ?book pbs:ean ?ean . }
+  OPTIONAL { ?book ns1:keywords ?keywords . }
+  OPTIONAL { ?book ns1:url ?url . }
+  OPTIONAL { 
+    ?book pbs:review ?review .
+    OPTIONAL { ?review ns1:author ?reviewAuthor . }
+    OPTIONAL { ?review ns1:review ?reviewContent . }
+    OPTIONAL { ?review ns1:datePublished ?reviewDatePublished . }
+    OPTIONAL { ?review pbs:reviewRating ?reviewRating . }
+    OPTIONAL { ?review pbs:thumbsUp ?thumbsUp . }
+        }
      ${filter}
     }
     GROUP BY ?book
@@ -133,13 +139,12 @@ WHERE {
             OPTIONAL { ?book pbs:dateEdition ?dateEdition . }
             OPTIONAL { ?book pbs:isCoupDeCoeur ?isCoupDeCoeur . }
             OPTIONAL {
-              ?review a pbs:Review ;
-                      ns1:author ?reviewAuthor ;
-                      ns1:review ?reviewContent ;
-                      ns1:url ?reviewURL .
+              ?review a pbs:Review .
+              OPTIONAL { ?review ns1:author ?reviewAuthor . }
+              OPTIONAL { ?review ns1:review ?reviewContent . }
+              OPTIONAL { ?review ns1:url ?reviewURL . }
               ?book pbs:review ?review .
             }
-     
           ${filter}
           }
           GROUP BY ?book
@@ -169,6 +174,7 @@ WHERE {
                  (SAMPLE(?reviewURL) AS ?reviewURL)
                  (SAMPLE(?avis) AS ?avis)
                  (SAMPLE(?source) AS ?source)
+                 (SAMPLE(?reviewAuthor) AS ?reviewAuthor)
                WHERE {
                  ?book rdf:type ns1:Book ;
                        pbs:infoSource pbs:BNF .
@@ -186,12 +192,13 @@ WHERE {
                  OPTIONAL { ?book pbs:bnfLink ?bnfLink . }
                  OPTIONAL { ?book pbs:ean ?ean . }
                  OPTIONAL {
-                   ?review a pbs:Review ;
-                             ns1:datePublished ?reviewDatePublished ;
-                             ns1:review ?reviewContent ;
-                             ns1:url ?reviewURL ;
-                             pbs:avis ?avis ;
-                             pbs:source ?source .
+                  ?review a pbs:Review .
+                  OPTIONAL { ?review ns1:datePublished ?reviewDatePublished . }
+                  OPTIONAL { ?review ns1:review ?reviewContent . }
+                  OPTIONAL { ?review ns1:url ?reviewURL . }
+                  OPTIONAL { ?review pbs:avis ?avis . }
+                  OPTIONAL { ?review pbs:source ?source . }
+                  OPTIONAL { ?review pbs:author ?reviewAuthor . }
                  }
                ${filter}
                }
@@ -228,13 +235,12 @@ WHERE {
                       OPTIONAL { ?book ns1:publisher ?publisher . ?publisher ns1:name ?publisherName . }
                       OPTIONAL { ?book pbs:eruditLink ?eruditLink . }
                       OPTIONAL { ?book pbs:lureluLink ?lureluLink . }
-                      OPTIONAL { 
+                      OPTIONAL {
                         ?book pbs:review ?review .
-                        ?review a pbs:Review ;
-                                ns1:author ?reviewAuthor ;
-                                ns1:review ?reviewContent .
+                        ?review a pbs:Review .
+                        OPTIONAL { ?review ns1:author ?reviewAuthor . }
+                        OPTIONAL { ?review ns1:review ?reviewContent . }
                       }
-               
                     }
                     GROUP BY ?book
                          `;
