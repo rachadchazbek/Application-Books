@@ -6,6 +6,7 @@ import { SPARQL_BABELIO, SPARQL_QUERY, SPARQL_QUERY_BNF, SPARQL_QUERY_CONSTELLAT
 import { BehaviorSubject } from 'rxjs';
 import axios from 'axios';
 import cheerio, { load } from 'cheerio';
+import { AnonymousSubject } from 'rxjs/internal/Subject';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class SocketSparqlService {
         filterName: null,
         filterGenre: null,
         filterAuthor: null,
-        filterAge: null,
+        filterAge: [] as string[],
         filterAward: null,
         filterLanguage: null,
         filterSource: '',
@@ -73,6 +74,13 @@ export class SocketSparqlService {
         this.activeFilters.filterCategory = category ? category : null;
         this.updateBook();
       }
+    
+    ageFilter(age: any) {
+        this.bookMap = {}
+        let ageString = age.toString(); 
+        this.activeFilters.filterAge.push(ageString);
+        this.updateBook();
+    }
     
       filterBooksByAppreciation(appreciation: any) {
         this.bookMap = {}
@@ -129,21 +137,6 @@ export class SocketSparqlService {
         this.activeFilters.filterLanguage = filterLanguage !== 'No Language Selected' ? filterLanguage : null;
         this.updateFilters();
     }   
-
-    ageFilter(age: number) {
-        let ageString = age.toString(); 
-        let query_bnf = SPARQL_QUERY_BNF(`
-    FILTER(STR(?ageRange) = "${ageString}" || STR(?ageRange) = "${ageString}," || STR(?ageRange) = ",${ageString}" || CONTAINS(STR(?ageRange), ",${ageString},")) 
-        `);
-    
-        let query_constellations = SPARQL_QUERY_CONSTELLATIONS(`
-    FILTER(STR(?ageRange) = "${ageString}" || STR(?ageRange) = "${ageString}," || STR(?ageRange) = ",${ageString}" || CONTAINS(STR(?ageRange), ",${ageString},")) 
-        `);    
-
-        // Send each query separately through the socket service
-        this.socketService.send('getSparqlData', query_bnf);
-        this.socketService.send('getSparqlData', query_constellations);
-    }
     
     getAuthorInfo(filterAuthor: any) {
         const sparqlQuery =  SPARQL_WIKIDATA(filterAuthor);
@@ -215,6 +208,7 @@ export class SocketSparqlService {
       };
       
       updateBook() {
+        console.log(this.activeFilters)
         let queries = [];
         let baseQuery;
     switch (this.activeFilters.filterSource) {
@@ -236,7 +230,6 @@ export class SocketSparqlService {
             // Handle default case or error
             break;
       }
-      let query;
       switch (this.activeFilters.filterAppreciation) {
         case 'highlyAppreciated':
             let query_lurelu = SPARQL_QUERY_LURELU;
@@ -254,8 +247,24 @@ export class SocketSparqlService {
             baseQuery = SPARQL_BABELIO(`FILTER(?averageReview <= 3)`);
             break;
       }
+
+      if (this.activeFilters.filterAge) {
+        for (const age of this.activeFilters.filterAge) {
+            let query_bnf = SPARQL_QUERY_BNF(`
+      FILTER(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},")) 
+          `);
+      
+          let query_constellations = SPARQL_QUERY_CONSTELLATIONS(`
+      FILTER(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},")) 
+          `);    
+  
+          // Send each query separately through the socket service
+          this.socketService.send('getSparqlData', query_bnf);
+          this.socketService.send('getSparqlData', query_constellations);
       
       this.socketService.send('getSparqlData', baseQuery);
+      }
+    }
     }
 
       updateFilters() {
