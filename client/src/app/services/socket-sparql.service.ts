@@ -133,11 +133,11 @@ export class SocketSparqlService {
     ageFilter(age: number) {
         let ageString = age.toString(); 
         let query_bnf = SPARQL_QUERY_BNF(`
-            FILTER(CONTAINS(?ageRange, "${ageString}"))
+    FILTER(STR(?ageRange) = "${ageString}" || STR(?ageRange) = "${ageString}," || STR(?ageRange) = ",${ageString}" || CONTAINS(STR(?ageRange), ",${ageString},")) 
         `);
     
         let query_constellations = SPARQL_QUERY_CONSTELLATIONS(`
-            FILTER(CONTAINS(?ageRange, "${ageString}"))
+    FILTER(STR(?ageRange) = "${ageString}" || STR(?ageRange) = "${ageString}," || STR(?ageRange) = ",${ageString}" || CONTAINS(STR(?ageRange), ",${ageString},")) 
         `);    
 
         // Send each query separately through the socket service
