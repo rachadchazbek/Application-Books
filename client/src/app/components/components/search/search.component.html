@@ -12,7 +12,8 @@
              class="search-bar"
              (blur)="onBlurTitle()"
              (focus)="isBlurredTitle = false"
-             (keydown.enter)="selectTitle(myControlTitles.value)">
+             (keydown.enter)="selectTitle(myControlTitles.value)"
+             (input)="socketService.onInput('title', $event.target.value)">
       <div class="autocomplete-items"
            *ngIf="myControlTitles.value && filteredTitles.length && !isBlurredTitle">
         <div *ngFor="let title of filteredTitles"
@@ -30,7 +31,8 @@
              class="search-bar"
              (blur)="onBlurAward()"
              (focus)="isBlurredAward = false"
-             (keydown.enter)="selectAward(myControlAwards.value)">
+             (keydown.enter)="selectAward(myControlAwards.value)"
+             (input)="socketService.onInput('award', $event.target.value)">
       <div class="autocomplete-items"
            *ngIf="myControlAwards.value && filteredAwards.length && !isBlurredAward">
         <div *ngFor="let award of filteredAwards"
@@ -48,7 +50,8 @@
              class="search-bar"
              (blur)="onBlurAuthor()"
              (focus)="isBlurredAuthor = false"
-             (keydown.enter)="selectAuthor(myControl.value)">
+             (keydown.enter)="selectAuthor(myControl.value)"
+             (input)="socketService.onInput('author', $event.target.value)">
       <div class="autocomplete-items"
            *ngIf="myControl.value && filteredAuthors.length && !isBlurredAuthor">
         <div *ngFor="let author of filteredAuthors"
@@ -87,22 +90,27 @@
     <div class="search-review">
       <!-- Source Selection Dropdown -->
       <select [(ngModel)]="selectedSource" (change)="onSelectSource(selectedSource)">
-        <option value="">Select Source</option>
+        <option value="">Selectionner la source</option>
         <option value="Babelio">Babelio</option>
         <option value="Constellation">Constellation</option>
         <option value="BNF">BNF</option>
         <option value="Lurelu">Lurelu</option>
+        <option value="BTLF">BTLF</option>
       </select>
     
       <!-- Category Selection Dropdown (shown only if a source is selected) -->
-      <select *ngIf="selectedSource" [(ngModel)]="selectedCategory" (change)="onSelectCategory(selectedCategory)">
-        <option value="">Select Category</option>
-        <option *ngFor="let category of sourceCategories[selectedSource]" [value]="category">{{ category }}</option>
-      </select>
+      <select *ngIf="selectedSource && selectedSource !== 'BTLF'" 
+      [(ngModel)]="selectedCategory" 
+      (change)="onSelectCategory(selectedCategory)">
+  <option value="">Select Category</option>
+  <option *ngFor="let category of sourceCategories[selectedSource]" 
+          [value]="category">{{ category }}</option>
+</select>
+
     
       <!-- Book Appreciation Selection -->
-      <button (click)="onSelectBookAppreciation('highlyAppreciated')">Livre très appréciés</button>
-      <button (click)="onSelectBookAppreciation('notHighlyAppreciated')">Livre pas très appréciés</button>
+      <button (click)="onSelectBookAppreciation('highlyAppreciated')">Livre appréciés</button>
+      <button (click)="onSelectBookAppreciation('notHighlyAppreciated')">Livre pas appréciés</button>
     </div>
 
     <div class="education-levels">
@@ -126,27 +134,31 @@
               <td colspan="3">2<sup>e</sup> cycle</td>
           </tr>
           <tr>
-            <td><input type="checkbox" id="preschool-4" name="preschool-4" (change)="handleCheckboxChange(4)"><label for="preschool-4">4 ans</label></td>
-            <td><input type="checkbox" id="preschool-5" name="preschool-5" (change)="handleCheckboxChange(5)"><label for="preschool-5">5 ans</label></td>
+            <td><input type="checkbox" id="preschool-4" name="preschool-4" (change)="handleCheckboxChange($event, 4)"><label for="preschool-4">4 ans</label></td>
+            <td><input type="checkbox" id="preschool-5" name="preschool-5" (change)="handleCheckboxChange($event, 5)"><label for="preschool-5">5 ans</label></td>
             
             <!-- Primary years -->
-            <td><input type="checkbox" id="primary-1" name="primary-1" (change)="handleCheckboxChange(6)"><label for="primary-1">1<sup>re</sup> ---   6 ans</label></td>
-            <td><input type="checkbox" id="primary-2" name="primary-2" (change)="handleCheckboxChange(7)"><label for="primary-2">2<sup>e</sup> ---   7 ans</label></td>
-            <td><input type="checkbox" id="primary-3" name="primary-3" (change)="handleCheckboxChange(8)"><label for="primary-3">3<sup>e</sup> ---   8 ans</label></td>
-            <td><input type="checkbox" id="primary-4" name="primary-4" (change)="handleCheckboxChange(9)"><label for="primary-4">4<sup>e</sup> ---   9 ans</label></td>
-            <td><input type="checkbox" id="primary-5" name="primary-5" (change)="handleCheckboxChange(10)"><label for="primary-5">5<sup>e</sup> --- 10 ans</label></td>
-            <td><input type="checkbox" id="primary-6" name="primary-6" (change)="handleCheckboxChange(11)"><label for="primary-6">6<sup>e</sup> --- 11 ans</label></td>
+            <td><input type="checkbox" id="primary-1" name="primary-1" (change)="handleCheckboxChange($event, 6)"><label for="primary-1">1<sup>re</sup> ---   6 ans</label></td>
+            <td><input type="checkbox" id="primary-2" name="primary-2" (change)="handleCheckboxChange($event, 7)"><label for="primary-2">2<sup>e</sup> ---   7 ans</label></td>
+            <td><input type="checkbox" id="primary-3" name="primary-3" (change)="handleCheckboxChange($event, 8)"><label for="primary-3">3<sup>e</sup> ---   8 ans</label></td>
+            <td><input type="checkbox" id="primary-4" name="primary-4" (change)="handleCheckboxChange($event, 9)"><label for="primary-4">4<sup>e</sup> ---   9 ans</label></td>
+            <td><input type="checkbox" id="primary-5" name="primary-5" (change)="handleCheckboxChange($event, 10)"><label for="primary-5">5<sup>e</sup> --- 10 ans</label></td>
+            <td><input type="checkbox" id="primary-6" name="primary-6" (change)="handleCheckboxChange($event, 11)"><label for="primary-6">6<sup>e</sup> --- 11 ans</label></td>
             
             <!-- Secondary years -->
-            <td><input type="checkbox" id="secondary-1" name="secondary-1" (change)="handleCheckboxChange(12)"><label for="secondary-1">1<sup>re</sup> --- 12 ans</label></td>
-            <td><input type="checkbox" id="secondary-2" name="secondary-2" (change)="handleCheckboxChange(13)"><label for="secondary-2">2<sup>e</sup> --- 13 ans</label></td>
-            <td><input type="checkbox" id="secondary-3" name="secondary-3" (change)="handleCheckboxChange(14)"><label for="secondary-3">3<sup>e</sup> --- 14 ans</label></td>
-            <td><input type="checkbox" id="secondary-4" name="secondary-4" (change)="handleCheckboxChange(15)"><label for="secondary-4">4<sup>e</sup> --- 15 ans</label></td>
-            <td><input type="checkbox" id="secondary-5" name="secondary-5" (change)="handleCheckboxChange(16)"><label for="secondary-5">5<sup>e</sup> --- 16 ans</label></td>
+            <td><input type="checkbox" id="secondary-1" name="secondary-1" (change)="handleCheckboxChange($event, 12)"><label for="secondary-1">1<sup>re</sup> --- 12 ans</label></td>
+            <td><input type="checkbox" id="secondary-2" name="secondary-2" (change)="handleCheckboxChange($event, 13)"><label for="secondary-2">2<sup>e</sup> --- 13 ans</label></td>
+            <td><input type="checkbox" id="secondary-3" name="secondary-3" (change)="handleCheckboxChange($event, 14)"><label for="secondary-3">3<sup>e</sup> --- 14 ans</label></td>
+            <td><input type="checkbox" id="secondary-4" name="secondary-4" (change)="handleCheckboxChange($event, 15)"><label for="secondary-4">4<sup>e</sup> --- 15 ans</label></td>
+            <td><input type="checkbox" id="secondary-5" name="secondary-5" (change)="handleCheckboxChange($event, 16)"><label for="secondary-5">5<sup>e</sup> --- 16 ans</label></td>
           </tr>
       </table>
   </div>  
-  
+  <div class="theme-search">
+    <!-- Theme Search Input -->
+    <input type="text" [(ngModel)]="searchTheme" placeholder="Rechercher par thème" class="search-input">
+    <button (click)="searchByTheme()" class="search-button">Rechercher</button>
+  </div>  
   
 </div>
 <div class="book-list">
@@ -162,10 +174,19 @@
     </p>
     <p *ngIf="book.publisher" (click)="navigateToPublisher(book.publisher)" class="publisher-info">
       <i class="fas fa-building"></i> {{ book.publisher }}
-    </p>    
-    <p *ngIf="book.inLanguage">
-      <i class="fas fa-globe"></i> {{ book.inLanguage }}
     </p>
+    <p *ngIf="book.datePublished">
+      <i class="fas fa-calendar-alt"></i> 
+      {{book.datePublished}}
+    </p>    
+    <p *ngIf="book.isbn">
+      <i class="fas fa-barcode"></i>
+      {{ book.isbn }}
+    </p>
+    <p *ngIf="book.inLanguage">
+      <i class="fas fa-globe"></i> 
+      {{ book.inLanguage === 'fre' ? 'Français' : (book.inLanguage === 'eng' ? 'Anglais' : book.inLanguage) }}
+    </p>    
     <p *ngIf="book.illustrator && book.illustrator.length > 0">
       <i class="fas fa-paint-brush"></i>
       <ng-container *ngFor="let illustrator of book.illustrator; let i = index">
@@ -177,6 +198,11 @@
     <p *ngIf="book.countryOfOrigin">
       <i class="fas fa-flag"></i> {{ book.countryOfOrigin }}
     </p>
+      <!-- Subject Thema Display -->
+      <p *ngIf="book.subjectThema">
+        <i class="fas fa-bookmark"></i>
+        {{ book.subjectThema }}
+      </p>
     <div class="award-section" *ngFor="let award of book.awards">
       <p class="award-name" (click)= "navigateToAward(award.name)">
         <i class="fas fa-trophy"></i> {{ award.name }} ({{ award.year }})
@@ -188,7 +214,7 @@
         <strong>Age:</strong> {{ award.ageRange.join(', ') }}
       </p>
     </div>
-    <div *ngIf="book.reviews && book.reviews.length > 0" class="reviews-section">
+    <div *ngIf="book.reviews?.length > 0 && book.reviews[0].reviewContent?.length > 0" class="reviews-section">
       <h3>Critique</h3>
       <ul>
         <li *ngFor="let review of book.reviews">

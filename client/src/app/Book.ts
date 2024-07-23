@@ -3,6 +3,9 @@ import { Award } from './Award';
 export interface Book {
   title: string;
   authors: string[];
+  datePublished: string;
+  isbn: string;
+  subjectThema: string;
   awards: Award[];
   inLanguage: string;
   publisher?: string;

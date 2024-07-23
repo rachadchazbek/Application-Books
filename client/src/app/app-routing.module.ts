@@ -4,6 +4,7 @@ import { AuthorComponent } from './components/components/author/author.component
 import { SearchComponent } from './components/components/search/search.component';
 import { AwardComponent } from './components/components/award/award.component';
 import { BookComponent } from './components/components/book/book.component';
+import { HttpClientModule } from '@angular/common/http';
 
 // Import your components here
 
@@ -16,7 +17,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes), HttpClientModule],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

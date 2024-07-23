@@ -2,8 +2,8 @@ export const SPARQL_QUERY = (filter: any) => `
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX ns1: <http://schema.org/>
 PREFIX schema: <http://schema.org/>
-PREFIX mcc: <http://example.com/mcc#> 
-PREFIX pbs: <http://example.com/pbs#> 
+PREFIX mcc: <http://example.org/mcc#> 
+PREFIX pbs: <http://example.org/pbs#> 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
         
@@ -102,6 +102,71 @@ WHERE {
     GROUP BY ?book
          `;
 
+
+         export const SPARQL_BTLF = `
+         PREFIX schema: <http://schema.org/>
+         PREFIX pbs: <http://www.example.org/pbs#>
+         
+         SELECT ?book (SAMPLE(?title) AS ?title) 
+                (GROUP_CONCAT(DISTINCT ?author; separator=", ") AS ?author) 
+                (SAMPLE(?datePublished) AS ?datePublished) 
+                (SAMPLE(?isbn) AS ?isbn) 
+                (SAMPLE(?inLanguage) AS ?inLanguage) 
+                (GROUP_CONCAT(DISTINCT ?age; separator=", ") AS ?ageRange) 
+                (SAMPLE(?mainSubjectThema) AS ?mainSubjectThema) 
+                (GROUP_CONCAT(DISTINCT ?subjectThema; separator=", ") AS ?subjectThema)
+         WHERE {
+           ?book rdf:type schema:Book ;
+                 pbs:infoSource pbs:BTLF .
+           OPTIONAL { ?book schema:name ?title . }
+           OPTIONAL { ?book schema:isbn ?isbn . }
+           OPTIONAL { ?book schema:datePublished ?datePublished . }
+           OPTIONAL { ?book schema:inLanguage ?inLanguage . }
+           OPTIONAL { ?book pbs:age ?age . }
+           OPTIONAL { ?book pbs:authorString ?author . }
+           OPTIONAL { ?book pbs:mainSubjectThema ?mainSubjectThema . }
+           OPTIONAL { ?book pbs:subjectThema ?subjectThema . }
+         }
+         GROUP BY ?book
+         `;
+
+         export const SPARQL_BTLF_FILTER = (filter: string) => `
+         PREFIX schema: <http://schema.org/>
+         PREFIX pbs: <http://www.example.org/pbs#>
+         
+         SELECT ?book (SAMPLE(?title) AS ?title) 
+                (GROUP_CONCAT(DISTINCT ?author; separator=", ") AS ?author) 
+                (SAMPLE(?datePublished) AS ?datePublished) 
+                (SAMPLE(?isbn) AS ?isbn) 
+                (SAMPLE(?inLanguage) AS ?inLanguage) 
+                (SAMPLE(?authorURL) AS ?authorURL) 
+                (SAMPLE(?illustrator) AS ?illustrator) 
+                (SAMPLE(?publisherURL) AS ?publisherURL)
+                (GROUP_CONCAT(DISTINCT ?age; separator=", ") AS ?ageRange) 
+                (SAMPLE(?mainSubjectThema) AS ?mainSubjectThema) 
+                (GROUP_CONCAT(DISTINCT ?subjectThema; separator=", ") AS ?subjectThema)
+         WHERE {
+           ?book rdf:type schema:Book ;
+                 pbs:infoSource pbs:BTLF .
+           OPTIONAL { ?book schema:name ?title . }
+           OPTIONAL { ?book schema:isbn ?isbn . }
+           OPTIONAL { ?book schema:datePublished ?datePublished . }
+           OPTIONAL { ?book schema:inLanguage ?inLanguage . }
+           OPTIONAL { ?book schema:author ?authorURL . }
+           OPTIONAL { ?book schema:illustrator ?illustrator . }
+           OPTIONAL { ?book schema:publisher ?publisherURL . }
+           OPTIONAL { ?book pbs:age ?age . }
+           OPTIONAL { ?book pbs:authorString ?author . }
+           OPTIONAL { ?book pbs:mainSubjectThema ?mainSubjectThema . }
+           OPTIONAL { ?book pbs:subjectThema ?subjectThema . }
+           ${filter}  
+         }
+         GROUP BY ?book
+         `;
+
+         
+         
+
           export const SPARQL_QUERY_CONSTELLATIONS = (filter: any) => `
           PREFIX ns1: <http://schema.org/>
           PREFIX pbs: <http://www.example.org/pbs#>
@@ -151,59 +216,66 @@ WHERE {
                `;
 
                export const SPARQL_QUERY_BNF = (filter: any) => `
-               PREFIX ns1: <http://schema.org/>
-               PREFIX pbs: <http://www.example.org/pbs#>
-               PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-               
-               SELECT 
-                 ?book 
-                 (GROUP_CONCAT(DISTINCT ?author; separator=", ") AS ?author) 
-                 (SAMPLE(?bookFormat) AS ?bookFormat)
-                 (SAMPLE(?datePublished) AS ?datePublished)
-                 (SAMPLE(?description) AS ?description)
-                 (SAMPLE(?genre) AS ?genre)
-                 (SAMPLE(?language) AS ?inLanguage)
-                 (SAMPLE(?isbn) AS ?isbn)
-                 (SAMPLE(?name) AS ?title)
-                 (SAMPLE(?publisherName) AS ?publisherName)
-                 (GROUP_CONCAT(DISTINCT ?ageRange; separator=", ") AS ?ageRange) 
-                 (SAMPLE(?bnfLink) AS ?bnfLink)
-                 (SAMPLE(?ean) AS ?ean)
-                 (SAMPLE(?reviewDatePublished) AS ?reviewDatePublished)
-                 (SAMPLE(?reviewContent) AS ?reviewContent)
-                 (SAMPLE(?reviewURL) AS ?reviewURL)
-                 (SAMPLE(?avis) AS ?avis)
-                 (SAMPLE(?source) AS ?source)
-                 (SAMPLE(?reviewAuthor) AS ?reviewAuthor)
-               WHERE {
-                 ?book rdf:type ns1:Book ;
-                       pbs:infoSource pbs:BNF .
-                 
-                 OPTIONAL { ?book ns1:author ?author . }
-                 OPTIONAL { ?book ns1:bookFormat ?bookFormat . }
-                 OPTIONAL { ?book ns1:datePublished ?datePublished . }
-                 OPTIONAL { ?book ns1:description ?description . }
-                 OPTIONAL { ?book ns1:genre ?genre . }
-                 OPTIONAL { ?book ns1:inLanguage ?language . }
-                 OPTIONAL { ?book ns1:isbn ?isbn . }
-                 OPTIONAL { ?book ns1:name ?name . }
-                 OPTIONAL { ?book ns1:publisher ?publisher . ?publisher ns1:name ?publisherName . }
-                 OPTIONAL { ?book pbs:ageRange ?ageRange . }
-                 OPTIONAL { ?book pbs:bnfLink ?bnfLink . }
-                 OPTIONAL { ?book pbs:ean ?ean . }
-                 OPTIONAL {
-                  ?review a pbs:Review .
-                  OPTIONAL { ?review ns1:datePublished ?reviewDatePublished . }
-                  OPTIONAL { ?review ns1:review ?reviewContent . }
-                  OPTIONAL { ?review ns1:url ?reviewURL . }
-                  OPTIONAL { ?review pbs:avis ?avis . }
-                  OPTIONAL { ?review pbs:source ?source . }
-                  OPTIONAL { ?review pbs:author ?reviewAuthor . }
-                 }
+                PREFIX ns1: <http://schema.org/>
+                PREFIX pbs: <http://www.example.org/pbs#>
+                PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+                SELECT 
+                  ?book 
+                  (GROUP_CONCAT(DISTINCT ?author; separator=", ") AS ?author) 
+                  (SAMPLE(?bookFormat) AS ?bookFormat)
+                  (SAMPLE(?datePublished) AS ?datePublished)
+                  (SAMPLE(?description) AS ?description)
+                  (SAMPLE(?genre) AS ?genre)
+                  (SAMPLE(?language) AS ?inLanguage)
+                  (SAMPLE(?isbn) AS ?isbn)
+                  (SAMPLE(?name) AS ?title)
+                  (SAMPLE(?publisherName) AS ?publisherName)
+                  (GROUP_CONCAT(DISTINCT ?ageRange; separator=", ") AS ?ageRange) 
+                  (SAMPLE(?bnfLink) AS ?bnfLink)
+                  (SAMPLE(?ean) AS ?ean)
+                  (SAMPLE(?reviewDatePublished) AS ?reviewDatePublished)
+                  (SAMPLE(?reviewContent) AS ?reviewContent)
+                  (SAMPLE(?reviewURL) AS ?reviewURL)
+                  (SAMPLE(?avis) AS ?avis)
+                  (SAMPLE(?source) AS ?source)
+                  (SAMPLE(?reviewAuthor) AS ?reviewAuthor)
+                WHERE {
+                  ?book rdf:type ns1:Book;
+                        pbs:infoSource pbs:BNF.
+                        
+                  OPTIONAL { ?book ns1:author ?author. }
+                  OPTIONAL { ?book ns1:bookFormat ?bookFormat. }
+                  OPTIONAL { ?book ns1:datePublished ?datePublished. }
+                  OPTIONAL { ?book ns1:description ?description. }
+                  OPTIONAL { ?book ns1:genre ?genre. }
+                  OPTIONAL { ?book ns1:inLanguage ?language. }
+                  OPTIONAL { ?book ns1:isbn ?isbn. }
+                  OPTIONAL { ?book ns1:name ?name. }
+                  OPTIONAL {
+                    ?book ns1:publisher ?publisher.
+                    ?publisher ns1:name ?publisherName.
+                  }
+                  OPTIONAL { ?book pbs:ageRange ?ageRange. }
+                  OPTIONAL { ?book pbs:bnfLink ?bnfLink. }
+                  OPTIONAL { ?book pbs:ean ?ean. }
+                  OPTIONAL {
+                    ?book pbs:review ?review.
+                    ?review rdf:type pbs:Review.
+                    OPTIONAL { ?review ns1:author ?reviewAuthor. }
+                    OPTIONAL { ?review ns1:datePublished ?reviewDatePublished. }
+                    OPTIONAL { ?review ns1:review ?reviewContent. }
+                    OPTIONAL { ?review ns1:url ?reviewURL. }
+                    OPTIONAL { ?review pbs:avis ?avis. }
+                    OPTIONAL { ?review pbs:source ?source. }
+                  }
                ${filter}
                }
                GROUP BY ?book
                     `;
+
+                  
 
                     export const SPARQL_QUERY_LURELU = `
                     PREFIX ns1: <http://schema.org/>
@@ -245,6 +317,46 @@ WHERE {
                     GROUP BY ?book
                          `;
     
+                    export const SPARQL_QUERY_LURELU_FILTER = (filter: string) => `
+                    PREFIX ns1: <http://schema.org/>
+                    PREFIX pbs: <http://www.example.org/pbs#>
+                    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+                    
+                    SELECT 
+                      (SAMPLE(?name) AS ?title) 
+                      (GROUP_CONCAT(DISTINCT ?bookAuthor; separator=", ") AS ?author) 
+                      (GROUP_CONCAT(DISTINCT ?illustrator; separator=", ") AS ?illustrator)
+                      (SAMPLE(?datePublished) AS ?datePublished) 
+                      (SAMPLE(?isbn) AS ?isbn) 
+                      (SAMPLE(?language) AS ?inLanguage)
+                      (SAMPLE(?publisherName) AS ?publisherName) 
+                      (SAMPLE(?eruditLink) AS ?eruditLink)
+                      (SAMPLE(?lureluLink) AS ?lureluLink)
+                      (GROUP_CONCAT(DISTINCT ?reviewAuthor; separator=", ") AS ?reviewAuthor)
+                      (GROUP_CONCAT(DISTINCT ?reviewContent; separator=" || ") AS ?reviewContent)
+                    WHERE {
+                      ?book rdf:type ns1:Book ;
+                            pbs:infoSource pbs:Lurelu .
+                      
+                      OPTIONAL { ?book ns1:author ?bookAuthor . }
+                      OPTIONAL { ?book ns1:illustrator ?illustrator . }
+                      OPTIONAL { ?book ns1:datePublished ?datePublished . }
+                      OPTIONAL { ?book ns1:isbn ?isbn . }
+                      OPTIONAL { ?book ns1:inLanguage ?language . }
+                      OPTIONAL { ?book ns1:name ?name . }
+                      OPTIONAL { ?book ns1:publisher ?publisher . ?publisher ns1:name ?publisherName . }
+                      OPTIONAL { ?book pbs:eruditLink ?eruditLink . }
+                      OPTIONAL { ?book pbs:lureluLink ?lureluLink . }
+                      OPTIONAL {
+                        ?book pbs:review ?review .
+                        ?review a pbs:Review .
+                        OPTIONAL { ?review ns1:author ?reviewAuthor . }
+                        OPTIONAL { ?review ns1:review ?reviewContent . }
+                      }
+                      ${filter}
+                    }
+                    GROUP BY ?book
+                         `;
      
           export const SPARQL_WIKIDATA = (authorName: string) => `
           SELECT 
@@ -291,8 +403,8 @@ WHERE {
           PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
           PREFIX ns1: <http://schema.org/>
           PREFIX schema: <http://schema.org/>
-          PREFIX mcc: <http://example.com/mcc#> 
-          PREFIX pbs: <http://example.com/pbs#> 
+          PREFIX mcc: <http://example.org/mcc#> 
+          PREFIX pbs: <http://example.org/pbs#> 
           PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
           PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                   

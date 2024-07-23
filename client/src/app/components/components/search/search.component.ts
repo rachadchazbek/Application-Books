@@ -19,6 +19,7 @@ export class SearchComponent implements OnInit {
   filterAuthor: any = '';
   searchAward: any = '';
   searchText: any = '';
+  searchTheme: string = '';
 
   genres: string[] = GENRES;
   languages: string[] = LANGUAGES;
@@ -46,7 +47,7 @@ export class SearchComponent implements OnInit {
   // Define the categories for each source
   sourceCategories = {
     Babelio: ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles'],
-    Constellation: ['Coup de Coeur'],
+    Constellation: ['Coup de Coeur', 'Tout'],
     BNF: ['Hélas !', 'Problème...', 'Pourquoi pas ?', 'Intéressant', 'Bravo !', 'Coup de coeur !', 'Réédition à signaler', 'Bibliothèque idéale'],
     Lurelu: ['Coup de coeur']
   };
@@ -55,6 +56,13 @@ export class SearchComponent implements OnInit {
     this.socketService.books$.pipe(takeUntil(this.destroy$)).subscribe(books => {
       this.books = books;
     });
+  }
+
+  searchByTheme(): void {
+    if (this.searchTheme) {
+      const filter = `FILTER(UCASE(?subjectThema) = "${this.searchTheme.toUpperCase()}")`;
+      this.socketService.runBtlfQuery(filter, this.searchTheme);
+    }
   }
 
   ngOnInit() {
@@ -77,6 +85,9 @@ export class SearchComponent implements OnInit {
   onSelectSource(source: string) {
     this.selectedSource = source;
     this.selectedCategory = ''; // Reset category when source changes
+    if (source == 'BTLF') {
+      this.socketService.filterBooksByCategory(this.selectedSource, this.selectedCategory);
+    }
   }
 
   onSelectCategory(category: string) {
@@ -151,8 +162,10 @@ export class SearchComponent implements OnInit {
     this.filteredTitles = [];
   }
 
-  handleCheckboxChange(age: number) {
-    this.socketService.ageFilter(age);
+  handleCheckboxChange(event: any, age: number) {
+    if (event.target.checked) {
+      this.socketService.ageFilter(age);
+    }
   }
 
   onBlurTitle() { setTimeout(() => { this.isBlurredTitle = true; }, 100); } 

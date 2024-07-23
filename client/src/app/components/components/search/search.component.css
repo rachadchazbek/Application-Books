@@ -415,6 +415,38 @@ span i {
   margin-left: 4px;
 }
 
+.theme-search {
+  display: flex;
+  flex-direction: column;  /* Align children vertically */
+  align-items: center;     /* Center-align the items */
+  margin-top: 20px;        /* Adds space at the top of the search bar */
+  width: 100%;             /* Full width to contain the button and input properly */
+}
+
+.search-input {
+  padding: 10px;
+  font-size: 16px;         /* Larger font size for better readability */
+  border: 2px solid #9370DB; /* Blue border color */
+  border-radius: 5px;      /* Rounded corners for the input field */
+  width: 300px;            /* Specifies a fixed width for the input */
+  margin-bottom: 8px;      /* Adds space between the input and the button */
+}
+
+.search-button {
+  padding: 10px 20px;
+  font-size: 16px;         /* Matches the input font size */
+  background-color: #9370DB; /* Blue background to stand out */
+  color: white;            /* White text color */
+  border: none;
+  border-radius: 5px;      /* Rounded corners for the button */
+  cursor: pointer;         /* Pointer cursor on hover */
+  width: 316px;            /* Slightly larger width to cover the input padding and borders */
+}
+
+.search-button:hover {
+  background-color: #9370DB; /* Darker blue on hover for better interaction */
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .education-levels {
