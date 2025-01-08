@@ -26,7 +26,7 @@ export class SocketManager {
 
             socket.on('getSparqlData', (sparqlQuery: string) => {
                 console.log('In Server');
-                const repositoryUrl = 'http://localhost:7200/repositories/TestDB';  // <-- change made here
+                const repositoryUrl = 'http://Rachads-MacBook-Pro-2.local:7200/repositories/Books-app';  // <-- change made here
                 axios.post(repositoryUrl, sparqlQuery, {
                     headers: {
                         'Content-Type': 'application/sparql-query',

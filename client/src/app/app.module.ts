@@ -9,6 +9,7 @@ import { SearchComponent } from './components/components/search/search.component
 import { AuthorComponent } from './components/components/author/author.component';
 import { AwardComponent } from './components/components/award/award.component';
 import { BookComponent } from './components/components/book/book.component';
+import { MainPageComponent } from './main-page/main-page.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { BookComponent } from './components/components/book/book.component';
     AuthorComponent,
     SearchComponent,
     AwardComponent,
-    BookComponent
+    BookComponent,
+    MainPageComponent
   ],
   imports: [
     BrowserModule,

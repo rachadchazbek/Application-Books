@@ -114,76 +114,78 @@
 
         </select>
       </div>
-
-
-
-
       <!-- Book Appreciation Selection
       <button (click)="onSelectBookAppreciation('highlyAppreciated')">Livre appréciés</button>
       <button (click)="onSelectBookAppreciation('notHighlyAppreciated')">Livre pas appréciés</button> -->
     </div>
+    <div class="search-section">
+      <h2>Recherchez par niveau scolaire</h2>
+      <div class="education-levels">
+        <table>
+          <tr>
+            <th colspan="2">Préscolaire</th>
+            <th colspan="6">Primaire</th>
+            <th colspan="5">Secondaire</th>
+          </tr>
+          <tr>
+            <!-- Preschool cycles -->
+            <td colspan="2"> </td>
 
-    <div class="education-levels">
-      <table>
-        <tr>
-          <th colspan="2">Préscolaire</th>
-          <th colspan="6">Primaire</th>
-          <th colspan="5">Secondaire</th>
-        </tr>
-        <tr>
-          <!-- Preschool cycles -->
-          <td colspan="2"> </td>
+            <!-- Primary cycles -->
+            <td colspan="2">1<sup>er</sup> cycle</td>
+            <td colspan="2">2<sup>e</sup> cycle</td>
+            <td colspan="2">3<sup>e</sup> cycle</td>
 
-          <!-- Primary cycles -->
-          <td colspan="2">1<sup>er</sup> cycle</td>
-          <td colspan="2">2<sup>e</sup> cycle</td>
-          <td colspan="2">3<sup>e</sup> cycle</td>
+            <!-- Secondary cycles -->
+            <td colspan="2">1<sup>er</sup> cycle</td>
+            <td colspan="3">2<sup>e</sup> cycle</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" id="preschool-4" name="preschool-4"
+                (change)="handleCheckboxChange($event, 4)"><label for="preschool-4">4 ans</label></td>
+            <td><input type="checkbox" id="preschool-5" name="preschool-5"
+                (change)="handleCheckboxChange($event, 5)"><label for="preschool-5">5 ans</label></td>
 
-          <!-- Secondary cycles -->
-          <td colspan="2">1<sup>er</sup> cycle</td>
-          <td colspan="3">2<sup>e</sup> cycle</td>
-        </tr>
-        <tr>
-          <td><input type="checkbox" id="preschool-4" name="preschool-4"
-              (change)="handleCheckboxChange($event, 4)"><label for="preschool-4">4 ans</label></td>
-          <td><input type="checkbox" id="preschool-5" name="preschool-5"
-              (change)="handleCheckboxChange($event, 5)"><label for="preschool-5">5 ans</label></td>
+            <!-- Primary years -->
+            <td><input type="checkbox" id="primary-1" name="primary-1" (change)="handleCheckboxChange($event, 6)"><label
+                for="primary-1">1<sup>re</sup> --- 6 ans</label></td>
+            <td><input type="checkbox" id="primary-2" name="primary-2" (change)="handleCheckboxChange($event, 7)"><label
+                for="primary-2">2<sup>e</sup> --- 7 ans</label></td>
+            <td><input type="checkbox" id="primary-3" name="primary-3" (change)="handleCheckboxChange($event, 8)"><label
+                for="primary-3">3<sup>e</sup> --- 8 ans</label></td>
+            <td><input type="checkbox" id="primary-4" name="primary-4" (change)="handleCheckboxChange($event, 9)"><label
+                for="primary-4">4<sup>e</sup> --- 9 ans</label></td>
+            <td><input type="checkbox" id="primary-5" name="primary-5"
+                (change)="handleCheckboxChange($event, 10)"><label for="primary-5">5<sup>e</sup> --- 10 ans</label></td>
+            <td><input type="checkbox" id="primary-6" name="primary-6"
+                (change)="handleCheckboxChange($event, 11)"><label for="primary-6">6<sup>e</sup> --- 11 ans</label></td>
 
-          <!-- Primary years -->
-          <td><input type="checkbox" id="primary-1" name="primary-1" (change)="handleCheckboxChange($event, 6)"><label
-              for="primary-1">1<sup>re</sup> --- 6 ans</label></td>
-          <td><input type="checkbox" id="primary-2" name="primary-2" (change)="handleCheckboxChange($event, 7)"><label
-              for="primary-2">2<sup>e</sup> --- 7 ans</label></td>
-          <td><input type="checkbox" id="primary-3" name="primary-3" (change)="handleCheckboxChange($event, 8)"><label
-              for="primary-3">3<sup>e</sup> --- 8 ans</label></td>
-          <td><input type="checkbox" id="primary-4" name="primary-4" (change)="handleCheckboxChange($event, 9)"><label
-              for="primary-4">4<sup>e</sup> --- 9 ans</label></td>
-          <td><input type="checkbox" id="primary-5" name="primary-5" (change)="handleCheckboxChange($event, 10)"><label
-              for="primary-5">5<sup>e</sup> --- 10 ans</label></td>
-          <td><input type="checkbox" id="primary-6" name="primary-6" (change)="handleCheckboxChange($event, 11)"><label
-              for="primary-6">6<sup>e</sup> --- 11 ans</label></td>
+            <!-- Secondary years -->
+            <td><input type="checkbox" id="secondary-1" name="secondary-1"
+                (change)="handleCheckboxChange($event, 12)"><label for="secondary-1">1<sup>re</sup> --- 12 ans</label>
+            </td>
+            <td><input type="checkbox" id="secondary-2" name="secondary-2"
+                (change)="handleCheckboxChange($event, 13)"><label for="secondary-2">2<sup>e</sup> --- 13 ans</label>
+            </td>
+            <td><input type="checkbox" id="secondary-3" name="secondary-3"
+                (change)="handleCheckboxChange($event, 14)"><label for="secondary-3">3<sup>e</sup> --- 14 ans</label>
+            </td>
+            <td><input type="checkbox" id="secondary-4" name="secondary-4"
+                (change)="handleCheckboxChange($event, 15)"><label for="secondary-4">4<sup>e</sup> --- 15 ans</label>
+            </td>
+            <td><input type="checkbox" id="secondary-5" name="secondary-5"
+                (change)="handleCheckboxChange($event, 16)"><label for="secondary-5">5<sup>e</sup> --- 16 ans</label>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="theme-search">
+        <!-- Theme Search Input -->
+        <input type="text" [(ngModel)]="searchTheme" placeholder="Rechercher par thème" class="search-input">
+        <button (click)="searchByTheme()" class="search-button">Rechercher</button>
+      </div>
 
-          <!-- Secondary years -->
-          <td><input type="checkbox" id="secondary-1" name="secondary-1"
-              (change)="handleCheckboxChange($event, 12)"><label for="secondary-1">1<sup>re</sup> --- 12 ans</label>
-          </td>
-          <td><input type="checkbox" id="secondary-2" name="secondary-2"
-              (change)="handleCheckboxChange($event, 13)"><label for="secondary-2">2<sup>e</sup> --- 13 ans</label></td>
-          <td><input type="checkbox" id="secondary-3" name="secondary-3"
-              (change)="handleCheckboxChange($event, 14)"><label for="secondary-3">3<sup>e</sup> --- 14 ans</label></td>
-          <td><input type="checkbox" id="secondary-4" name="secondary-4"
-              (change)="handleCheckboxChange($event, 15)"><label for="secondary-4">4<sup>e</sup> --- 15 ans</label></td>
-          <td><input type="checkbox" id="secondary-5" name="secondary-5"
-              (change)="handleCheckboxChange($event, 16)"><label for="secondary-5">5<sup>e</sup> --- 16 ans</label></td>
-        </tr>
-      </table>
     </div>
-    <div class="theme-search">
-      <!-- Theme Search Input -->
-      <input type="text" [(ngModel)]="searchTheme" placeholder="Rechercher par thème" class="search-input">
-      <button (click)="searchByTheme()" class="search-button">Rechercher</button>
-    </div>
-
   </div>
   <div class="book-list">
     <div *ngFor="let book of books" class="book-card">

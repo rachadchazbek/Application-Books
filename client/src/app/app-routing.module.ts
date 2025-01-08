@@ -5,11 +5,13 @@ import { SearchComponent } from './components/components/search/search.component
 import { AwardComponent } from './components/components/award/award.component';
 import { BookComponent } from './components/components/book/book.component';
 import { HttpClientModule } from '@angular/common/http';
+import { MainPageComponent } from './main-page/main-page.component';
 
 // Import your components here
 
 const routes: Routes = [
-  { path: '', component: SearchComponent }, // Default route
+  { path: '', component: MainPageComponent }, // Default route
+  { path: 'search', component: SearchComponent },
   { path: 'author/:authorName', component: AuthorComponent },
   { path: 'award/:awardName', component: AwardComponent },
   { path: 'book/:bookName', component: BookComponent }
