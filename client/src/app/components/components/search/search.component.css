@@ -20,9 +20,28 @@ body::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
+h1 {
+  font-size: 3em;
+  color: black;
+  text-align: center;
+  margin-top: 20px;
+}
+
+h2 {
+  font-size: 2em;
+  color: black;
+  text-align: left;
+  margin-top: 10px;
+}
+
 .page{
   background-color:  #E6E6FA;
   min-height: 100vh; 
+}
+
+.vertical-stack {
+  display: block;
+  width: 100%;
 }
 
 .container {
@@ -34,7 +53,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 .search-section {
-  display: grid;
+  display: block;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   align-items: center;
@@ -283,6 +302,17 @@ span i {
   color: white;
   border: none;
   transition: background-color 0.3s;
+}
+
+.search-item {
+  /* display: flex; */
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 15px;
+  gap: 10px;
+  position: relative;
+  width: 100%;
+
 }
 
 .search-review button:hover {
