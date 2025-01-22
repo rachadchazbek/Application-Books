@@ -11,10 +11,10 @@
       <h2>Recherchez un livre</h2>
       <div class="search-container">
         <i class="fas fa-book fa-lg"></i>
-        <input type="text" [formControl]="myControlTitles" placeholder="Recherchez un livre par son titre..."
+        <!-- <input type="text" [formControl]="myControlTitles" placeholder="Recherchez un livre par son titre..."
           class="search-bar" (blur)="onBlurTitle()" (focus)="isBlurredTitle = false"
           (keydown.enter)="selectTitle(myControlTitles.value)"
-          (input)="socketService.onInput('title', $event.target.value)">
+          (input)="socketService.onInput('title', $event.target.value)"> -->
         <div class="autocomplete-items" *ngIf="myControlTitles.value && filteredTitles.length && !isBlurredTitle">
           <div *ngFor="let title of filteredTitles" (click)="selectTitle(title); isBlurredTitle = true"
             [class.active]="selectedTitle === title">
@@ -24,10 +24,10 @@
       </div>
       <div class="search-container">
         <i class="fas fa-award fa-lg"></i>
-        <input type="text" [formControl]="myControlAwards" placeholder="Recherchez un livre par son prix..."
+        <!-- <input type="text" [formControl]="myControlAwards" placeholder="Recherchez un livre par son prix..."
           class="search-bar" (blur)="onBlurAward()" (focus)="isBlurredAward = false"
           (keydown.enter)="selectAward(myControlAwards.value)"
-          (input)="socketService.onInput('award', $event.target.value)">
+          (input)="socketService.onInput('award', $event.target.value)"> -->
         <div class="autocomplete-items" *ngIf="myControlAwards.value && filteredAwards.length && !isBlurredAward">
           <div *ngFor="let award of filteredAwards" (click)="selectAward(award); isBlurredAward = true"
             [class.active]="selectedAward === award">
@@ -40,10 +40,10 @@
       <h2>Recherchez un auteur</h2>
       <div class="search-container">
         <i class="fas fa-user fa-lg"></i>
-        <input type="text" [formControl]="myControl" placeholder="Recherchez un livre par son auteur..."
+        <!-- <input type="text" [formControl]="myControl" placeholder="Recherchez un livre par son auteur..."
           class="search-bar" (blur)="onBlurAuthor()" (focus)="isBlurredAuthor = false"
           (keydown.enter)="selectAuthor(myControl.value)"
-          (input)="socketService.onInput('author', $event.target.value)">
+          (input)="socketService.onInput('author', $event.target.value)"> -->
         <div class="autocomplete-items" *ngIf="myControl.value && filteredAuthors.length && !isBlurredAuthor">
           <div *ngFor="let author of filteredAuthors" (click)="selectAuthor(author); isBlurredAuthor = true"
             [class.active]="selectedAuthor === author">
@@ -69,39 +69,39 @@
       <h2>Recherchez un type</h2>
       <div class="search-item">
         <i class="fas fa-theater-masks fa-lg"></i>
-        <select [(ngModel)]="selectedGenre" (change)="selectGenre()" class="filter-input">
+        <!-- <select [(ngModel)]="selectedGenre" (change)="selectGenre()" class="filter-input">
           <option value="" disabled selected>Selectionnez un genre...</option>
           <option value="Aucun genre sélectionné">Aucun genre sélectionné</option>
           <option *ngFor="let genre of genres">{{ genre }}</option>
-        </select>
+        </select> -->
       </div>
       <div class="search-item">
         <i class="fas fa-child fa-lg"></i>
-        <select [(ngModel)]="filterAge" (change)="filterBooksByAge()" class="filter-input">
+        <!-- <select [(ngModel)]="filterAge" (change)="filterBooksByAge()" class="filter-input">
           <option value="" disabled>Selectionnez un age...</option>
           <option value="Aucun age sélectionné">Aucun age sélectionné</option>
           <option *ngFor="let ageRange of ageRanges">{{ ageRange }}</option>
-        </select>
+        </select> -->
       </div>
       <div class="search-item">
         <i class="fas fa-language fa-lg"></i>
-        <select [(ngModel)]="selectedLanguage" (change)="filterLanguage()" class="filter-input">
+        <!-- <select [(ngModel)]="selectedLanguage" (change)="filterLanguage()" class="filter-input">
           <option value="" disabled>Selectionnez une langue...</option>
           <option value="Aucune langue sélectionnée">Aucune langue sélectionnée</option>
           <option *ngFor="let language of languages">{{ language }}</option>
-        </select>
+        </select> -->
       </div>
       <div class="search-item">
         <!-- Source Selection Dropdown -->
         <i class="fas fa-book-open fa-lg"></i>
-        <select [(ngModel)]="selectedSource" (change)="onSelectSource(selectedSource)" class="filter-input">
+        <!-- <select [(ngModel)]="selectedSource" (change)="onSelectSource(selectedSource)" class="filter-input">
           <option value="">Selectionner la source</option>
           <option value="Babelio">Babelio</option>
           <option value="Constellation">Constellation</option>
           <option value="BNF">BNF</option>
           <option value="Lurelu">Lurelu</option>
           <option value="BTLF">BTLF</option>
-        </select>
+        </select> -->
       </div>
       <div>
 
@@ -181,7 +181,7 @@
       </div>
       <div class="theme-search">
         <!-- Theme Search Input -->
-        <input type="text" [(ngModel)]="searchTheme" placeholder="Rechercher par thème" class="search-input">
+        <!-- <input type="text" [(ngModel)]="searchTheme" placeholder="Rechercher par thème" class="search-input"> -->
         <button (click)="searchByTheme()" class="search-button">Rechercher</button>
       </div>
 
