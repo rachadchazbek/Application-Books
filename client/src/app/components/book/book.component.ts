@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
@@ -8,7 +8,7 @@ import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
   templateUrl: './book.component.html',
   styleUrls: ['./book.component.css']
 })
-export class BookComponent {
+export class BookComponent implements OnDestroy {
 
   summaryBook: any;
   ratingBook: any;

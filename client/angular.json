@@ -91,7 +91,9 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "codeCoverageExclude": ["src/app/classes/socket-test-helper.ts"],
+            "codeCoverageExclude": [
+              "src/app/classes/socket-test-helper.ts"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -101,11 +103,23 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   }
 }

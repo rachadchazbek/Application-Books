@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
@@ -8,7 +8,7 @@ import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
   templateUrl: './award.component.html',
   styleUrls: ['./award.component.css']
 })
-export class AwardComponent {
+export class AwardComponent implements OnDestroy {
   descriptionAward: any;  
   books: any;
   filterAward: any;

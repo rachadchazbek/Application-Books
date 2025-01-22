@@ -14,14 +14,14 @@ export interface Book {
   reviews?: Review[];
 }
 
-export type Review = {
+export interface Review {
   reviewContent?: string;
   reviewAuthor?: string;
   reviewDatePublished?: Date;
-  reviewRating?: Number;
-  thumbsUp?: Number;
+  reviewRating?: number;
+  thumbsUp?: number;
   reviewURL?: string;
   avis?: string;
   source?: string
-};
+}
 

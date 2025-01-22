@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -10,16 +10,16 @@ import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   books: any;
-  selectedGenre: string = 'Aucun genre sélectionné';
-  selectedLanguage: string = 'No Language Selected';
+  selectedGenre = 'Aucun genre sélectionné';
+  selectedLanguage = 'No Language Selected';
   filterAge: any = 'Aucun age sélectionné';
   filterAuthor: any = '';
   searchAward: any = '';
   searchText: any = '';
-  searchTheme: string = '';
+  searchTheme = '';
 
   genres: string[] = GENRES;
   languages: string[] = LANGUAGES;
@@ -40,9 +40,9 @@ export class SearchComponent implements OnInit {
   isBlurredAward = false;
   isBlurredAuthor = false;
 
-  selectedSource: string = '';
-  selectedCategory: string = '';
-  bookAppreciation: string = ''; // 'highlyAppreciated' or 'notHighlyAppreciated'
+  selectedSource = '';
+  selectedCategory = '';
+  bookAppreciation = ''; // 'highlyAppreciated' or 'notHighlyAppreciated'
 
   // Define the categories for each source
   sourceCategories = {

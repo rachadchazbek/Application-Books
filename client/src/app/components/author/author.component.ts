@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
@@ -8,7 +8,7 @@ import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
   templateUrl: './author.component.html',
   styleUrls: ['./author.component.css']
 })
-export class AuthorComponent {
+export class AuthorComponent implements OnDestroy {
   books: any;
   filterAuthor: any;
   authorData: any;  

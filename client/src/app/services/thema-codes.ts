@@ -1,6 +1,4 @@
-export interface ThemaCodes {
-    [key: string]: ThemaCodeDetail;
-  }
+export type ThemaCodes = Record<string, ThemaCodeDetail>;
   
   export interface ThemaCodeDetail {
     CodeValue: string;
