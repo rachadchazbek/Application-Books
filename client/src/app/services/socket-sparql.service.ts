@@ -20,6 +20,7 @@ export class SocketSparqlService {
     }
 
 
+    // TODO exoport
     activeFilters = {
         filterName: null,
         filterGenre: null,
@@ -34,17 +35,17 @@ export class SocketSparqlService {
 
     bookMap: Record<string, Book> = {};
 
+    // TODO define ?
     private themeActive = false;
     private themeCode = '';
-
     private readonly jsonUrl = 'assets/thema_code_dict.json';
-
     private storedIsbns: string | null = null;
-
-    books: any;
+    books: any; // todo fix any
     private booksSource = new BehaviorSubject<any>(null);
     books$ = this.booksSource.asObservable();
 
+    // TODO find a better handling method
+    // Type everythoing
     inAuthorsComponent = false;
     booksAuthor: any;
     private booksSourceAuthor = new BehaviorSubject<any>(null);
@@ -76,6 +77,7 @@ export class SocketSparqlService {
     get socketId() {
         return this.socketService.socket.id ? this.socketService.socket.id : "";
     }
+
 
     runBtlfQuery(filter: string, description: string): void {
         this.bookMap = {}
@@ -125,7 +127,6 @@ export class SocketSparqlService {
             })
         );
     }
-
 
     onInput(argument: string, value: string) {
         if (!value) {
@@ -199,6 +200,7 @@ export class SocketSparqlService {
         this.socketService.send('getSparqlData', baseQuery);
     }
 
+        // TODO Change to filter class 
 
     filterBooksByCategory(source: any, category: any) {
         if (this.themeActive) {
@@ -506,6 +508,7 @@ export class SocketSparqlService {
         this.socketService.send('getSparqlData', sparqlQuery);
     }
 
+    // TODO Migrate from SocketIO 
 
     connect() {
         if (!this.socketService.isSocketAlive()) {
