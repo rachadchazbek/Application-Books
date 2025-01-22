@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { GENRES, TITLES, AWARDS, AUTHORS, LANGUAGES } from 'src/app/constants';
+import { GENRES, TITLES, AWARDS, AUTHORS, LANGUAGES } from 'src/app/constants/constants';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 
 @Component({
