@@ -5,10 +5,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { SearchComponent } from './components/components/search/search.component';
-import { AuthorComponent } from './components/components/author/author.component';
-import { AwardComponent } from './components/components/award/award.component';
-import { BookComponent } from './components/components/book/book.component';
+import { SearchComponent } from './components/search/search.component';
+import { AuthorComponent } from './components/author/author.component';
+import { AwardComponent } from './components/award/award.component';
+import { BookComponent } from './components/book/book.component';
 import { MainPageComponent } from './main-page/main-page.component';
 
 @NgModule({
