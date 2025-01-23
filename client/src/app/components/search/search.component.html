@@ -1,6 +1,7 @@
 <div class="page">
 
   <head>
+    <title>BookFinder Scolaire</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   </head>
   <div class="container">
@@ -11,26 +12,26 @@
       <h2>Recherchez un livre</h2>
       <div class="search-container">
         <i class="fas fa-book fa-lg"></i>
-        <!-- <input type="text" [formControl]="myControlTitles" placeholder="Recherchez un livre par son titre..."
+        <input type="text" [formControl]="myControlTitles" placeholder="Recherchez un livre par son titre..."
           class="search-bar" (blur)="onBlurTitle()" (focus)="isBlurredTitle = false"
           (keydown.enter)="selectTitle(myControlTitles.value)"
-          (input)="socketService.onInput('title', $event.target.value)"> -->
+          (input)="socketService.onInput('title', $event.target.value)">
         <div class="autocomplete-items" *ngIf="myControlTitles.value && filteredTitles.length && !isBlurredTitle">
           <div *ngFor="let title of filteredTitles" (click)="selectTitle(title); isBlurredTitle = true"
-            [class.active]="selectedTitle === title">
+            [class.active]="selectedTitle === title" tabindex="0" (keydown)="handleKeyDown($event, title)">
             {{ title }}
           </div>
         </div>
       </div>
       <div class="search-container">
         <i class="fas fa-award fa-lg"></i>
-        <!-- <input type="text" [formControl]="myControlAwards" placeholder="Recherchez un livre par son prix..."
+        <input type="text" [formControl]="myControlAwards" placeholder="Recherchez un livre par son prix..."
           class="search-bar" (blur)="onBlurAward()" (focus)="isBlurredAward = false"
           (keydown.enter)="selectAward(myControlAwards.value)"
-          (input)="socketService.onInput('award', $event.target.value)"> -->
+          (input)="socketService.onInput('award', $event.target.value)">
         <div class="autocomplete-items" *ngIf="myControlAwards.value && filteredAwards.length && !isBlurredAward">
           <div *ngFor="let award of filteredAwards" (click)="selectAward(award); isBlurredAward = true"
-            [class.active]="selectedAward === award">
+            [class.active]="selectedAward === award" tabindex="0" (keydown)="handleKeyDown($event, award)">
             {{ award }}
           </div>
         </div>
@@ -40,13 +41,13 @@
       <h2>Recherchez un auteur</h2>
       <div class="search-container">
         <i class="fas fa-user fa-lg"></i>
-        <!-- <input type="text" [formControl]="myControl" placeholder="Recherchez un livre par son auteur..."
+        <input type="text" [formControl]="myControl" placeholder="Recherchez un livre par son auteur..."
           class="search-bar" (blur)="onBlurAuthor()" (focus)="isBlurredAuthor = false"
           (keydown.enter)="selectAuthor(myControl.value)"
-          (input)="socketService.onInput('author', $event.target.value)"> -->
+          (input)="socketService.onInput('author', $event.target.value)">
         <div class="autocomplete-items" *ngIf="myControl.value && filteredAuthors.length && !isBlurredAuthor">
           <div *ngFor="let author of filteredAuthors" (click)="selectAuthor(author); isBlurredAuthor = true"
-            [class.active]="selectedAuthor === author">
+            [class.active]="selectedAuthor === author" tabindex="0" (keydown)="handleKeyDown($event, author)">
             {{ author }}
           </div>
         </div>
@@ -55,13 +56,15 @@
       <div class="search-container">
         <i class="fas fa-flag fa-lg"></i>
         <input type="text" placeholder="Recherchez un livre par la nationalité..." class="search-bar">
-        <!-- <div class="autocomplete-items"
+        <div class="autocomplete-items"
            *ngIf="myControl.value && filteredAuthors.length && !isBlurredAuthor">
         <div *ngFor="let author of filteredAuthors"
              (click)="selectAuthor(author); isBlurredAuthor = true"
-             [class.active]="selectedAuthor === author">
+             (keydown)="handleKeyDown($event, author)"
+             [class.active]="selectedAuthor === author"
+             tabindex="0">
           {{ author }}
-        </div> -->
+        </div>
 
       </div>
     </div>
@@ -69,39 +72,39 @@
       <h2>Recherchez un type</h2>
       <div class="search-item">
         <i class="fas fa-theater-masks fa-lg"></i>
-        <!-- <select [(ngModel)]="selectedGenre" (change)="selectGenre()" class="filter-input">
+        <select [(ngModel)]="selectedGenre" (change)="selectGenre()" class="filter-input">
           <option value="" disabled selected>Selectionnez un genre...</option>
           <option value="Aucun genre sélectionné">Aucun genre sélectionné</option>
           <option *ngFor="let genre of genres">{{ genre }}</option>
-        </select> -->
+        </select>
       </div>
       <div class="search-item">
         <i class="fas fa-child fa-lg"></i>
-        <!-- <select [(ngModel)]="filterAge" (change)="filterBooksByAge()" class="filter-input">
+        <select [(ngModel)]="filterAge" (change)="filterBooksByAge()" class="filter-input">
           <option value="" disabled>Selectionnez un age...</option>
           <option value="Aucun age sélectionné">Aucun age sélectionné</option>
           <option *ngFor="let ageRange of ageRanges">{{ ageRange }}</option>
-        </select> -->
+        </select>
       </div>
       <div class="search-item">
         <i class="fas fa-language fa-lg"></i>
-        <!-- <select [(ngModel)]="selectedLanguage" (change)="filterLanguage()" class="filter-input">
+        <select [(ngModel)]="selectedLanguage" (change)="filterLanguage()" class="filter-input">
           <option value="" disabled>Selectionnez une langue...</option>
           <option value="Aucune langue sélectionnée">Aucune langue sélectionnée</option>
           <option *ngFor="let language of languages">{{ language }}</option>
-        </select> -->
+        </select>
       </div>
       <div class="search-item">
         <!-- Source Selection Dropdown -->
         <i class="fas fa-book-open fa-lg"></i>
-        <!-- <select [(ngModel)]="selectedSource" (change)="onSelectSource(selectedSource)" class="filter-input">
+        <select [(ngModel)]="selectedSource" (change)="onSelectSource(selectedSource)" class="filter-input">
           <option value="">Selectionner la source</option>
           <option value="Babelio">Babelio</option>
           <option value="Constellation">Constellation</option>
           <option value="BNF">BNF</option>
           <option value="Lurelu">Lurelu</option>
           <option value="BTLF">BTLF</option>
-        </select> -->
+        </select>
       </div>
       <div>
 
@@ -114,9 +117,9 @@
 
         </select>
       </div>
-      <!-- Book Appreciation Selection
+      Book Appreciation Selection
       <button (click)="onSelectBookAppreciation('highlyAppreciated')">Livre appréciés</button>
-      <button (click)="onSelectBookAppreciation('notHighlyAppreciated')">Livre pas appréciés</button> -->
+      <button (click)="onSelectBookAppreciation('notHighlyAppreciated')">Livre pas appréciés</button>
     </div>
     <div class="search-section">
       <h2>Recherchez par niveau scolaire</h2>
@@ -181,7 +184,7 @@
       </div>
       <div class="theme-search">
         <!-- Theme Search Input -->
-        <!-- <input type="text" [(ngModel)]="searchTheme" placeholder="Rechercher par thème" class="search-input"> -->
+        <input type="text" [(ngModel)]="searchTheme" placeholder="Rechercher par thème" class="search-input">
         <button (click)="searchByTheme()" class="search-button">Rechercher</button>
       </div>
 
@@ -189,16 +192,16 @@
   </div>
   <div class="book-list">
     <div *ngFor="let book of books" class="book-card">
-      <h2 class="book-title" (click)="navigateToBook(book)">{{ book.title }}</h2>
+      <h2 class="book-title" (click)="navigateToBook(book)" tabindex="0" (keydown)="handleKeyDown($event, book)">{{ book.title }}</h2>
       <p>
         <i class="fas fa-user"></i>
         <ng-container *ngFor="let author of book.authors; let i = index">
-          <span (click)="navigateToAuthor(author)">{{ author }}</span>
+          <span (click)="navigateToAuthor(author)" (keydown)="handleKeyDown($event, author)" tabindex="0">{{ author }}</span>
           <span *ngIf="i < book.authors.length - 1">, </span>
           <span *ngIf="i === book.authors.length - 1">&nbsp;</span>
         </ng-container>
       </p>
-      <p *ngIf="book.publisher" (click)="navigateToPublisher(book.publisher)" class="publisher-info">
+      <p *ngIf="book.publisher" (click)="navigateToPublisher(book.publisher)" (keydown)="handleKeyDown($event, book.publisher)" class="publisher-info" tabindex="0">
         <i class="fas fa-building"></i> {{ book.publisher }}
       </p>
       <p *ngIf="book.datePublished">
@@ -216,7 +219,7 @@
       <p *ngIf="book.illustrator && book.illustrator.length > 0">
         <i class="fas fa-paint-brush"></i>
         <ng-container *ngFor="let illustrator of book.illustrator; let i = index">
-          <span (click)="navigateToIllustrator(illustrator)">{{ illustrator }}</span>
+          <span (click)="navigateToIllustrator(illustrator)" (keydown)="handleKeyDown($event, illustrator)" tabindex="0">{{ illustrator }}</span>
           <span *ngIf="i < book.illustrator.length - 1">, </span>
           <span *ngIf="i === book.illustrator.length - 1">&nbsp;</span>
         </ng-container>
@@ -230,7 +233,7 @@
         {{ book.subjectThema }}
       </p>
       <div class="award-section" *ngFor="let award of book.awards">
-        <p class="award-name" (click)="navigateToAward(award.name)">
+        <p class="award-name" (click)="navigateToAward(award.name)" (keydown)="handleKeyDown($event, award.name)" tabindex="0">
           <i class="fas fa-trophy"></i> {{ award.name }} ({{ award.year }})
         </p>
         <p>

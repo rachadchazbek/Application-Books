@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { GENRES, TITLES, AWARDS, AUTHORS, LANGUAGES } from 'src/app/constants/constants';
@@ -8,6 +10,7 @@ import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 @Component({
   selector: 'search-component',
   templateUrl: './search.component.html',
+  imports: [FormsModule, ReactiveFormsModule],
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit, OnDestroy {
