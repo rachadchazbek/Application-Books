@@ -1,4 +1,4 @@
-import { Award } from './interfaces/Award';
+import { Award } from "./Award";
 
 export interface Book {
   title: string;

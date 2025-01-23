@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { SocketClientService } from './socket-client.service';
-import { Book } from '../Book';
 import { Award } from '../constants/Award';
 import { SPARQL_BABELIO, SPARQL_QUERY, SPARQL_QUERY_BNF, SPARQL_QUERY_CONSTELLATIONS, SPARQL_QUERY_DESCRIPTION, SPARQL_QUERY_LURELU, SPARQL_WIKIDATA, SPARQL_BTLF, SPARQL_BTLF_FILTER, SPARQL_QUERY_LURELU_FILTER } from '../constants/sparql';
 import { BehaviorSubject } from 'rxjs';
@@ -9,7 +8,8 @@ import { HttpClient } from '@angular/common/http';
 import { load } from 'cheerio';
 import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { ThemaCodes } from './thema-codes';
+import { ThemaCodes } from '../constants/thema-codes';
+import { Book } from '../constants/Book';
 
 @Injectable({
     providedIn: 'root'
