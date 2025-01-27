@@ -1,11 +1,14 @@
+import { NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 
 @Component({
-  selector: 'award-component',
+  selector: 'app-award-component',
   templateUrl: './award.component.html',
+  standalone: true,
+  imports: [NgIf, NgFor],
   styleUrls: ['./award.component.css']
 })
 export class AwardComponent implements OnDestroy {
@@ -15,7 +18,7 @@ export class AwardComponent implements OnDestroy {
   private descriptionSub: Subscription;
   private destroy$ = new Subject<void>();
 
-  constructor(private route: ActivatedRoute, public socketService: SocketSparqlService) {
+  constructor(private readonly route: ActivatedRoute, public socketService: SocketSparqlService) {
     this.init();
   }
 

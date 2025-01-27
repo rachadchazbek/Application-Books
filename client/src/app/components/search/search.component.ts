@@ -1,27 +1,27 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-
+import {FormsModule, FormControl, ReactiveFormsModule} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { GENRES, TITLES, AWARDS, AUTHORS, LANGUAGES } from 'src/app/constants/constants';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'search-component',
+  selector: 'app-search-component',
   templateUrl: './search.component.html',
-  imports: [FormsModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor],
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-  books: any;
+  private readonly destroy$ = new Subject<void>();
+  books: any[] = [];
   selectedGenre = 'Aucun genre sélectionné';
   selectedLanguage = 'No Language Selected';
-  filterAge: any = 'Aucun age sélectionné';
-  filterAuthor: any = '';
-  searchAward: any = '';
-  searchText: any = '';
+  filterAge = 'Aucun age sélectionné';
+  filterAuthor = '';
+  searchAward = '';
+  searchText = '';
   searchTheme = '';
 
   genres: string[] = GENRES;
@@ -55,7 +55,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     Lurelu: ['Coup de coeur']
   };
 
-  constructor(public socketService: SocketSparqlService, private router: Router) {
+  constructor(public socketService: SocketSparqlService, private readonly router: Router) {
     this.socketService.books$.pipe(takeUntil(this.destroy$)).subscribe(books => {
       this.books = books;
     });
@@ -165,10 +165,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.filteredTitles = [];
   }
 
-  handleCheckboxChange(event: any, age: number) {
-    if (event.target.checked) {
+  handleCheckboxChange(event: Event, age: number) {
+    if ((event.target as HTMLInputElement).checked) {
       this.socketService.ageFilter(age);
     }
+  }
+
+  handleKeyDown(event: KeyboardEvent, data: string) {
+    console.log('Key down event', event, data);
   }
 
   onBlurTitle() { setTimeout(() => { this.isBlurredTitle = true; }, 100); } 

@@ -1,23 +1,27 @@
+import { NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 
 @Component({
-  selector: 'book-component',
+  selector: 'app-book-component',
   templateUrl: './book.component.html',
+  standalone: true,
+  imports: [NgIf, NgFor],
   styleUrls: ['./book.component.css']
 })
 export class BookComponent implements OnDestroy {
 
+  // TODO : Add the following properties to the class:
   summaryBook: any;
   ratingBook: any;
   currentBookData: any;
   babelioLink: any;
   private descriptionBook: Subscription;
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
-  constructor(private route: ActivatedRoute, public socketService: SocketSparqlService) {
+  constructor(private readonly route: ActivatedRoute, public socketService: SocketSparqlService) {
     this.subscribeToBabelioUrl();
     this.subscribeToBookSummary();
     this.subscribeToBookRating();
@@ -61,7 +65,9 @@ export class BookComponent implements OnDestroy {
         .subscribe(data => {
             this.currentBookData = data; 
         }); 
-}
+  }
+
+
 
   ngOnDestroy() {
     this.destroy$.next();

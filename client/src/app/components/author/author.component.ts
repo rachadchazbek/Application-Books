@@ -1,10 +1,13 @@
+import { NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 
 @Component({
-  selector: 'author-component',
+  selector: 'app-author-component',
+  standalone: true,
+  imports: [NgIf, NgFor],
   templateUrl: './author.component.html',
   styleUrls: ['./author.component.css']
 })

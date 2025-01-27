@@ -12,7 +12,7 @@
       <ul>
         <li *ngIf="authorData?.dateOfBirth">
           <i class="fas fa-birthday-cake"></i> 
-          {{authorData?.dateOfBirth | date}}
+          {{authorData?.dateOfBirth}}
         </li>
         <li *ngIf="authorData?.placeOfBirthLabel">
           <i class="fas fa-map-marker-alt"></i> 
@@ -86,7 +86,7 @@
         <p *ngIf="book.illustrator && book.illustrator.length > 0">
           <i class="fas fa-paint-brush"></i>
           <ng-container *ngFor="let illustrator of book.illustrator; let i = index">
-            <span (click)="navigateToIllustrator(illustrator)">{{ illustrator }}</span>
+            <!-- <span (click)="navigateToIllustrator(illustrator)">{{ illustrator }}</span> -->
             <span *ngIf="i < book.illustrator.length - 1">, </span>
             <span *ngIf="i === book.illustrator.length - 1">&nbsp;</span>
           </ng-container>
