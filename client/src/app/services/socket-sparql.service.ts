@@ -12,7 +12,6 @@ import {
   SPARQL_BTLF_FILTER,
   SPARQL_QUERY_LURELU_FILTER,
 } from '../constants/sparql';
-import { BehaviorSubject } from 'rxjs';
 import axios from 'axios';
 import { HttpClient } from '@angular/common/http';
 import { load } from 'cheerio';
@@ -21,6 +20,8 @@ import { Observable } from 'rxjs';
 import { ThemaCodes } from '../constants/thema-codes';
 import { HttpSparqlService } from './http-sparql.service';
 import { Book } from '../constants/Book';
+import { urlBabelioSubject, bookSummarySubject, ratingSubject, currentBookSubject, authorDataSubject, descriptionAwardSubject, booksSourceAuthor, booksSource } from '../classes/subjects';
+import { BooksService } from './books.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,8 @@ import { Book } from '../constants/Book';
 export class SocketSparqlService {
   constructor(
     private http: HttpClient,
-    private readonly httpSparqlService: HttpSparqlService
+    private readonly httpSparqlService: HttpSparqlService,
+    private readonly booksService: BooksService
   ) {}
 
   // TODO exoport
@@ -52,38 +54,15 @@ export class SocketSparqlService {
   private readonly jsonUrl = 'assets/thema_code_dict.json';
   private storedIsbns: string | null = null;
   books: any; // todo fix any
-  private booksSource = new BehaviorSubject<any>(null);
-  books$ = this.booksSource.asObservable();
+  
 
   // TODO find a better handling method
   // Type everythoing
   inAuthorsComponent = false;
   booksAuthor: any;
-  private readonly booksSourceAuthor = new BehaviorSubject<any>(null);
-  booksAuthor$ = this.booksSourceAuthor.asObservable();
 
   inAwardsComponent = false;
   booksAward: any;
-  private readonly booksSourceAward = new BehaviorSubject<any>(null);
-  booksAward$ = this.booksSourceAward.asObservable();
-
-  private readonly authorDataSubject = new BehaviorSubject<any[]>([]);
-  authorData$ = this.authorDataSubject.asObservable();
-
-  private readonly descriptionAwardSubject = new BehaviorSubject<any[]>([]);
-  descriptionAward$ = this.descriptionAwardSubject.asObservable();
-
-  private readonly bookSummarySubject = new BehaviorSubject<any>([]);
-  bookSummary$ = this.bookSummarySubject.asObservable();
-
-  private readonly ratingSubject = new BehaviorSubject<any>([]);
-  rating$ = this.ratingSubject.asObservable();
-
-  private readonly currentBookSubject = new BehaviorSubject<any[]>([]);
-  currentBook$ = this.currentBookSubject.asObservable();
-
-  private readonly urlBabelioSubject = new BehaviorSubject<any>([]);
-  urlBabelio$ = this.urlBabelioSubject.asObservable();
 
   runBtlfQuery(filter: string, description: string): void {
     this.bookMap = {};
@@ -218,7 +197,8 @@ export class SocketSparqlService {
         return;
     }
     this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
+
     });
   }
 
@@ -301,11 +281,6 @@ export class SocketSparqlService {
             `FILTER(?isCoupDeCoeur = true && ?isbn IN (${isbns}))`
           );
 
-          // Send each query separately through the socket service
-          // this.socketService.send('getSparqlData', query_lurelu);
-          // this.socketService.send('getSparqlData', query_babelio);
-          // this.socketService.send('getSparqlData', query_bnf);
-          // this.socketService.send('getSparqlData', query_constellations);
           this.httpSparqlService.postQuery(query_lurelu);
           this.httpSparqlService.postQuery(query_babelio);
           this.httpSparqlService.postQuery(query_bnf);
@@ -320,10 +295,10 @@ export class SocketSparqlService {
             `FILTER((?avis = "Hélas !" || ?avis = "Problème...") && ?isbn IN (${isbns}))`
           );
           this.httpSparqlService.postQuery(query_babelio_not_appreciated).then((response) => {
-            this.updateData(response);
+            this.booksService.updateData(response);
         });
           this.httpSparqlService.postQuery(query_bnf_not_appreciated).then((response) => {
-            this.updateData(response);
+            this.booksService.updateData(response);
         });
           break;
         }
@@ -363,7 +338,7 @@ export class SocketSparqlService {
       `FILTER(CONTAINS(?finalAwardName, "${filterAward}"))`
     );
     this.httpSparqlService.postQuery(sparqlQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
     });
   }
 
@@ -372,7 +347,7 @@ export class SocketSparqlService {
     this.inAuthorsComponent = true;
     const sparqlQuery = SPARQL_QUERY(`FILTER(?author = "${filterAuthor}")`);
     this.httpSparqlService.postQuery(sparqlQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
     });
   }
 
@@ -399,12 +374,12 @@ export class SocketSparqlService {
   getAuthorInfo(filterAuthor: any) {
     const sparqlQuery = SPARQL_WIKIDATA(filterAuthor);
     this.httpSparqlService.postQuery(sparqlQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
     });
   }
 
   async bingSearchBook(book: any) {
-    this.currentBookSubject.next(book);
+    currentBookSubject.next(book);
     const query = `${book.title} ${book.authors[0]} site:babelio.com`;
     const encodedQuery = encodeURIComponent(query);
     const url = `https://api.bing.microsoft.com/v7.0/search?q=${encodedQuery}`;
@@ -417,7 +392,7 @@ export class SocketSparqlService {
       });
       const firstLink = response.data.webPages.value[0].url;
       this.scrapeWebsite(firstLink);
-      this.urlBabelioSubject.next(firstLink);
+      urlBabelioSubject.next(firstLink);
     } catch (error: any) {
       console.error(`An error occurred: ${error.message}`);
     }
@@ -456,11 +431,11 @@ export class SocketSparqlService {
       const $ = load(rawHtml, { decodeEntities: false });
 
       const bookSummary = $('.livre_resume').text().trim();
-      this.bookSummarySubject.next(bookSummary);
+      bookSummarySubject.next(bookSummary);
       console.log(bookSummary);
 
       const rating = $('.grosse_note').text().trim();
-      this.ratingSubject.next(rating);
+      ratingSubject.next(rating);
       console.log(rating);
     } catch (error: any) {
       console.error(`An error occurred: ${error.message}`);
@@ -478,7 +453,7 @@ export class SocketSparqlService {
         );
         baseQuery = SPARQL_BABELIO(`FILTER(?averageReview >= ${starRating})`);
         this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
     });;
         break; }
       case 'Constellation':
@@ -487,13 +462,13 @@ export class SocketSparqlService {
             `FILTER(?isCoupDeCoeur = true)`
           );
           this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
     });;
           break;
         } else {
           baseQuery = SPARQL_QUERY_CONSTELLATIONS('');
           this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
     });;
           break;
         }
@@ -503,19 +478,19 @@ export class SocketSparqlService {
           `FILTER(?avis = "${this.activeFilters.filterCategory}")`
         );
         this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
     });;
         break;
       case 'Lurelu':
         baseQuery = SPARQL_QUERY_LURELU; // No additional filter needed for Lurelu
         this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
     });;
         break;
       case 'BTLF':
         baseQuery = SPARQL_BTLF;
         this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
     });;
         break;
       default:
@@ -534,16 +509,16 @@ export class SocketSparqlService {
         );
 
         this.httpSparqlService.postQuery(query_lurelu).then((response) => {
-            this.updateData(response);
+            this.booksService.updateData(response);
         });
         this.httpSparqlService.postQuery(query_babelio).then((response) => {
-            this.updateData(response);
+            this.booksService.updateData(response);
         });
         this.httpSparqlService.postQuery(query_bnf).then((response) => {
-            this.updateData(response);
+            this.booksService.updateData(response);
         });
         this.httpSparqlService.postQuery(query_constellations).then((response) => {
-            this.updateData(response);
+            this.booksService.updateData(response);
         });
 
         break;
@@ -556,10 +531,10 @@ export class SocketSparqlService {
           `FILTER((?avis = "Hélas !" || ?avis = "Problème..."))`
         );
         this.httpSparqlService.postQuery(query_babelio_not_appreciated).then((response) => {
-            this.updateData(response);
+            this.booksService.updateData(response);
         });
         this.httpSparqlService.postQuery(query_bnf_not_appreciated).then((response) => {
-            this.updateData(response);
+            this.booksService.updateData(response);
         });
         break;
       }
@@ -576,10 +551,10 @@ export class SocketSparqlService {
           `);
 
         this.httpSparqlService.postQuery(query_bnf).then((response) => {
-            this.updateData(response);
+            this.booksService.updateData(response);
         });
         this.httpSparqlService.postQuery(query_constellations).then((response) => {
-            this.updateData(response);
+            this.booksService.updateData(response);
         });
       }
     }
@@ -620,7 +595,7 @@ export class SocketSparqlService {
 
     const sparqlQuery = SPARQL_QUERY(filterQueries.join(' '));
     this.httpSparqlService.postQuery(sparqlQuery).then((response) => {
-        this.updateData(response);
+        this.booksService.updateData(response);
     });
   }
 
@@ -654,166 +629,7 @@ export class SocketSparqlService {
         }
       );
       console.log(formattedData);
-      this.authorDataSubject
-      .next(formattedData);
+      authorDataSubject.next(formattedData);
     }
-    
-
-  updateData(responseData: any) {
-    responseData.results.bindings.forEach((binding: any, index: number) => {
-      this.descriptionAwardSubject.next(binding.finalAwardDescription?.value);
-      const title = binding.title?.value || `Empty Title ${index}`;
-      if (this.bookMap[title]) {
-        if (!this.bookMap[title].authors.includes(binding.author?.value)) {
-          this.bookMap[title].authors.push(binding.author?.value);
-        }
-        if (
-          binding.illustrator?.value &&
-          !this.bookMap[title].illustrator?.includes(binding.illustrator?.value)
-        ) {
-          this.bookMap[title].illustrator?.push(binding.illustrator?.value);
-        }
-        if (binding.countryOfOrigin?.value) {
-          this.bookMap[title].countryOfOrigin = binding.countryOfOrigin?.value;
-        }
-        const reviewAuthors = binding.reviewAuthor?.value.split('@ ');
-        const reviewContents = binding.reviewContent?.value.split('@ ');
-        const reviewDates = binding.reviewDatePublished?.value.split('@ ');
-        const reviewRatings = binding.reviewRating?.value.split('@ ');
-        const thumbsUps = binding.thumbsUp?.value.split('@ ');
-
-        // Check if there's more than one review
-        if (reviewAuthors && reviewAuthors.length > 1) {
-          for (let i = 0; i < reviewAuthors.length; i++) {
-            // Add each review to the bookMap
-            this.bookMap[title]?.reviews?.push({
-              reviewContent: reviewContents[i],
-              reviewAuthor: reviewAuthors[i],
-              reviewDatePublished: reviewDates[i],
-              reviewRating: reviewRatings[i],
-              thumbsUp: thumbsUps[i],
-              // Add other properties if available
-              reviewURL: binding.reviewURL?.value,
-              avis: binding.avis?.value,
-              source: binding.source?.value,
-            });
-          }
-        } else {
-          // Case for a single review
-          this.bookMap[title]?.reviews?.push({
-            reviewContent: binding.reviewContent?.value,
-            reviewAuthor: binding.reviewAuthor?.value,
-            reviewDatePublished: binding.reviewDatePublished?.value,
-            reviewRating: binding.reviewRating?.value,
-            thumbsUp: binding.thumbsUp?.value,
-            // Add other properties if available
-            reviewURL: binding.reviewURL?.value,
-            avis: binding.avis?.value,
-            source: binding.source?.value,
-          });
-        }
-        if (binding.award) {
-          const existingAward = this.bookMap[title].awards.find(
-            (award: Award) =>
-              award.name === binding.finalAwardName?.value &&
-              award.genre === binding.finalGenreName?.value &&
-              award.year === binding.awardYear?.value
-          );
-          if (!existingAward) {
-            this.bookMap[title].awards.push({
-              year: binding.awardYear?.value,
-              name: binding.finalAwardName?.value,
-              genre: binding.finalGenreName?.value,
-              ageRange: binding.ageRange?.value
-                ? [binding.ageRange?.value]
-                : [],
-            });
-          } else {
-            if (
-              binding.ageRange?.value &&
-              !existingAward.ageRange.includes(binding.ageRange?.value)
-            ) {
-              existingAward.ageRange.push(binding.ageRange?.value);
-            }
-          }
-        }
-      } else {
-        this.bookMap[title] = {
-          title: binding.title?.value || '',
-          authors: [binding.author?.value],
-          publisher: binding.publisherName?.value,
-          datePublished: binding.datePublished?.value,
-          isbn: binding.isbn?.value,
-          subjectThema: binding.subjectThema?.value || this.themeCode,
-          inLanguage: binding.inLanguage?.value,
-          illustrator: binding.illustrator?.value
-            ? [binding.illustrator?.value]
-            : [],
-          countryOfOrigin: binding.countryOfOrigin?.value || '',
-          awards: binding.award
-            ? [
-                {
-                  year: binding.awardYear?.value,
-                  name: binding.finalAwardName?.value,
-                  genre: binding.finalGenreName?.value,
-                  ageRange: binding.ageRange?.value
-                    ? [binding.ageRange?.value]
-                    : [],
-                },
-              ]
-            : [],
-          reviews: [],
-        };
-        const reviewAuthors = binding.reviewAuthor?.value.split('@ ');
-        const reviewContents = binding.reviewContent?.value.split('@ ');
-        const reviewDates = binding.reviewDatePublished?.value.split('@ ');
-        const reviewRatings = binding.reviewRating?.value.split('@ ');
-        const thumbsUps = binding.thumbsUp?.value.split('@ ');
-
-        // Check if there's more than one review
-        if (reviewAuthors && reviewAuthors.length > 1) {
-          for (let i = 0; i < reviewAuthors.length; i++) {
-            // Add each review to the bookMap
-            this.bookMap[title]?.reviews?.push({
-              reviewContent: reviewContents[i],
-              reviewAuthor: reviewAuthors[i],
-              reviewDatePublished: reviewDates[i],
-              reviewRating: reviewRatings[i],
-              thumbsUp: thumbsUps[i],
-              // Add other properties if available
-              reviewURL: binding.reviewURL?.value,
-              avis: binding.avis?.value,
-              source: binding.source?.value,
-            });
-          }
-        } else {
-          // Case for a single review
-          this.bookMap[title]?.reviews?.push({
-            reviewContent: binding.reviewContent?.value,
-            reviewAuthor: binding.reviewAuthor?.value,
-            reviewDatePublished: binding.reviewDatePublished?.value,
-            reviewRating: binding.reviewRating?.value,
-            thumbsUp: binding.thumbsUp?.value,
-            // Add other properties if available
-            reviewURL: binding.reviewURL?.value,
-            avis: binding.avis?.value,
-            source: binding.source?.value,
-          });
-        }
-      }
-    });
-
-    if (this.inAuthorsComponent === true) {
-      this.booksAuthor = Object.values(this.bookMap);
-      this.booksSourceAuthor.next(this.booksAuthor);
-      this.inAuthorsComponent = false;
-    } else if (this.inAwardsComponent === true) {
-      this.booksAward = Object.values(this.bookMap);
-      this.booksSourceAward.next(this.booksAward);
-      this.inAwardsComponent = false;
-    } else {
-      this.books = Object.values(this.bookMap);
-      this.booksSource.next(this.books);
-    }
-  }
+  
 }

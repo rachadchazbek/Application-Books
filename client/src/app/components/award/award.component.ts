@@ -2,6 +2,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, takeUntil } from 'rxjs';
+import { booksAward$, descriptionAward$ } from 'src/app/classes/subjects';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 
 @Component({
@@ -36,13 +37,13 @@ export class AwardComponent implements OnDestroy {
   }
 
   private subscribeToBooksAward() {
-    this.socketService.booksAward$
+    booksAward$
       .pipe(takeUntil(this.destroy$))
       .subscribe(books => this.books = books);
   }
 
   private subscribeToDescriptionAward() {
-    this.descriptionSub = this.socketService.descriptionAward$
+    this.descriptionSub = descriptionAward$
       .subscribe(data => this.descriptionAward = data);
   }
 

@@ -5,6 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { GENRES, TITLES, AWARDS, AUTHORS, LANGUAGES } from 'src/app/constants/constants';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 import { NgIf, NgFor } from '@angular/common';
+import { books$ } from 'src/app/classes/subjects';
 
 @Component({
   selector: 'app-search-component',
@@ -56,7 +57,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   };
 
   constructor(public socketService: SocketSparqlService, private readonly router: Router) {
-    this.socketService.books$.pipe(takeUntil(this.destroy$)).subscribe(books => {
+    books$.pipe(takeUntil(this.destroy$)).subscribe(books => {
       this.books = books;
     });
   }

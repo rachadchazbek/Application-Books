@@ -2,6 +2,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
+import { bookSummary$, currentBook$, rating$, urlBabelio$ } from 'src/app/classes/subjects';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 
 @Component({
@@ -42,7 +43,7 @@ export class BookComponent implements OnDestroy {
   }
 
   private subscribeToBookSummary() {
-    this.summaryBook = this.socketService.bookSummary$
+    this.summaryBook = bookSummary$
       .subscribe(data => {
         this.summaryBook = data;
         this.updateSummary();
@@ -51,17 +52,17 @@ export class BookComponent implements OnDestroy {
 
 
   private subscribeToBookRating() {
-    this.ratingBook = this.socketService.rating$
+    this.ratingBook = rating$
       .subscribe(data => this.ratingBook = data);
   }
 
   private subscribeToBabelioUrl() {
-    this.babelioLink = this.socketService.urlBabelio$
+    this.babelioLink = urlBabelio$
       .subscribe(data => this.babelioLink = data);
   }
 
   private subscribeToCurrentBook() {
-    this.descriptionBook = this.socketService.currentBook$
+    this.descriptionBook = currentBook$
         .subscribe(data => {
             this.currentBookData = data; 
         }); 
