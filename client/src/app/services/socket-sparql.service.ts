@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Award } from '../constants/Award';
 import {
   SPARQL_BABELIO,
   SPARQL_QUERY,
@@ -13,11 +12,7 @@ import {
   SPARQL_QUERY_LURELU_FILTER,
 } from '../constants/sparql';
 import axios from 'axios';
-import { HttpClient } from '@angular/common/http';
 import { load } from 'cheerio';
-import { map, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { ThemaCodes } from '../constants/thema-codes';
 import { HttpSparqlService } from './http-sparql.service';
 import { Book } from '../constants/Book';
 import { urlBabelioSubject, bookSummarySubject, ratingSubject, currentBookSubject, authorDataSubject, descriptionAwardSubject, booksSourceAuthor, booksSource } from '../classes/subjects';
@@ -28,7 +23,6 @@ import { BooksService } from './books.service';
 })
 export class SocketSparqlService {
   constructor(
-    private http: HttpClient,
     private readonly httpSparqlService: HttpSparqlService,
     private readonly booksService: BooksService
   ) {}
@@ -50,8 +44,7 @@ export class SocketSparqlService {
 
   // TODO define ?
   private themeActive = false;
-  private themeCode = '';
-  private readonly jsonUrl = 'assets/thema_code_dict.json';
+  private themeCode: string;
   private storedIsbns: string | null = null;
   books: any; // todo fix any
   
@@ -73,46 +66,17 @@ export class SocketSparqlService {
     this.httpSparqlService.postQuery(sparqlQuery);
 
     // Subscribe to the Observable to handle the response from findCodeByDescription
-    this.findCodeByDescription(description).subscribe({
-      next: (codeValue) => {
-        if (codeValue) {
-          this.themeCode = codeValue;
-          // Optionally perform further actions if codeValue is successfully retrieved
-          console.log(`Found code value: ${codeValue}`);
-        } else {
-          console.log('No code value found for the given description.');
-        }
-      },
-      error: (err) => {
-        console.error('Error finding code by description:', err);
-      },
+    this.httpSparqlService.findCodeByDescription(description).then((codeValue) => {
+      if (codeValue) {
+        this.themeCode = codeValue;
+        // Optionally perform further actions if codeValue is successfully retrieved
+        console.log(`Found code value: ${codeValue}`);
+      } else {
+        console.log('No code value found for the given description.');
+      }
+    }).catch((err) => {
+      console.error('Error finding code by description:', err);
     });
-  }
-
-  findCodeByDescription(description: string): Observable<string | undefined> {
-    return this.http.get<ThemaCodes>(this.jsonUrl).pipe(
-      map((codes: ThemaCodes) => {
-        const normalizedDescription = description
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '');
-        console.log(`Normalized input description: ${normalizedDescription}`); // Debug input normalization
-        for (const key in codes) {
-          if (codes[key].CodeDescription === description) {
-            // Instead of directly returning, we can use tap to perform side effects
-            return codes[key].CodeValue; // Return the code value if found
-          }
-        }
-        return undefined; // Return undefined if not found
-      }),
-      tap((codeValue) => {
-        if (codeValue) {
-          // Construct the SPARQL query and send it only if the codeValue is found
-          const filter = `FILTER(UCASE(?subjectThema) = "${codeValue.toUpperCase()}")`;
-          const sparqlQuery = SPARQL_BTLF_FILTER(filter);
-          this.httpSparqlService.postQuery(sparqlQuery);
-        }
-      })
-    );
   }
 
   onInput(argument: string, value: string) {
@@ -136,7 +100,7 @@ export class SocketSparqlService {
   getIsbnsFromBookMap() {
     const isbns = [];
     for (const key in this.bookMap) {
-      if (this.bookMap[key] && this.bookMap[key].isbn) {
+      if (this.bookMap[key]?.isbn) {
         isbns.push(this.bookMap[key].isbn);
       }
     }
@@ -223,7 +187,7 @@ export class SocketSparqlService {
   ageFilter(age: any) {
     if (this.themeActive) {
       const isbns =
-        this.storedIsbns ||
+        this.storedIsbns ?? 
         this.getIsbnsFromBookMap()
           .map((isbn) => `"${isbn}"`)
           .join(', ');
