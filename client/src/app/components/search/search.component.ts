@@ -15,6 +15,7 @@ import { books$ } from 'src/app/classes/subjects';
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit, OnDestroy {
+[x: string]: any;
   private readonly destroy$ = new Subject<void>();
   books: any[] = [];
   selectedGenre = 'Aucun genre sélectionné';

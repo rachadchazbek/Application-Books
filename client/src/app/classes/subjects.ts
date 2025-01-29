@@ -1,13 +1,14 @@
 import { BehaviorSubject } from 'rxjs';
+import { Book } from '../constants/Book';
 
 
-export const booksSourceAward = new BehaviorSubject<any>(null);
+export const booksSourceAward = new BehaviorSubject<Book[]>([]);
 export const booksAward$ = booksSourceAward.asObservable();
 
 export const authorDataSubject = new BehaviorSubject<any[]>([]);
 export const authorData$ = authorDataSubject.asObservable();
 
-export const descriptionAwardSubject = new BehaviorSubject<any[]>([]);
+export const descriptionAwardSubject = new BehaviorSubject<string>("");
 export const descriptionAward$ = descriptionAwardSubject.asObservable();
 
 export const bookSummarySubject = new BehaviorSubject<any>([]);

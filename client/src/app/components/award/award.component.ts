@@ -3,6 +3,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { booksAward$, descriptionAward$ } from 'src/app/classes/subjects';
+import { Book } from 'src/app/constants/Book';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 
 @Component({
@@ -13,11 +14,11 @@ import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
   styleUrls: ['./award.component.css']
 })
 export class AwardComponent implements OnDestroy {
-  descriptionAward: any;  
-  books: any;
-  filterAward: any;
+  descriptionAward: string;  
+  books: Book[];
+  filterAward: string | null;
   private descriptionSub: Subscription;
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   constructor(private readonly route: ActivatedRoute, public socketService: SocketSparqlService) {
     this.init();
