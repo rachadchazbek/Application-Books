@@ -17,6 +17,9 @@ import { books$ } from 'src/app/classes/subjects';
 export class SearchComponent implements OnInit, OnDestroy {
 [x: string]: any;
   private readonly destroy$ = new Subject<void>();
+
+  // TODO regroup all the filters in a single object
+  // From the forms
   books: any[] = [];
   selectedGenre = 'Aucun genre sélectionné';
   selectedLanguage = 'No Language Selected';

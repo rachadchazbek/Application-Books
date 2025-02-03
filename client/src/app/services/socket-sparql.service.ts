@@ -17,6 +17,7 @@ import { HttpSparqlService } from './http-sparql.service';
 import { Book } from '../constants/Book';
 import { urlBabelioSubject, bookSummarySubject, ratingSubject, currentBookSubject, authorDataSubject, descriptionAwardSubject, booksSourceAuthor, booksSource } from '../classes/subjects';
 import { BooksService } from './books.service';
+import FilterService from './filter.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,21 +25,9 @@ import { BooksService } from './books.service';
 export class SocketSparqlService {
   constructor(
     private readonly httpSparqlService: HttpSparqlService,
-    private readonly booksService: BooksService
+    private readonly booksService: BooksService,
+    private readonly filterService: FilterService
   ) {}
-
-  // TODO exoport
-  activeFilters = {
-    filterName: null,
-    filterGenre: null,
-    filterAuthor: null,
-    filterAge: [] as string[],
-    filterAward: null,
-    filterLanguage: null,
-    filterSource: '',
-    filterCategory: '',
-    filterAppreciation: '',
-  };
 
   bookMap: Record<string, Book> = {};
 
@@ -83,13 +72,13 @@ export class SocketSparqlService {
     if (!value) {
       switch (argument) {
         case 'title':
-          this.activeFilters.filterName = null;
+          this.filterService.activeFilters.filterName = null;
           break;
         case 'author':
-          this.activeFilters.filterAuthor = null;
+          this.filterService.activeFilters.filterAuthor = null;
           break;
         case 'award':
-          this.activeFilters.filterAward = null;
+          this.filterService.activeFilters.filterAward = null;
           break;
         default:
           break;
@@ -117,13 +106,13 @@ export class SocketSparqlService {
       return;
     }
     let baseQuery;
-    console.log(this.activeFilters);
+    console.log(this.filterService.activeFilters);
     console.log(2222);
-    console.log(this.activeFilters.filterSource);
-    switch (this.activeFilters.filterSource) {
+    console.log(this.filterService.activeFilters.filterSource);
+    switch (this.filterService.activeFilters.filterSource) {
       case 'Babelio': { 
         const starRating = parseInt(
-          this.activeFilters.filterCategory.split(' ')[0],
+          this.filterService.activeFilters.filterCategory?.split(' ')[0] ?? '',
           10
         );
         baseQuery = SPARQL_BABELIO(
@@ -132,7 +121,7 @@ export class SocketSparqlService {
         break; }
       case 'Constellation':
         console.log(2222);
-        if (this.activeFilters.filterCategory === 'Coup de coeur') {
+        if (this.filterService.activeFilters.filterCategory === 'Coup de coeur') {
           baseQuery = SPARQL_QUERY_CONSTELLATIONS(
             `FILTER(?isCoupDeCoeur = true && ?isbn IN (${isbns}))`
           );
@@ -147,7 +136,7 @@ export class SocketSparqlService {
         }
       case 'BNF':
         baseQuery = SPARQL_QUERY_BNF(
-          `FILTER(?avis = "${this.activeFilters.filterCategory}" && (?isbn IN (${isbns}) || ?ean IN (${isbns})))`
+          `FILTER(?avis = "${this.filterService.activeFilters.filterCategory}" && (?isbn IN (${isbns}) || ?ean IN (${isbns})))`
         );
         break;
       case 'Lurelu':
@@ -172,14 +161,14 @@ export class SocketSparqlService {
     if (this.themeActive) {
       console.log(11111);
       this.updateBooksByIsbn();
-      this.activeFilters.filterSource = source ? source : null;
-      this.activeFilters.filterCategory = category ? category : null;
+      this.filterService.activeFilters.filterSource = source ? source : null;
+      this.filterService.activeFilters.filterCategory = category ? category : null;
       this.storedIsbns = null;
       this.bookMap = {};
     } else {
       this.bookMap = {};
-      this.activeFilters.filterSource = source ? source : null;
-      this.activeFilters.filterCategory = category ? category : null;
+      this.filterService.activeFilters.filterSource = source ? source : null;
+      this.filterService.activeFilters.filterCategory = category ? category : null;
       this.updateBook();
     }
   }
@@ -196,8 +185,8 @@ export class SocketSparqlService {
       }
       this.bookMap = {};
       const ageString = age.toString();
-      this.activeFilters.filterAge.push(ageString);
-      for (const age of this.activeFilters.filterAge) {
+      this.filterService.activeFilters.filterAge.push(ageString);
+      for (const age of this.filterService.activeFilters.filterAge) {
         const query_bnf = SPARQL_QUERY_BNF(`
     FILTER((STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},")) &&
            ?isbn IN (${isbns}))`);
@@ -215,7 +204,7 @@ export class SocketSparqlService {
     } else {
       this.bookMap = {};
       const ageString = age.toString();
-      this.activeFilters.filterAge.push(ageString);
+      this.filterService.activeFilters.filterAge.push(ageString);
       this.updateBook();
     }
   }
@@ -227,10 +216,10 @@ export class SocketSparqlService {
         .join(', ');
       this.storedIsbns = null;
       this.bookMap = {};
-      this.activeFilters.filterAppreciation = appreciation
+      this.filterService.activeFilters.filterAppreciation = appreciation
         ? appreciation
         : null;
-      switch (this.activeFilters.filterAppreciation) {
+      switch (this.filterService.activeFilters.filterAppreciation) {
         case 'highlyAppreciated': {
           const query_lurelu = SPARQL_QUERY_LURELU_FILTER(
             `FILTER(?isbn IN (${isbns}))`
@@ -269,33 +258,33 @@ export class SocketSparqlService {
       }
     } else {
       this.bookMap = {};
-      this.activeFilters.filterAppreciation = appreciation
+      this.filterService.activeFilters.filterAppreciation = appreciation
         ? appreciation
         : null;
       this.updateBook();
     }
   }
 
-  filterName(filterName: any) {
+  filterName(filterName: string) {
     this.bookMap = {};
-    this.activeFilters.filterName = filterName ? filterName : null;
+    this.filterService.activeFilters.filterName = filterName ? filterName : null;
     this.updateFilters();
   }
 
-  filterGenre(filterGenre: any) {
+  filterGenre(filterGenre: string) {
     this.bookMap = {};
-    this.activeFilters.filterGenre =
+    this.filterService.activeFilters.filterGenre =
       filterGenre !== 'No Genre Selected' ? filterGenre : null;
     this.updateFilters();
   }
 
-  filterBooksByAuthor(filterAuthor: any) {
+  filterBooksByAuthor(filterAuthor: string) {
     this.bookMap = {};
-    this.activeFilters.filterAuthor = filterAuthor ? filterAuthor : null;
+    this.filterService.activeFilters.filterAuthor = filterAuthor ? filterAuthor : null;
     this.updateFilters();
   }
 
-  filterBooksByAward(filterAward: any) {
+  filterBooksByAward(filterAward: string) {
     this.bookMap = {};
     this.inAwardsComponent = true;
     const sparqlQuery = SPARQL_QUERY_DESCRIPTION(
@@ -306,7 +295,7 @@ export class SocketSparqlService {
     });
   }
 
-  filterAuthorBooks(filterAuthor: any) {
+  filterAuthorBooks(filterAuthor: string) {
     this.bookMap = {};
     this.inAuthorsComponent = true;
     const sparqlQuery = SPARQL_QUERY(`FILTER(?author = "${filterAuthor}")`);
@@ -317,20 +306,20 @@ export class SocketSparqlService {
 
   filterBooksByAge(filterAge: any) {
     this.bookMap = {};
-    this.activeFilters.filterAge =
+    this.filterService.activeFilters.filterAge =
       filterAge !== 'No Age Selected' ? filterAge : null;
     this.updateFilters();
   }
 
   filterAward(filterAward: any) {
     this.bookMap = {};
-    this.activeFilters.filterAward = filterAward ? filterAward : null;
+    this.filterService.activeFilters.filterAward = filterAward ? filterAward : null;
     this.updateFilters();
   }
 
   filterLanguage(filterLanguage: any) {
     this.bookMap = {};
-    this.activeFilters.filterLanguage =
+    this.filterService.activeFilters.filterLanguage =
       filterLanguage !== 'No Language Selected' ? filterLanguage : null;
     this.updateFilters();
   }
@@ -342,7 +331,7 @@ export class SocketSparqlService {
     });
   }
 
-  async bingSearchBook(book: any) {
+  async bingSearchBook(book: Book) {
     currentBookSubject.next(book);
     const query = `${book.title} ${book.authors[0]} site:babelio.com`;
     const encodedQuery = encodeURIComponent(query);
@@ -357,6 +346,7 @@ export class SocketSparqlService {
       const firstLink = response.data.webPages.value[0].url;
       this.scrapeWebsite(firstLink);
       urlBabelioSubject.next(firstLink);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`An error occurred: ${error.message}`);
     }
@@ -377,6 +367,7 @@ export class SocketSparqlService {
 
       // Open the firstLink in a new browser window or tab
       window.open(firstLink, '_blank');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`An error occurred: ${error.message}`);
     }
@@ -401,19 +392,19 @@ export class SocketSparqlService {
       const rating = $('.grosse_note').text().trim();
       ratingSubject.next(rating);
       console.log(rating);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`An error occurred: ${error.message}`);
     }
   }
 
   updateBook() {
-    console.log(this.activeFilters);
-    const queries = [];
+    console.log(this.filterService.activeFilters);
     let baseQuery;
-    switch (this.activeFilters.filterSource) {
+    switch (this.filterService.activeFilters.filterSource) {
       case 'Babelio': { 
         const starRating = parseInt(
-          this.activeFilters.filterCategory.split(' ')[0]
+          this.filterService.activeFilters.filterCategory?.split(' ')[0] ?? ''
         );
         baseQuery = SPARQL_BABELIO(`FILTER(?averageReview >= ${starRating})`);
         this.httpSparqlService.postQuery(baseQuery).then((response) => {
@@ -421,7 +412,7 @@ export class SocketSparqlService {
     });;
         break; }
       case 'Constellation':
-        if (this.activeFilters.filterCategory === 'Coup de coeur !') {
+        if (this.filterService.activeFilters.filterCategory === 'Coup de coeur !') {
           baseQuery = SPARQL_QUERY_CONSTELLATIONS(
             `FILTER(?isCoupDeCoeur = true)`
           );
@@ -437,9 +428,9 @@ export class SocketSparqlService {
           break;
         }
       case 'BNF':
-        console.log(this.activeFilters.filterCategory);
+        console.log(this.filterService.activeFilters.filterCategory);
         baseQuery = SPARQL_QUERY_BNF(
-          `FILTER(?avis = "${this.activeFilters.filterCategory}")`
+          `FILTER(?avis = "${this.filterService.activeFilters.filterCategory}")`
         );
         this.httpSparqlService.postQuery(baseQuery).then((response) => {
         this.booksService.updateData(response);
@@ -461,7 +452,7 @@ export class SocketSparqlService {
         // Handle default case or error
         break;
     }
-    switch (this.activeFilters.filterAppreciation) {
+    switch (this.filterService.activeFilters.filterAppreciation) {
       case 'highlyAppreciated': {
         const query_lurelu = SPARQL_QUERY_LURELU;
         const query_babelio = SPARQL_BABELIO(`FILTER(?averageReview >= 4)`);
@@ -504,8 +495,8 @@ export class SocketSparqlService {
       }
     }
 
-    if (this.activeFilters.filterAge) {
-      for (const age of this.activeFilters.filterAge) {
+    if (this.filterService.activeFilters.filterAge) {
+      for (const age of this.filterService.activeFilters.filterAge) {
         const query_bnf = SPARQL_QUERY_BNF(`
       FILTER(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},")) 
           `);
@@ -527,33 +518,33 @@ export class SocketSparqlService {
   updateFilters() {
     const filterQueries = [];
 
-    if (this.activeFilters.filterName) {
-      filterQueries.push(`FILTER(?title = "${this.activeFilters.filterName}")`);
+    if (this.filterService.activeFilters.filterName) {
+      filterQueries.push(`FILTER(?title = "${this.filterService.activeFilters.filterName}")`);
     }
     // add else conditions to handle removal of filters
-    if (this.activeFilters.filterGenre) {
+    if (this.filterService.activeFilters.filterGenre) {
       filterQueries.push(
-        `FILTER(?finalGenreName = "${this.activeFilters.filterGenre}")`
+        `FILTER(?finalGenreName = "${this.filterService.activeFilters.filterGenre}")`
       );
     }
-    if (this.activeFilters.filterAuthor) {
+    if (this.filterService.activeFilters.filterAuthor) {
       filterQueries.push(
-        `FILTER(?author = "${this.activeFilters.filterAuthor}")`
+        `FILTER(?author = "${this.filterService.activeFilters.filterAuthor}")`
       );
     }
-    if (this.activeFilters.filterAge) {
+    if (this.filterService.activeFilters.filterAge) {
       filterQueries.push(
-        `FILTER(?ageRange >= "${this.activeFilters.filterAge}")`
+        `FILTER(?ageRange >= "${this.filterService.activeFilters.filterAge}")`
       );
     }
-    if (this.activeFilters.filterAward) {
+    if (this.filterService.activeFilters.filterAward) {
       filterQueries.push(
-        `FILTER(?finalAwardName = "${this.activeFilters.filterAward}")`
+        `FILTER(?finalAwardName = "${this.filterService.activeFilters.filterAward}")`
       );
     }
-    if (this.activeFilters.filterLanguage) {
+    if (this.filterService.activeFilters.filterLanguage) {
       filterQueries.push(
-        `FILTER(?inLanguage = "${this.activeFilters.filterLanguage}")`
+        `FILTER(?inLanguage = "${this.filterService.activeFilters.filterLanguage}")`
       );
     }
 

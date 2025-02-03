@@ -1,5 +1,5 @@
 export interface Filter {
-    filterAge: Array<string>;
+    filterAge: string[];
     filterAppreciation: string | null;
     filterAuthor: string | null;
     filterAward: string | null;
@@ -7,4 +7,5 @@ export interface Filter {
     filterGenre: string | null;
     filterLanguage: string | null;
     filterName: string | null;
-    filterSource: string | null;
+    filterSource: string | null
+}

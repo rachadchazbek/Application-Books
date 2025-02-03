@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Filter } from '../constants/filter';
 
 
 /**
@@ -11,6 +12,27 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export default class FilterService {
+  // The activeFilters object stores the current filters applied to the page
+  private _activeFilters: Filter = {
+    filterName: "",
+    filterGenre: "",
+    filterAuthor: "",
+    filterAge: [],
+    filterAward: "",
+    filterLanguage: "",
+    filterSource: '',
+    filterCategory: '',
+    filterAppreciation: '',
+  };
+
+  get activeFilters() {
+    return this._activeFilters;
+  }
+
+  set activeFilters(filters) {
+    this._activeFilters = filters;
+  }
+
 
   constructor() { }
 }

@@ -17,7 +17,7 @@ export const bookSummary$ = bookSummarySubject.asObservable();
 export const ratingSubject = new BehaviorSubject<any>([]);
 export const rating$ = ratingSubject.asObservable();
 
-export const currentBookSubject = new BehaviorSubject<any[]>([]);
+export const currentBookSubject = new BehaviorSubject<Book>({} as Book);
 export const currentBook$ = currentBookSubject.asObservable();
 
 export const urlBabelioSubject = new BehaviorSubject<any>([]);

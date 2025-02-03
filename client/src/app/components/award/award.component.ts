@@ -16,7 +16,7 @@ import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 export class AwardComponent implements OnDestroy {
   descriptionAward: string;  
   books: Book[];
-  filterAward: string | null;
+  filterAward: string;
   private descriptionSub: Subscription;
   private readonly destroy$ = new Subject<void>();
 
@@ -32,7 +32,7 @@ export class AwardComponent implements OnDestroy {
 
   private subscribeToRouteParams() {
     this.route.paramMap.subscribe(params => {
-      this.filterAward = params.get('awardName');
+      this.filterAward = params.get('awardName') ?? '';
       this.filterBooksByAward();
     });   
   }
