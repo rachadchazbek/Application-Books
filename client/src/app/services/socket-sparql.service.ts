@@ -29,6 +29,8 @@ export class SocketSparqlService {
     private readonly filterService: FilterService
   ) {}
 
+  sparqlQuery : string;
+
   bookMap: Record<string, Book> = {};
 
   // TODO define ?
@@ -157,7 +159,7 @@ export class SocketSparqlService {
 
   // TODO Change to filter class
 
-  filterBooksByCategory(source: any, category: any) {
+  filterBooksByCategory(source: string, category: string) {
     if (this.themeActive) {
       console.log(11111);
       this.updateBooksByIsbn();
@@ -173,7 +175,7 @@ export class SocketSparqlService {
     }
   }
 
-  ageFilter(age: any) {
+  ageFilter(age: string) {
     if (this.themeActive) {
       const isbns =
         this.storedIsbns ?? 
@@ -324,7 +326,7 @@ export class SocketSparqlService {
     this.updateFilters();
   }
 
-  getAuthorInfo(filterAuthor: any) {
+  getAuthorInfo(filterAuthor: string) {
     const sparqlQuery = SPARQL_WIKIDATA(filterAuthor);
     this.httpSparqlService.postQuery(sparqlQuery).then((response) => {
         this.booksService.updateData(response);
@@ -381,7 +383,6 @@ export class SocketSparqlService {
       const response = await axios.get(proxyUrl, { responseType: 'text' });
 
       const rawHtml = response.data;
-      console.log(rawHtml);
 
       const $ = load(rawHtml, { decodeEntities: false });
 
@@ -514,7 +515,11 @@ export class SocketSparqlService {
       }
     }
   }
-
+  
+  async queryDB() {
+    const response = await this.httpSparqlService.postQuery(this.sparqlQuery);
+    this.booksService.updateData(response);
+  }
   updateFilters() {
     const filterQueries = [];
 
@@ -547,44 +552,7 @@ export class SocketSparqlService {
         `FILTER(?inLanguage = "${this.filterService.activeFilters.filterLanguage}")`
       );
     }
+    this.sparqlQuery = SPARQL_QUERY(filterQueries.join(' '));
 
-    const sparqlQuery = SPARQL_QUERY(filterQueries.join(' '));
-    this.httpSparqlService.postQuery(sparqlQuery).then((response) => {
-        this.booksService.updateData(response);
-    });
   }
-
-  updateAuthorData(responseData: any) {
-    const formattedData = responseData.results.bindings.map(
-        (binding: any) => {
-          return {
-            person: binding.person?.value,
-            personLabel: binding.personLabel?.value,
-            dateOfBirth: binding.dateOfBirth?.value,
-            placeOfBirth: binding.placeOfBirth?.value,
-            placeOfBirthLabel: binding.placeOfBirthLabel?.value,
-            occupation: binding.occupation?.value,
-            occupationLabel: binding.occupationLabel?.value,
-            countryOfCitizenship: binding.countryOfCitizenship?.value,
-            countryOfCitizenshipLabel: binding.countryOfCitizenshipLabel?.value,
-            education: binding.education?.value,
-            educationLabel: binding.educationLabel?.value,
-            website: binding.website?.value,
-            gender: binding.gender?.value,
-            genderLabel: binding.genderLabel?.value,
-            languageSpoken: binding.languageSpoken?.value,
-            languageSpokenLabel: binding.languageSpokenLabel?.value,
-            notableWork: binding.notableWork?.value,
-            notableWorkLabel: binding.notableWorkLabel?.value,
-            awardReceived: binding.awardReceived?.value,
-            awardReceivedLabel: binding.awardReceivedLabel?.value,
-            babelioAuthorID: binding.babelioAuthorID?.value,
-            wikidataLink: binding.wikidataLink?.value,
-          };
-        }
-      );
-      console.log(formattedData);
-      authorDataSubject.next(formattedData);
-    }
-  
 }

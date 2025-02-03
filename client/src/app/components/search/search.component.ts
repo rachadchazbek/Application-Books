@@ -28,6 +28,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchAward = '';
   searchText = '';
   searchTheme = '';
+  loader = false;
+  
 
   genres: string[] = GENRES;
   languages: string[] = LANGUAGES;
@@ -71,6 +73,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       const filter = `FILTER(UCASE(?subjectThema) = "${this.searchTheme.toUpperCase()}")`;
       this.socketService.runBtlfQuery(filter, this.searchTheme);
     }
+  }
+  
+  search(): void {
+    this.loader = true;
+    this.socketService.queryDB().finally(() => {
+      this.loader = false;
+    });
   }
 
   ngOnInit() {
@@ -172,7 +181,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   handleCheckboxChange(event: Event, age: number) {
     if ((event.target as HTMLInputElement).checked) {
-      this.socketService.ageFilter(age);
+      this.socketService.ageFilter(age.toString());
     }
   }
 

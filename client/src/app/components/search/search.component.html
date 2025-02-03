@@ -187,6 +187,14 @@
         <input type="text" [(ngModel)]="searchTheme" placeholder="Rechercher par thème" class="search-input">
         <button (click)="searchByTheme()" class="search-button">Rechercher</button>
       </div>
+      <div class="theme-search">
+        <button (click)="search()" class="search-button">Rechercher le livre</button>
+      </div>
+
+      <div class="loader" *ngIf="loader">
+        <i class="fas fa-spinner fa-spin"></i> Chargement...
+      </div>
+
 
     </div>
   </div>
