@@ -15,7 +15,7 @@ import axios from 'axios';
 import { load } from 'cheerio';
 import { HttpSparqlService } from './http-sparql.service';
 import { Book } from '../constants/Book';
-import { urlBabelioSubject, bookSummarySubject, ratingSubject, currentBookSubject, authorDataSubject, descriptionAwardSubject, booksSourceAuthor, booksSource } from '../classes/subjects';
+import { urlBabelioSubject, bookSummarySubject, ratingSubject, currentBookSubject } from '../classes/subjects';
 import { BooksService } from './books.service';
 import FilterService from './filter.service';
 
@@ -74,13 +74,13 @@ export class SocketSparqlService {
     if (!value) {
       switch (argument) {
         case 'title':
-          this.filterService.activeFilters.filterName = null;
+          this.filterService.activeFilters.filterName = "";
           break;
         case 'author':
-          this.filterService.activeFilters.filterAuthor = null;
+          this.filterService.activeFilters.filterAuthor = "";
           break;
         case 'award':
-          this.filterService.activeFilters.filterAward = null;
+          this.filterService.activeFilters.filterAward = "";
           break;
         default:
           break;
@@ -163,14 +163,14 @@ export class SocketSparqlService {
     if (this.themeActive) {
       console.log(11111);
       this.updateBooksByIsbn();
-      this.filterService.activeFilters.filterSource = source ? source : null;
-      this.filterService.activeFilters.filterCategory = category ? category : null;
+      this.filterService.activeFilters.filterSource = source;
+      this.filterService.activeFilters.filterCategory = category;
       this.storedIsbns = null;
       this.bookMap = {};
     } else {
       this.bookMap = {};
-      this.filterService.activeFilters.filterSource = source ? source : null;
-      this.filterService.activeFilters.filterCategory = category ? category : null;
+      this.filterService.activeFilters.filterSource = source;
+      this.filterService.activeFilters.filterCategory = category;
       this.updateBook();
     }
   }
@@ -269,20 +269,20 @@ export class SocketSparqlService {
 
   filterName(filterName: string) {
     this.bookMap = {};
-    this.filterService.activeFilters.filterName = filterName ? filterName : null;
+    this.filterService.activeFilters.filterName = filterName;
     this.updateFilters();
   }
 
   filterGenre(filterGenre: string) {
     this.bookMap = {};
     this.filterService.activeFilters.filterGenre =
-      filterGenre !== 'No Genre Selected' ? filterGenre : null;
+      filterGenre !== 'No Genre Selected' ? filterGenre : "";
     this.updateFilters();
   }
 
   filterBooksByAuthor(filterAuthor: string) {
     this.bookMap = {};
-    this.filterService.activeFilters.filterAuthor = filterAuthor ? filterAuthor : null;
+    this.filterService.activeFilters.filterAuthor = filterAuthor;
     this.updateFilters();
   }
 
@@ -313,9 +313,9 @@ export class SocketSparqlService {
     this.updateFilters();
   }
 
-  filterAward(filterAward: any) {
+  filterAward(filterAward: string) {
     this.bookMap = {};
-    this.filterService.activeFilters.filterAward = filterAward ? filterAward : null;
+    this.filterService.activeFilters.filterAward = filterAward;
     this.updateFilters();
   }
 
@@ -399,127 +399,59 @@ export class SocketSparqlService {
     }
   }
 
-  updateBook() {
-    console.log(this.filterService.activeFilters);
-    let baseQuery;
-    switch (this.filterService.activeFilters.filterSource) {
-      case 'Babelio': { 
-        const starRating = parseInt(
-          this.filterService.activeFilters.filterCategory?.split(' ')[0] ?? ''
-        );
-        baseQuery = SPARQL_BABELIO(`FILTER(?averageReview >= ${starRating})`);
-        this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.booksService.updateData(response);
-    });;
-        break; }
-      case 'Constellation':
-        if (this.filterService.activeFilters.filterCategory === 'Coup de coeur !') {
-          baseQuery = SPARQL_QUERY_CONSTELLATIONS(
-            `FILTER(?isCoupDeCoeur = true)`
-          );
-          this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.booksService.updateData(response);
-    });;
-          break;
-        } else {
-          baseQuery = SPARQL_QUERY_CONSTELLATIONS('');
-          this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.booksService.updateData(response);
-    });;
-          break;
-        }
-      case 'BNF':
-        console.log(this.filterService.activeFilters.filterCategory);
-        baseQuery = SPARQL_QUERY_BNF(
-          `FILTER(?avis = "${this.filterService.activeFilters.filterCategory}")`
-        );
-        this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.booksService.updateData(response);
-    });;
-        break;
-      case 'Lurelu':
-        baseQuery = SPARQL_QUERY_LURELU; // No additional filter needed for Lurelu
-        this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.booksService.updateData(response);
-    });;
-        break;
-      case 'BTLF':
-        baseQuery = SPARQL_BTLF;
-        this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.booksService.updateData(response);
-    });;
-        break;
-      default:
-        // Handle default case or error
-        break;
-    }
-    switch (this.filterService.activeFilters.filterAppreciation) {
-      case 'highlyAppreciated': {
-        const query_lurelu = SPARQL_QUERY_LURELU;
-        const query_babelio = SPARQL_BABELIO(`FILTER(?averageReview >= 4)`);
-        const query_bnf = SPARQL_QUERY_BNF(
-          `FILTER(?avis = "Coup de coeur !" || ?avis = "Bravo !")`
-        );
-        const query_constellations = SPARQL_QUERY_CONSTELLATIONS(
-          `FILTER(?isCoupDeCoeur = true)`
-        );
 
-        this.httpSparqlService.postQuery(query_lurelu).then((response) => {
-            this.booksService.updateData(response);
-        });
-        this.httpSparqlService.postQuery(query_babelio).then((response) => {
-            this.booksService.updateData(response);
-        });
-        this.httpSparqlService.postQuery(query_bnf).then((response) => {
-            this.booksService.updateData(response);
-        });
-        this.httpSparqlService.postQuery(query_constellations).then((response) => {
-            this.booksService.updateData(response);
-        });
+  async executeQuery(query: string) {
+    const response = await this.httpSparqlService.postQuery(query);
+    this.booksService.updateData(response);
+  };
 
-        break;
-      }
-      case 'notHighlyAppreciated': {
-        const query_babelio_not_appreciated = SPARQL_BABELIO(
-          `FILTER(?averageReview <= 3)`
-        );
-        const query_bnf_not_appreciated = SPARQL_QUERY_BNF(
-          `FILTER((?avis = "Hélas !" || ?avis = "Problème..."))`
-        );
-        this.httpSparqlService.postQuery(query_babelio_not_appreciated).then((response) => {
-            this.booksService.updateData(response);
-        });
-        this.httpSparqlService.postQuery(query_bnf_not_appreciated).then((response) => {
-            this.booksService.updateData(response);
-        });
-        break;
-      }
+  
+  async updateBook() {
+    const { filterSource, filterCategory, filterAppreciation, filterAge } = this.filterService.activeFilters;
+    
+
+    const queryMappings: Record<string, () => Promise<void>> = {
+      'Babelio': () => this.executeQuery(SPARQL_BABELIO(`FILTER(?averageReview >= ${parseInt(filterCategory?.split(' ')[0] ?? '')})`)),
+      'Constellation': () => this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(filterCategory === 'Coup de coeur !' ? `FILTER(?isCoupDeCoeur = true)` : '')),
+      'BNF': () => this.executeQuery(SPARQL_QUERY_BNF(`FILTER(?avis = "${filterCategory}")`)),
+      'Lurelu': () => this.executeQuery(SPARQL_QUERY_LURELU),
+      'BTLF': () => this.executeQuery(SPARQL_BTLF)
+    };
+
+    if (queryMappings[filterSource]) await queryMappings[filterSource]();
+
+    const appreciationQueries: Record<string, string[]> = {
+      'highlyAppreciated': [
+        SPARQL_QUERY_LURELU,
+        SPARQL_BABELIO(`FILTER(?averageReview >= 4)`),
+        SPARQL_QUERY_BNF(`FILTER(?avis = "Coup de coeur !" || ?avis = "Bravo !")`),
+        SPARQL_QUERY_CONSTELLATIONS(`FILTER(?isCoupDeCoeur = true)`) 
+      ],
+      'notHighlyAppreciated': [
+        SPARQL_BABELIO(`FILTER(?averageReview <= 3)`),
+        SPARQL_QUERY_BNF(`FILTER((?avis = "Hélas !" || ?avis = "Problème..."))`)
+      ]
+    };
+
+    if (filterAppreciation && appreciationQueries[filterAppreciation]) {
+      appreciationQueries[filterAppreciation].forEach((query: string) => this.executeQuery(query));
     }
 
-    if (this.filterService.activeFilters.filterAge) {
-      for (const age of this.filterService.activeFilters.filterAge) {
-        const query_bnf = SPARQL_QUERY_BNF(`
-      FILTER(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},")) 
-          `);
-
-        const query_constellations = SPARQL_QUERY_CONSTELLATIONS(`
-      FILTER(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},")) 
-          `);
-
-        this.httpSparqlService.postQuery(query_bnf).then((response) => {
-            this.booksService.updateData(response);
-        });
-        this.httpSparqlService.postQuery(query_constellations).then((response) => {
-            this.booksService.updateData(response);
-        });
-      }
+    if (filterAge) {
+      const ageFilters = filterAge.map(age => `FILTER(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},"))`);
+      ageFilters.forEach(filter => {
+        this.executeQuery(SPARQL_QUERY_BNF(filter));
+        this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(filter));
+      });
     }
   }
+
   
   async queryDB() {
     const response = await this.httpSparqlService.postQuery(this.sparqlQuery);
     this.booksService.updateData(response);
   }
+
   updateFilters() {
     const filterQueries = [];
 
@@ -553,6 +485,5 @@ export class SocketSparqlService {
       );
     }
     this.sparqlQuery = SPARQL_QUERY(filterQueries.join(' '));
-
   }
 }
