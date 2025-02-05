@@ -1,11 +1,11 @@
 export interface Filter {
     filterAge: string[];
-    filterAppreciation: string | null;
-    filterAuthor: string | null;
-    filterAward: string | null;
-    filterCategory: string | null;
-    filterGenre: string | null;
-    filterLanguage: string | null;
-    filterName: string | null;
-    filterSource: string | null
+    filterAppreciation: string;
+    filterAuthor: string;
+    filterAward: string;
+    filterCategory: string;
+    filterGenre: string;
+    filterLanguage: string;
+    filterName: string;
+    filterSource: string
 }
