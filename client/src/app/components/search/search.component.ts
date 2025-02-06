@@ -8,7 +8,7 @@ import { NgIf, NgFor } from '@angular/common';
 import { books$ } from 'src/app/classes/subjects';
 import { Appreciation } from 'src/app/constants/Appreciation';
 import { Book } from 'src/app/constants/Book';
-import { Categories, SOURCE_CATEGORIES } from 'src/app/constants/Categories';
+import { Categories, SOURCE_Categories } from 'src/app/constants/Categories';
 
 @Component({
   selector: 'app-search-component',
@@ -52,7 +52,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   selectedSource = '';
   selectedCategory: Categories;
-  sourceCategories = SOURCE_CATEGORIES
+  sourceCategories = SOURCE_Categories
 
   Appreciation = Appreciation;
   bookAppreciation: Appreciation; // 'highlyAppreciated' or 'notHighlyAppreciated'

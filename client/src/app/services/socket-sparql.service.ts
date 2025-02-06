@@ -252,7 +252,6 @@ export class SocketSparqlService {
     this.filterService.activeFilters.filterGenre =
       filterGenre !== 'No Genre Selected' ? filterGenre : "";
     this.sparqlQuery = this.filterService.updateFilters();
-
   }
 
   filterBooksByAuthor(filterAuthor: string) {

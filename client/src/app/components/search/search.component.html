@@ -109,7 +109,7 @@
         <select *ngIf="selectedSource && selectedSource !== 'BTLF'" [(ngModel)]="selectedCategory"
           (change)="onSelectCategory(selectedCategory)" class="filter-input">
           <option value="">Select Category</option>
-          <!-- <option *ngFor="let category of sourceCategories[selectedCategory]" [value]="category">{{ category }}</option> -->
+          <option *ngFor="let category of sourceCategories[selectedCategory]" [value]="category">{{ category }}</option>
 
         </select>
       </div>

@@ -35,10 +35,12 @@ export enum Lurelu {
     Favorite = 'Coup de coeur'
 }
 
-  // Define the categories for each source
-export const SOURCE_CATEGORIES = {
+  // Define the Categories for each source
+export const SOURCE_Categories = {
 Babelio: ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles'],
 Constellation: ['Coup de Coeur', 'Tout'],
 BNF: ['Hélas !', 'Problème...', 'Pourquoi pas ?', 'Intéressant', 'Bravo !', 'Coup de coeur !', 'Réédition à signaler', 'Bibliothèque idéale'],
-Lurelu: ['Coup de coeur']
+Lurelu: ['Coup de coeur'],
+BTLF: [],
+Unassigned: []
 };
