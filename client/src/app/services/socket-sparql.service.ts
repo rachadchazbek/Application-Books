@@ -18,6 +18,7 @@ import { Book } from '../constants/Book';
 import { urlBabelioSubject, bookSummarySubject, ratingSubject, currentBookSubject } from '../classes/subjects';
 import { BooksService } from './books.service';
 import FilterService from './filter.service';
+import { SparklQueryBuilderService } from './sparkl-query-builder.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,27 +27,20 @@ export class SocketSparqlService {
   constructor(
     private readonly httpSparqlService: HttpSparqlService,
     private readonly booksService: BooksService,
-    private readonly filterService: FilterService
+    private readonly filterService: FilterService,
+    private readonly sparklQueryBuilder: SparklQueryBuilderService
   ) {}
 
   sparqlQuery : string;
-
   bookMap: Record<string, Book> = {};
 
   // TODO define ?
-  private themeActive = false;
   private themeCode: string;
-  private storedIsbns: string | null = null;
-  books: any; // todo fix any
-  
+  private storedIsbns: string | null = null;  
+  private themeActive = false;
 
-  // TODO find a better handling method
-  // Type everythoing
   inAuthorsComponent = false;
-  booksAuthor: any;
-
   inAwardsComponent = false;
-  booksAward: any;
 
   runBtlfQuery(filter: string, description: string): void {
     this.bookMap = {};
@@ -108,9 +102,8 @@ export class SocketSparqlService {
       return;
     }
     let baseQuery;
-    console.log(this.filterService.activeFilters);
-    console.log(2222);
-    console.log(this.filterService.activeFilters.filterSource);
+
+
     switch (this.filterService.activeFilters.filterSource) {
       case 'Babelio': { 
         const starRating = parseInt(
@@ -311,6 +304,8 @@ export class SocketSparqlService {
 
   filterBooksByAge(filterAge: any) {
     this.bookMap = {};
+    console.log("this is filter age")
+    console.log(filterAge);
     this.filterService.activeFilters.filterAge =
       filterAge !== 'No Age Selected' ? filterAge : null;
     this.sparqlQuery = this.filterService.updateFilters();
@@ -323,12 +318,11 @@ export class SocketSparqlService {
 
   }
 
-  filterLanguage(filterLanguage: any) {
+  filterLanguage(filterLanguage: string) {
     this.bookMap = {};
     this.filterService.activeFilters.filterLanguage =
-      filterLanguage !== 'No Language Selected' ? filterLanguage : null;
+      filterLanguage !== 'No Language Selected' ? filterLanguage : "";
     this.sparqlQuery = this.filterService.updateFilters();
-
   }
 
   getAuthorInfo(filterAuthor: string) {
@@ -404,53 +398,33 @@ export class SocketSparqlService {
     }
   }
 
-
   async executeQuery(query: string) {
     const response = await this.httpSparqlService.postQuery(query);
     this.booksService.updateData(response);
   };
-
   
   async updateBook() {
     const { filterSource, filterCategory, filterAppreciation, filterAge } = this.filterService.activeFilters;
     
-
-    const queryMappings: Record<string, () => Promise<void>> = {
-      'Babelio': () => this.executeQuery(SPARQL_BABELIO(`FILTER(?averageReview >= ${parseInt(filterCategory?.split(' ')[0] ?? '')})`)),
-      'Constellation': () => this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(filterCategory === 'Coup de coeur !' ? `FILTER(?isCoupDeCoeur = true)` : '')),
-      'BNF': () => this.executeQuery(SPARQL_QUERY_BNF(`FILTER(?avis = "${filterCategory}")`)),
-      'Lurelu': () => this.executeQuery(SPARQL_QUERY_LURELU),
-      'BTLF': () => this.executeQuery(SPARQL_BTLF)
-    };
-
-    if (queryMappings[filterSource]) await queryMappings[filterSource]();
-
-    const appreciationQueries: Record<string, string[]> = {
-      'highlyAppreciated': [
-        SPARQL_QUERY_LURELU,
-        SPARQL_BABELIO(`FILTER(?averageReview >= 4)`),
-        SPARQL_QUERY_BNF(`FILTER(?avis = "Coup de coeur !" || ?avis = "Bravo !")`),
-        SPARQL_QUERY_CONSTELLATIONS(`FILTER(?isCoupDeCoeur = true)`) 
-      ],
-      'notHighlyAppreciated': [
-        SPARQL_BABELIO(`FILTER(?averageReview <= 3)`),
-        SPARQL_QUERY_BNF(`FILTER((?avis = "Hélas !" || ?avis = "Problème..."))`)
-      ]
-    };
-
-    if (filterAppreciation && appreciationQueries[filterAppreciation]) {
-      appreciationQueries[filterAppreciation].forEach((query: string) => this.executeQuery(query));
+    // Source query based on filterSource and filterCategory
+    const sourceQuery = this.sparklQueryBuilder.getSourceQuery(filterSource, filterCategory);
+    if (sourceQuery) {
+      await this.executeQuery(sourceQuery);
     }
 
+    // Appreciation queries
+    const appreciationQueries = this.sparklQueryBuilder.getAppreciationQueries(filterAppreciation);
+    appreciationQueries.forEach(query => this.executeQuery(query));
+
+    // Age filter queries
     if (filterAge) {
-      const ageFilters = filterAge.map(age => `FILTER(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},"))`);
-      ageFilters.forEach(filter => {
-        this.executeQuery(SPARQL_QUERY_BNF(filter));
-        this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(filter));
+      filterAge.forEach(age => {
+        const ageFilter = this.sparklQueryBuilder.getAgeFilter(age);
+        this.executeQuery(SPARQL_QUERY_BNF(ageFilter));
+        this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(ageFilter));
       });
     }
   }
-
   
   async queryDB() {
     const response = await this.httpSparqlService.postQuery(this.sparqlQuery);
