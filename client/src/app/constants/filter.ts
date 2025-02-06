@@ -1,6 +1,9 @@
+import { Appreciation } from "./Appreciation";
+import { Categories } from "./Categories";
+
 export interface Filter {
     filterAge: string[];
-    filterAppreciation: string;
+    filterAppreciation: Appreciation;
     filterAuthor: string;
     filterAward: string;
     filterCategory: string;

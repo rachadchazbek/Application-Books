@@ -41,15 +41,14 @@
       <h2>Recherchez un auteur</h2>
       <div class="search-container">
         <i class="fas fa-user fa-lg"></i>
-        <!-- <input type="text" [formControl]="myControl" placeholder="Recherchez un livre par son auteur..."
+        <input type="text" [formControl]="myControl" placeholder="Recherchez un livre par son auteur..."
           class="search-bar" (blur)="onBlurAuthor()" (focus)="isBlurredAuthor = false"
-          (keydown.enter)="selectAuthor(myControl.value)"
-          (input)="socketService.onInput('author', $event.target.value)"> -->
+          (keydown.enter)="selectAuthor(myControl.value)">
         <div class="autocomplete-items" *ngIf="myControl.value && filteredAuthors.length && !isBlurredAuthor">
-          <!-- <div *ngFor="let author of filteredAuthors" (click)="selectAuthor(author); isBlurredAuthor = true"
-            [class.active]="selectedAuthor === author" tabindex="0" (keydown)="handleKeyDown($event, author)">
+          <div *ngFor="let author of filteredAuthors" (click)="selectAuthor(author); isBlurredAuthor = true"
+            tabindex="0" (keydown)="handleKeyDown($event, author)">
             {{ author }}
-          </div> -->
+          </div>
         </div>
       </div>
 
@@ -58,13 +57,12 @@
         <input type="text" placeholder="Recherchez un livre par la nationalité..." class="search-bar">
         <div class="autocomplete-items"
            *ngIf="myControl.value && filteredAuthors.length && !isBlurredAuthor">
-        <!-- <div *ngFor="let author of filteredAuthors"
+        <div *ngFor="let author of filteredAuthors"
              (click)="selectAuthor(author); isBlurredAuthor = true"
              (keydown)="handleKeyDown($event, author)"
-             [class.active]="selectedAuthor === author"
              tabindex="0">
           {{ author }}
-        </div> -->
+        </div>
 
       </div>
     </div>
@@ -113,13 +111,13 @@
         <select *ngIf="selectedSource && selectedSource !== 'BTLF'" [(ngModel)]="selectedCategory"
           (change)="onSelectCategory(selectedCategory)" class="filter-input">
           <option value="">Select Category</option>
-          <!-- <option *ngFor="let category of sourceCategories[selectedSource]" [value]="category">{{ category }}</option> -->
+          <!-- <option *ngFor="let category of sourceCategories[selectedCategory]" [value]="category">{{ category }}</option> -->
 
         </select>
       </div>
       Book Appreciation Selection
-      <button (click)="onSelectBookAppreciation('highlyAppreciated')">Livre appréciés</button>
-      <button (click)="onSelectBookAppreciation('notHighlyAppreciated')">Livre pas appréciés</button>
+      <button (click)="onSelectBookAppreciation(Appreciation.HighlyAppreciated)">Livre appréciés</button>
+      <button (click)="onSelectBookAppreciation(Appreciation.NotHighlyAppreciated)">Livre pas appréciés</button>
     </div>
     <div class="search-section">
       <h2>Recherchez par niveau scolaire</h2>
@@ -251,7 +249,7 @@
           <strong>Age:</strong> {{ award.ageRange.join(', ') }}
         </p>
       </div>
-      <div *ngIf="book.reviews?.length > 0 && book.reviews[0].reviewContent?.length > 0" class="reviews-section">
+      <div *ngIf="book.reviews && book.reviews.length > 0 && book.reviews[0].reviewContent.length > 0" class="reviews-section">
         <h3>Critique</h3>
         <ul>
           <li *ngFor="let review of book.reviews">

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Filter } from '../constants/filter';
 import { SPARQL_QUERY } from '../constants/sparql';
+import { Appreciation } from '../constants/Appreciation';
 
 
 /**
@@ -23,7 +24,7 @@ export default class FilterService {
     filterLanguage: "",
     filterSource: '',
     filterCategory: '',
-    filterAppreciation: '',
+    filterAppreciation: Appreciation.unassigned,
   };
 
   get activeFilters() {

@@ -6,5 +6,6 @@ export interface Review {
     thumbsUp?: string;
     reviewURL?: string;
     avis?: string;
+    averageReview?: string;
     source?: string;
   }

@@ -6,6 +6,9 @@ import { GENRES, TITLES, AWARDS, AUTHORS, LANGUAGES } from 'src/app/constants/co
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 import { NgIf, NgFor } from '@angular/common';
 import { books$ } from 'src/app/classes/subjects';
+import { Appreciation } from 'src/app/constants/Appreciation';
+import { Book } from 'src/app/constants/Book';
+import { Categories, SOURCE_CATEGORIES } from 'src/app/constants/Categories';
 
 @Component({
   selector: 'app-search-component',
@@ -15,12 +18,11 @@ import { books$ } from 'src/app/classes/subjects';
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit, OnDestroy {
-[x: string]: any;
   private readonly destroy$ = new Subject<void>();
 
   // TODO regroup all the filters in a single object
   // From the forms
-  books: any[] = [];
+  books: Book[] = [];
   selectedGenre = 'Aucun genre sélectionné';
   selectedLanguage = 'No Language Selected';
   filterAge = 'Aucun age sélectionné';
@@ -29,8 +31,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchText = '';
   searchTheme = '';
   loader = false;
-  
-
   genres: string[] = GENRES;
   languages: string[] = LANGUAGES;
   ageRanges: number[] = Array.from({ length: 19 }, (_, i) => i);
@@ -51,16 +51,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   isBlurredAuthor = false;
 
   selectedSource = '';
-  selectedCategory = '';
-  bookAppreciation = ''; // 'highlyAppreciated' or 'notHighlyAppreciated'
+  selectedCategory: Categories;
+  sourceCategories = SOURCE_CATEGORIES
 
-  // Define the categories for each source
-  sourceCategories = {
-    Babelio: ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles'],
-    Constellation: ['Coup de Coeur', 'Tout'],
-    BNF: ['Hélas !', 'Problème...', 'Pourquoi pas ?', 'Intéressant', 'Bravo !', 'Coup de coeur !', 'Réédition à signaler', 'Bibliothèque idéale'],
-    Lurelu: ['Coup de coeur']
-  };
+  Appreciation = Appreciation;
+  bookAppreciation: Appreciation; // 'highlyAppreciated' or 'notHighlyAppreciated'
 
   constructor(public socketService: SocketSparqlService, private readonly router: Router) {
     books$.pipe(takeUntil(this.destroy$)).subscribe(books => {
@@ -101,18 +96,18 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   onSelectSource(source: string) {
     this.selectedSource = source;
-    this.selectedCategory = ''; // Reset category when source changes
-    if (source == 'BTLF') {
+    this.selectedCategory = Categories.Unassigned; // Reset category when source changes
+    if (source == Categories.BTLF) {
       this.socketService.filterBooksByCategory(this.selectedSource, this.selectedCategory);
     }
   }
 
-  onSelectCategory(category: string) {
+  onSelectCategory(category: Categories) {
     this.selectedCategory = category;
     this.socketService.filterBooksByCategory(this.selectedSource, this.selectedCategory);
   }
 
-  onSelectBookAppreciation(appreciation: string) {
+  onSelectBookAppreciation(appreciation: Appreciation) {
     this.bookAppreciation = appreciation;
     this.socketService.filterBooksByAppreciation(this.bookAppreciation);
   }
@@ -125,7 +120,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.router.navigate(['/award', awardName]);
   }
 
-  navigateToBook(book: any): void {
+  navigateToBook(book: Book): void {
     this.router.navigate(['/book', book.title]);
     this.socketService.bingSearchBook(book);
   }
@@ -185,7 +180,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleKeyDown(event: KeyboardEvent, data: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handleKeyDown(event: KeyboardEvent, data: any) {
     console.log('Key down event', event, data);
   }
 

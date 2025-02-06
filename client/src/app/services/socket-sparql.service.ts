@@ -19,6 +19,8 @@ import { urlBabelioSubject, bookSummarySubject, ratingSubject, currentBookSubjec
 import { BooksService } from './books.service';
 import FilterService from './filter.service';
 import { SparklQueryBuilderService } from './sparkl-query-builder.service';
+import { Categories } from '../constants/Categories';
+import { Appreciation } from '../constants/Appreciation';
 
 @Injectable({
   providedIn: 'root',
@@ -134,7 +136,7 @@ export class SocketSparqlService {
 
   // TODO Change to filter class
 
-  filterBooksByCategory(source: string, category: string) {
+  filterBooksByCategory(source: string, category: Categories) {
     if (this.themeActive) {
       console.log(11111);
       this.updateBooksByIsbn();
@@ -186,18 +188,16 @@ export class SocketSparqlService {
     }
   }
 
-  filterBooksByAppreciation(appreciation: any) {
+  filterBooksByAppreciation(appreciation: Appreciation) {
     if (this.themeActive) {
       const isbns = this.getIsbnsFromBookMap()
         .map((isbn) => `"${isbn}"`)
         .join(', ');
       this.storedIsbns = null;
       this.bookMap = {};
-      this.filterService.activeFilters.filterAppreciation = appreciation
-        ? appreciation
-        : null;
+      this.filterService.activeFilters.filterAppreciation = appreciation;
       switch (this.filterService.activeFilters.filterAppreciation) {
-        case 'highlyAppreciated': {
+        case Appreciation.HighlyAppreciated: {
           const query_lurelu = SPARQL_QUERY_LURELU_FILTER(
             `FILTER(?isbn IN (${isbns}))`
           );
@@ -235,9 +235,7 @@ export class SocketSparqlService {
       }
     } else {
       this.bookMap = {};
-      this.filterService.activeFilters.filterAppreciation = appreciation
-        ? appreciation
-        : null;
+      this.filterService.activeFilters.filterAppreciation = appreciation;
       this.updateBook();
     }
   }
