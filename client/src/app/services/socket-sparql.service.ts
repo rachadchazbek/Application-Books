@@ -64,24 +64,6 @@ export class SocketSparqlService {
     });
   }
 
-  onInput(argument: string, value: string) {
-    if (!value) {
-      switch (argument) {
-        case 'title':
-          this.filterService.activeFilters.filterName = "";
-          break;
-        case 'author':
-          this.filterService.activeFilters.filterAuthor = "";
-          break;
-        case 'award':
-          this.filterService.activeFilters.filterAward = "";
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
   getIsbnsFromBookMap() {
     const isbns = [];
     for (const key in this.bookMap) {
