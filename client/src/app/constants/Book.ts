@@ -1,4 +1,5 @@
 import { Award } from "./Award";
+import { Review } from "./Review";
 
 export interface Book {
   title: string;
@@ -13,15 +14,3 @@ export interface Book {
   countryOfOrigin?: string;
   reviews?: Review[];
 }
-
-export interface Review {
-  reviewContent?: string;
-  reviewAuthor?: string;
-  reviewDatePublished?: Date;
-  reviewRating?: number;
-  thumbsUp?: number;
-  reviewURL?: string;
-  avis?: string;
-  source?: string
-}
-

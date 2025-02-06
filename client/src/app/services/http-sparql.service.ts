@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SparqlResponse } from '../constants/sparqlResponse';
 import { SPARQL_BTLF_FILTER } from '../constants/sparql';
 import { ThemaCodes } from '../constants/thema-codes';
+import { SparqlResponse } from '../constants/Response';
 
 /**
  * @description This service class is responsible for sending SPARQL queries to the GraphDB instance and handling the responses.
