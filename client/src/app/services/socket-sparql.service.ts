@@ -270,20 +270,23 @@ export class SocketSparqlService {
   filterName(filterName: string) {
     this.bookMap = {};
     this.filterService.activeFilters.filterName = filterName;
-    this.updateFilters();
+    this.sparqlQuery = this.filterService.updateFilters();
+
   }
 
   filterGenre(filterGenre: string) {
     this.bookMap = {};
     this.filterService.activeFilters.filterGenre =
       filterGenre !== 'No Genre Selected' ? filterGenre : "";
-    this.updateFilters();
+    this.sparqlQuery = this.filterService.updateFilters();
+
   }
 
   filterBooksByAuthor(filterAuthor: string) {
     this.bookMap = {};
     this.filterService.activeFilters.filterAuthor = filterAuthor;
-    this.updateFilters();
+    this.sparqlQuery = this.filterService.updateFilters();
+
   }
 
   filterBooksByAward(filterAward: string) {
@@ -310,20 +313,22 @@ export class SocketSparqlService {
     this.bookMap = {};
     this.filterService.activeFilters.filterAge =
       filterAge !== 'No Age Selected' ? filterAge : null;
-    this.updateFilters();
+    this.sparqlQuery = this.filterService.updateFilters();
   }
 
   filterAward(filterAward: string) {
     this.bookMap = {};
     this.filterService.activeFilters.filterAward = filterAward;
-    this.updateFilters();
+    this.sparqlQuery = this.filterService.updateFilters();
+
   }
 
   filterLanguage(filterLanguage: any) {
     this.bookMap = {};
     this.filterService.activeFilters.filterLanguage =
       filterLanguage !== 'No Language Selected' ? filterLanguage : null;
-    this.updateFilters();
+    this.sparqlQuery = this.filterService.updateFilters();
+
   }
 
   getAuthorInfo(filterAuthor: string) {
@@ -450,40 +455,5 @@ export class SocketSparqlService {
   async queryDB() {
     const response = await this.httpSparqlService.postQuery(this.sparqlQuery);
     this.booksService.updateData(response);
-  }
-
-  updateFilters() {
-    const filterQueries = [];
-
-    if (this.filterService.activeFilters.filterName) {
-      filterQueries.push(`FILTER(?title = "${this.filterService.activeFilters.filterName}")`);
-    }
-    // add else conditions to handle removal of filters
-    if (this.filterService.activeFilters.filterGenre) {
-      filterQueries.push(
-        `FILTER(?finalGenreName = "${this.filterService.activeFilters.filterGenre}")`
-      );
-    }
-    if (this.filterService.activeFilters.filterAuthor) {
-      filterQueries.push(
-        `FILTER(?author = "${this.filterService.activeFilters.filterAuthor}")`
-      );
-    }
-    if (this.filterService.activeFilters.filterAge) {
-      filterQueries.push(
-        `FILTER(?ageRange >= "${this.filterService.activeFilters.filterAge}")`
-      );
-    }
-    if (this.filterService.activeFilters.filterAward) {
-      filterQueries.push(
-        `FILTER(?finalAwardName = "${this.filterService.activeFilters.filterAward}")`
-      );
-    }
-    if (this.filterService.activeFilters.filterLanguage) {
-      filterQueries.push(
-        `FILTER(?inLanguage = "${this.filterService.activeFilters.filterLanguage}")`
-      );
-    }
-    this.sparqlQuery = SPARQL_QUERY(filterQueries.join(' '));
   }
 }
