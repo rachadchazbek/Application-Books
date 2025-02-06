@@ -12,28 +12,26 @@
       <h2>Recherchez un livre</h2>
       <div class="search-container">
         <i class="fas fa-book fa-lg"></i>
-        <!-- <input type="text" [formControl]="myControlTitles" placeholder="Recherchez un livre par son titre..."
+        <input type="text" [formControl]="myControlTitles" placeholder="Recherchez un livre par son titre..."
           class="search-bar" (blur)="onBlurTitle()" (focus)="isBlurredTitle = false"
-          (keydown.enter)="selectTitle(myControlTitles.value)"
-          (input)="socketService.onInput('title', $event.target.value )"> -->
+          (keydown.enter)="selectTitle(myControlTitles.value)">
         <div class="autocomplete-items" *ngIf="myControlTitles.value && filteredTitles.length && !isBlurredTitle">
-          <!-- <div *ngFor="let title of filteredTitles" (click)="selectTitle(title); isBlurredTitle = true"
-            [class.active]="selectedTitle === title" tabindex="0" (keydown)="handleKeyDown($event, title)">
+          <div *ngFor="let title of filteredTitles" (click)="selectTitle(title); isBlurredTitle = true"
+            tabindex="0" (keydown)="handleKeyDown($event, title)">
             {{ title }}
-          </div> -->
+          </div>
         </div>
       </div>
       <div class="search-container">
         <i class="fas fa-award fa-lg"></i>
-        <!-- <input type="text" [formControl]="myControlAwards" placeholder="Recherchez un livre par son prix..."
+        <input type="text" [formControl]="myControlAwards" placeholder="Recherchez un livre par son prix..."
           class="search-bar" (blur)="onBlurAward()" (focus)="isBlurredAward = false"
-          (keydown.enter)="selectAward(myControlAwards.value)"
-          (input)="socketService.onInput('award', $event.target.value)"> -->
+          (keydown.enter)="selectAward(myControlAwards.value)">
         <div class="autocomplete-items" *ngIf="myControlAwards.value && filteredAwards.length && !isBlurredAward">
-          <!-- <div *ngFor="let award of filteredAwards" (click)="selectAward(award); isBlurredAward = true"
-            [class.active]="selectedAward === award" tabindex="0" (keydown)="handleKeyDown($event, award)">
+          <div *ngFor="let award of filteredAwards" (click)="selectAward(award); isBlurredAward = true"
+            tabindex="0" (keydown)="handleKeyDown($event, award)">
             {{ award }}
-          </div> -->
+          </div>
         </div>
       </div>
     </div>
