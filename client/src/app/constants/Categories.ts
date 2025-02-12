@@ -12,6 +12,7 @@ export enum Categories {
     BNF = 'BNF',
     BTLF = 'BTLF',
     Lurelu = 'Lurelu',
+    Kaleidoscope = 'Kaleidoscope',
     Unassigned = 'Unassigned'
 }
 

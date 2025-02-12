@@ -100,18 +100,17 @@
           <option value="BNF">BNF</option>
           <option value="Lurelu">Lurelu</option>
           <option value="BTLF">BTLF</option>
+          <option value="Kaleidoscope">Kaleidoscope</option>
         </select>
       </div>
       <div>
-
-        <!-- Category Selection Dropdown (shown only if a source is selected) -->
-        <i class="fas fa-bookmark fa-lg" *ngIf="selectedSource && selectedSource !== 'BTLF'"></i>
-        <select *ngIf="selectedSource && selectedSource !== 'BTLF'" [(ngModel)]="selectedCategory"
-          (change)="onSelectCategory(selectedCategory)" class="filter-input">
-          <option value="">Select Category</option>
-          <option *ngFor="let category of sourceCategories[selectedCategory]" [value]="category">{{ category }}</option>
-
-        </select>
+      <!-- Category Selection Dropdown (shown only if a source is selected and has categories) -->
+      <i class="fas fa-bookmark fa-lg" *ngIf="selectedSource && selectedSource !== 'BTLF' && sourceCategories[selectedSource]?.length"></i>
+      <select *ngIf="selectedSource && selectedSource !== 'BTLF' && sourceCategories[selectedSource]?.length" [(ngModel)]="selectedCategory"
+        (change)="onSelectCategory(selectedCategory)" class="filter-input">
+        <option value="">Selectionner la catégorie</option>
+        <option *ngFor="let category of sourceCategories[selectedSource]">{{ category }}</option>
+      </select>
       </div>
       Book Appreciation Selection
       <button (click)="onSelectBookAppreciation(Appreciation.HighlyAppreciated)">Livre appréciés</button>

@@ -38,6 +38,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   awards = AWARDS;
   authors = AUTHORS;
 
+  // TODO use FormBuilder
   myControl = new FormControl();
   myControlAwards = new FormControl();
   myControlTitles = new FormControl();
@@ -50,12 +51,12 @@ export class SearchComponent implements OnInit, OnDestroy {
   isBlurredAward = false;
   isBlurredAuthor = false;
 
-  selectedSource = '';
+  selectedSource = Categories.Unassigned;  
   selectedCategory: Categories;
   sourceCategories = SOURCE_Categories
 
   Appreciation = Appreciation;
-  bookAppreciation: Appreciation; // 'highlyAppreciated' or 'notHighlyAppreciated'
+  bookAppreciation: Appreciation;
 
   constructor(public socketService: SocketSparqlService, private readonly router: Router) {
     books$.pipe(takeUntil(this.destroy$)).subscribe(books => {
@@ -94,7 +95,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSelectSource(source: string) {
+  onSelectSource(source: Categories) {
     this.selectedSource = source;
     this.selectedCategory = Categories.Unassigned; // Reset category when source changes
     if (source == Categories.BTLF) {
