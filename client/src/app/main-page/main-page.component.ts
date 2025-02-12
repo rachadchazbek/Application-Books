@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { SearchComponent } from "../components/search/search.component";
 import { BookListComponent } from "../components/book-list/book-list.component";
 
+
 @Component({
   selector: 'app-main-page',
   standalone: true,
