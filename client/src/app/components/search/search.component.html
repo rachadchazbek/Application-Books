@@ -1,268 +1,186 @@
-<div class="page">
 
-  <head>
-    <title>BookFinder Scolaire</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  </head>
-  <div class="container">
-    <h1>
-      Titre: BookFinder Scolaire
-    </h1>
-    <div class="search-section">
-      <h2>Recherchez un livre</h2>
-      <div class="search-container">
-        <i class="fas fa-book fa-lg"></i>
-        <input type="text" [formControl]="myControlTitles" placeholder="Recherchez un livre par son titre..."
-          class="search-bar" (blur)="onBlurTitle()" (focus)="isBlurredTitle = false"
-          (keydown.enter)="selectTitle(myControlTitles.value)">
-        <div class="autocomplete-items" *ngIf="myControlTitles.value && filteredTitles.length && !isBlurredTitle">
-          <div *ngFor="let title of filteredTitles" (click)="selectTitle(title); isBlurredTitle = true"
-            tabindex="0" (keydown)="handleKeyDown($event, title)">
-            {{ title }}
-          </div>
-        </div>
-      </div>
-      <div class="search-container">
-        <i class="fas fa-award fa-lg"></i>
-        <input type="text" [formControl]="myControlAwards" placeholder="Recherchez un livre par son prix..."
-          class="search-bar" (blur)="onBlurAward()" (focus)="isBlurredAward = false"
-          (keydown.enter)="selectAward(myControlAwards.value)">
-        <div class="autocomplete-items" *ngIf="myControlAwards.value && filteredAwards.length && !isBlurredAward">
-          <div *ngFor="let award of filteredAwards" (click)="selectAward(award); isBlurredAward = true"
-            tabindex="0" (keydown)="handleKeyDown($event, award)">
-            {{ award }}
-          </div>
+  <h1>
+    Titre: BookFinder Scolaire
+  </h1>
+  <div class="search-section">
+    <h2>Recherchez un livre</h2>
+    <div class="search-container">
+      <i class="fas fa-book fa-lg"></i>
+      <input type="text" [formControl]="myControlTitles" placeholder="Recherchez un livre par son titre..."
+        class="search-bar" (blur)="onBlurTitle()" (focus)="isBlurredTitle = false"
+        (keydown.enter)="selectTitle(myControlTitles.value)">
+      <div class="autocomplete-items" *ngIf="myControlTitles.value && filteredTitles.length && !isBlurredTitle">
+        <div *ngFor="let title of filteredTitles" (click)="selectTitle(title); isBlurredTitle = true"
+          tabindex="0" (keydown)="handleKeyDown($event, title)">
+          {{ title }}
         </div>
       </div>
     </div>
-    <div class="search-section">
-      <h2>Recherchez un auteur</h2>
-      <div class="search-container">
-        <i class="fas fa-user fa-lg"></i>
-        <input type="text" [formControl]="myControl" placeholder="Recherchez un livre par son auteur..."
-          class="search-bar" (blur)="onBlurAuthor()" (focus)="isBlurredAuthor = false"
-          (keydown.enter)="selectAuthor(myControl.value)">
-        <div class="autocomplete-items" *ngIf="myControl.value && filteredAuthors.length && !isBlurredAuthor">
-          <div *ngFor="let author of filteredAuthors" (click)="selectAuthor(author); isBlurredAuthor = true"
-            tabindex="0" (keydown)="handleKeyDown($event, author)">
-            {{ author }}
-          </div>
+    <div class="search-container">
+      <i class="fas fa-award fa-lg"></i>
+      <input type="text" [formControl]="myControlAwards" placeholder="Recherchez un livre par son prix..."
+        class="search-bar" (blur)="onBlurAward()" (focus)="isBlurredAward = false"
+        (keydown.enter)="selectAward(myControlAwards.value)">
+      <div class="autocomplete-items" *ngIf="myControlAwards.value && filteredAwards.length && !isBlurredAward">
+        <div *ngFor="let award of filteredAwards" (click)="selectAward(award); isBlurredAward = true"
+          tabindex="0" (keydown)="handleKeyDown($event, award)">
+          {{ award }}
         </div>
       </div>
-
-      <div class="search-container">
-        <i class="fas fa-flag fa-lg"></i>
-        <input type="text" placeholder="Recherchez un livre par la nationalité..." class="search-bar">
-        <div class="autocomplete-items"
-           *ngIf="myControl.value && filteredAuthors.length && !isBlurredAuthor">
-        <div *ngFor="let author of filteredAuthors"
-             (click)="selectAuthor(author); isBlurredAuthor = true"
-             (keydown)="handleKeyDown($event, author)"
-             tabindex="0">
+    </div>
+  </div>
+  <div class="search-section">
+    <h2>Recherchez un auteur</h2>
+    <div class="search-container">
+      <i class="fas fa-user fa-lg"></i>
+      <input type="text" [formControl]="myControl" placeholder="Recherchez un livre par son auteur..."
+        class="search-bar" (blur)="onBlurAuthor()" (focus)="isBlurredAuthor = false"
+        (keydown.enter)="selectAuthor(myControl.value)">
+      <div class="autocomplete-items" *ngIf="myControl.value && filteredAuthors.length && !isBlurredAuthor">
+        <div *ngFor="let author of filteredAuthors" (click)="selectAuthor(author); isBlurredAuthor = true"
+          tabindex="0" (keydown)="handleKeyDown($event, author)">
           {{ author }}
         </div>
-
       </div>
     </div>
-    <div class="search-section">
-      <h2>Recherchez un type</h2>
-      <div class="search-item">
-        <i class="fas fa-theater-masks fa-lg"></i>
-        <select [(ngModel)]="selectedGenre" (change)="selectGenre()" class="filter-input">
-          <option value="" disabled selected>Selectionnez un genre...</option>
-          <option value="Aucun genre sélectionné">Aucun genre sélectionné</option>
-          <option *ngFor="let genre of genres">{{ genre }}</option>
-        </select>
+
+    <div class="search-container">
+      <i class="fas fa-flag fa-lg"></i>
+      <input type="text" placeholder="Recherchez un livre par la nationalité..." class="search-bar">
+      <div class="autocomplete-items"
+          *ngIf="myControl.value && filteredAuthors.length && !isBlurredAuthor">
+      <div *ngFor="let author of filteredAuthors"
+            (click)="selectAuthor(author); isBlurredAuthor = true"
+            (keydown)="handleKeyDown($event, author)"
+            tabindex="0">
+        {{ author }}
       </div>
-      <div class="search-item">
-        <i class="fas fa-child fa-lg"></i>
-        <select [(ngModel)]="filterAge" (change)="filterBooksByAge()" class="filter-input">
-          <option value="" disabled>Selectionnez un age...</option>
-          <option value="Aucun age sélectionné">Aucun age sélectionné</option>
-          <option *ngFor="let ageRange of ageRanges">{{ ageRange }}</option>
-        </select>
-      </div>
-      <div class="search-item">
-        <i class="fas fa-language fa-lg"></i>
-        <select [(ngModel)]="selectedLanguage" (change)="filterLanguage()" class="filter-input">
-          <option value="" disabled>Selectionnez une langue...</option>
-          <option value="Aucune langue sélectionnée">Aucune langue sélectionnée</option>
-          <option *ngFor="let language of languages">{{ language }}</option>
-        </select>
-      </div>
-      <div class="search-item">
-        <!-- Source Selection Dropdown -->
-        <i class="fas fa-book-open fa-lg"></i>
-        <select [(ngModel)]="selectedSource" (change)="onSelectSource(selectedSource)" class="filter-input">
-          <option value="">Selectionner la source</option>
-          <option value="Babelio">Babelio</option>
-          <option value="Constellation">Constellation</option>
-          <option value="BNF">BNF</option>
-          <option value="Lurelu">Lurelu</option>
-          <option value="BTLF">BTLF</option>
-          <option value="Kaleidoscope">Kaleidoscope</option>
-        </select>
-      </div>
-      <div>
-      <!-- Category Selection Dropdown (shown only if a source is selected and has categories) -->
-      <i class="fas fa-bookmark fa-lg" *ngIf="selectedSource && selectedSource !== 'BTLF' && sourceCategories[selectedSource]?.length"></i>
-      <select *ngIf="selectedSource && selectedSource !== 'BTLF' && sourceCategories[selectedSource]?.length" [(ngModel)]="selectedCategory"
-        (change)="onSelectCategory(selectedCategory)" class="filter-input">
-        <option value="">Selectionner la catégorie</option>
-        <option *ngFor="let category of sourceCategories[selectedSource]">{{ category }}</option>
+
+    </div>
+  </div>
+  </div>
+  <div class="search-section">
+    <h2>Recherchez un type</h2>
+    <div class="search-item">
+      <i class="fas fa-theater-masks fa-lg"></i>
+      <select [(ngModel)]="selectedGenre" (change)="selectGenre()" class="filter-input">
+        <option value="" disabled selected>Selectionnez un genre...</option>
+        <option value="Aucun genre sélectionné">Aucun genre sélectionné</option>
+        <option *ngFor="let genre of genres">{{ genre }}</option>
       </select>
-      </div>
-      Book Appreciation Selection
-      <button (click)="onSelectBookAppreciation(Appreciation.HighlyAppreciated)">Livre appréciés</button>
-      <button (click)="onSelectBookAppreciation(Appreciation.NotHighlyAppreciated)">Livre pas appréciés</button>
     </div>
-    <div class="search-section">
-      <h2>Recherchez par niveau scolaire</h2>
-      <div class="education-levels">
-        <table>
-          <tr>
-            <th colspan="2">Préscolaire</th>
-            <th colspan="6">Primaire</th>
-            <th colspan="5">Secondaire</th>
-          </tr>
-          <tr>
-            <!-- Preschool cycles -->
-            <td colspan="2"> </td>
-
-            <!-- Primary cycles -->
-            <td colspan="2">1<sup>er</sup> cycle</td>
-            <td colspan="2">2<sup>e</sup> cycle</td>
-            <td colspan="2">3<sup>e</sup> cycle</td>
-
-            <!-- Secondary cycles -->
-            <td colspan="2">1<sup>er</sup> cycle</td>
-            <td colspan="3">2<sup>e</sup> cycle</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="preschool-4" name="preschool-4"
-                (change)="handleCheckboxChange($event, 4)"><label for="preschool-4">4 ans</label></td>
-            <td><input type="checkbox" id="preschool-5" name="preschool-5"
-                (change)="handleCheckboxChange($event, 5)"><label for="preschool-5">5 ans</label></td>
-
-            <!-- Primary years -->
-            <td><input type="checkbox" id="primary-1" name="primary-1" (change)="handleCheckboxChange($event, 6)"><label
-                for="primary-1">1<sup>re</sup> --- 6 ans</label></td>
-            <td><input type="checkbox" id="primary-2" name="primary-2" (change)="handleCheckboxChange($event, 7)"><label
-                for="primary-2">2<sup>e</sup> --- 7 ans</label></td>
-            <td><input type="checkbox" id="primary-3" name="primary-3" (change)="handleCheckboxChange($event, 8)"><label
-                for="primary-3">3<sup>e</sup> --- 8 ans</label></td>
-            <td><input type="checkbox" id="primary-4" name="primary-4" (change)="handleCheckboxChange($event, 9)"><label
-                for="primary-4">4<sup>e</sup> --- 9 ans</label></td>
-            <td><input type="checkbox" id="primary-5" name="primary-5"
-                (change)="handleCheckboxChange($event, 10)"><label for="primary-5">5<sup>e</sup> --- 10 ans</label></td>
-            <td><input type="checkbox" id="primary-6" name="primary-6"
-                (change)="handleCheckboxChange($event, 11)"><label for="primary-6">6<sup>e</sup> --- 11 ans</label></td>
-
-            <!-- Secondary years -->
-            <td><input type="checkbox" id="secondary-1" name="secondary-1"
-                (change)="handleCheckboxChange($event, 12)"><label for="secondary-1">1<sup>re</sup> --- 12 ans</label>
-            </td>
-            <td><input type="checkbox" id="secondary-2" name="secondary-2"
-                (change)="handleCheckboxChange($event, 13)"><label for="secondary-2">2<sup>e</sup> --- 13 ans</label>
-            </td>
-            <td><input type="checkbox" id="secondary-3" name="secondary-3"
-                (change)="handleCheckboxChange($event, 14)"><label for="secondary-3">3<sup>e</sup> --- 14 ans</label>
-            </td>
-            <td><input type="checkbox" id="secondary-4" name="secondary-4"
-                (change)="handleCheckboxChange($event, 15)"><label for="secondary-4">4<sup>e</sup> --- 15 ans</label>
-            </td>
-            <td><input type="checkbox" id="secondary-5" name="secondary-5"
-                (change)="handleCheckboxChange($event, 16)"><label for="secondary-5">5<sup>e</sup> --- 16 ans</label>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div class="theme-search">
-        <!-- Theme Search Input -->
-        <input type="text" [(ngModel)]="searchTheme" placeholder="Rechercher par thème" class="search-input">
-        <button (click)="searchByTheme()" class="search-button">Rechercher</button>
-      </div>
-      <div class="theme-search">
-        <button (click)="search()" class="search-button">Rechercher le livre</button>
-      </div>
-
-      <div class="loader" *ngIf="loader">
-        <i class="fas fa-spinner fa-spin"></i> Chargement...
-      </div>
-
-
+    <div class="search-item">
+      <i class="fas fa-child fa-lg"></i>
+      <select [(ngModel)]="filterAge" (change)="filterBooksByAge()" class="filter-input">
+        <option value="" disabled>Selectionnez un age...</option>
+        <option value="Aucun age sélectionné">Aucun age sélectionné</option>
+        <option *ngFor="let ageRange of ageRanges">{{ ageRange }}</option>
+      </select>
     </div>
+    <div class="search-item">
+      <i class="fas fa-language fa-lg"></i>
+      <select [(ngModel)]="selectedLanguage" (change)="filterLanguage()" class="filter-input">
+        <option value="" disabled>Selectionnez une langue...</option>
+        <option value="Aucune langue sélectionnée">Aucune langue sélectionnée</option>
+        <option *ngFor="let language of languages">{{ language }}</option>
+      </select>
+    </div>
+    <div class="search-item">
+      <!-- Source Selection Dropdown -->
+      <i class="fas fa-book-open fa-lg"></i>
+      <select [(ngModel)]="selectedSource" (change)="onSelectSource(selectedSource)" class="filter-input">
+        <option value="">Selectionner la source</option>
+        <option value="Babelio">Babelio</option>
+        <option value="Constellation">Constellation</option>
+        <option value="BNF">BNF</option>
+        <option value="Lurelu">Lurelu</option>
+        <option value="BTLF">BTLF</option>
+        <option value="Kaleidoscope">Kaleidoscope</option>
+      </select>
+    </div>
+    <div>
+    <!-- Category Selection Dropdown (shown only if a source is selected and has categories) -->
+    <i class="fas fa-bookmark fa-lg" *ngIf="selectedSource && selectedSource !== 'BTLF' && sourceCategories[selectedSource]?.length"></i>
+    <select *ngIf="selectedSource && selectedSource !== 'BTLF' && sourceCategories[selectedSource]?.length" [(ngModel)]="selectedCategory"
+      (change)="onSelectCategory(selectedCategory)" class="filter-input">
+      <option value="">Selectionner la catégorie</option>
+      <option *ngFor="let category of sourceCategories[selectedSource]">{{ category }}</option>
+    </select>
+    </div>
+    Book Appreciation Selection
+    <button (click)="onSelectBookAppreciation(Appreciation.HighlyAppreciated)">Livre appréciés</button>
+    <button (click)="onSelectBookAppreciation(Appreciation.NotHighlyAppreciated)">Livre pas appréciés</button>
   </div>
-  <div class="book-list">
-    <div *ngFor="let book of books" class="book-card">
-      <h2 class="book-title" (click)="navigateToBook(book)" tabindex="0" (keydown)="handleKeyDown($event, book)">{{ book.title }}</h2>
-      <p>
-        <i class="fas fa-user"></i>
-        <ng-container *ngFor="let author of book.authors; let i = index">
-          <span (click)="navigateToAuthor(author)" (keydown)="handleKeyDown($event, author)" tabindex="0">{{ author }}</span>
-          <span *ngIf="i < book.authors.length - 1">, </span>
-          <span *ngIf="i === book.authors.length - 1">&nbsp;</span>
-        </ng-container>
-      </p>
-      <p *ngIf="book.publisher" (click)="navigateToPublisher(book.publisher)" (keydown)="handleKeyDown($event, book.publisher)" class="publisher-info" tabindex="0">
-        <i class="fas fa-building"></i> {{ book.publisher }}
-      </p>
-      <p *ngIf="book.datePublished">
-        <i class="fas fa-calendar-alt"></i>
-        {{book.datePublished}}
-      </p>
-      <p *ngIf="book.isbn">
-        <i class="fas fa-barcode"></i>
-        {{ book.isbn }}
-      </p>
-      <p *ngIf="book.inLanguage">
-        <i class="fas fa-globe"></i>
-        {{ book.inLanguage === 'fre' ? 'Français' : (book.inLanguage === 'eng' ? 'Anglais' : book.inLanguage) }}
-      </p>
-      <p *ngIf="book.illustrator && book.illustrator.length > 0">
-        <i class="fas fa-paint-brush"></i>
-        <ng-container *ngFor="let illustrator of book.illustrator; let i = index">
-          <!-- <span (click)="navigateToIllustrator(illustrator)" (keydown)="handleKeyDown($event, illustrator)" tabindex="0">{{ illustrator }}</span> -->
-          <span *ngIf="i < book.illustrator.length - 1">, </span>
-          <span *ngIf="i === book.illustrator.length - 1">&nbsp;</span>
-        </ng-container>
-      </p>
-      <p *ngIf="book.countryOfOrigin">
-        <i class="fas fa-flag"></i> {{ book.countryOfOrigin }}
-      </p>
-      <!-- Subject Thema Display -->
-      <p *ngIf="book.subjectThema">
-        <i class="fas fa-bookmark"></i>
-        {{ book.subjectThema }}
-      </p>
-      <div class="award-section" *ngFor="let award of book.awards">
-        <p class="award-name" (click)="navigateToAward(award.name)" (keydown)="handleKeyDown($event, award.name)" tabindex="0">
-          <i class="fas fa-trophy"></i> {{ award.name }} ({{ award.year }})
-        </p>
-        <p>
-          <strong>Genre:</strong> {{ award.genre }}
-        </p>
-        <p *ngIf="award.ageRange && award.ageRange.length > 0">
-          <strong>Age:</strong> {{ award.ageRange.join(', ') }}
-        </p>
-      </div>
-      <div *ngIf="book.reviews && book.reviews.length > 0 && book.reviews[0].reviewContent.length > 0" class="reviews-section">
-        <h3>Critique</h3>
-        <ul>
-          <li *ngFor="let review of book.reviews">
-            <p *ngIf="review.reviewContent" class="review-content">{{ review.reviewContent }}</p>
-            <p *ngIf="review.reviewAuthor" class="review-author">Par {{ review.reviewAuthor }}</p>
-            <!-- <p *ngIf="review.reviewDatePublished" class="review-date">Publié le: {{ review.reviewDatePublished | date:
-              'mediumDate' }}</p> -->
-            <p *ngIf="review.reviewRating" class="review-rating">Note: {{ review.reviewRating }}</p>
-            <p *ngIf="review.averageReview" class="review-average">Note moyenne: {{ review.averageReview }}</p>
-            <p *ngIf="review.thumbsUp" class="review-thumbs-up">Pouces levés: {{ review.thumbsUp }}</p>
-            <p *ngIf="review.avis" class="review-avis">Avis: {{ review.avis }}</p>
-            <p *ngIf="review.source" class="review-source">Source: {{ review.source }}</p>
-            <a *ngIf="review.reviewURL" href="{{ review.reviewURL }}" target="_blank" class="review-link">Lire l'avis
-              complet</a>
-          </li>
-        </ul>
-      </div>
+  <div class="search-section">
+    <h2>Recherchez par niveau scolaire</h2>
+    <div class="education-levels">
+      <table>
+        <tr>
+          <th colspan="2">Préscolaire</th>
+          <th colspan="6">Primaire</th>
+          <th colspan="5">Secondaire</th>
+        </tr>
+        <tr>
+          <!-- Preschool cycles -->
+          <td colspan="2"> </td>
+
+          <!-- Primary cycles -->
+          <td colspan="2">1<sup>er</sup> cycle</td>
+          <td colspan="2">2<sup>e</sup> cycle</td>
+          <td colspan="2">3<sup>e</sup> cycle</td>
+
+          <!-- Secondary cycles -->
+          <td colspan="2">1<sup>er</sup> cycle</td>
+          <td colspan="3">2<sup>e</sup> cycle</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" id="preschool-4" name="preschool-4"
+              (change)="handleCheckboxChange($event, 4)"><label for="preschool-4">4 ans</label></td>
+          <td><input type="checkbox" id="preschool-5" name="preschool-5"
+              (change)="handleCheckboxChange($event, 5)"><label for="preschool-5">5 ans</label></td>
+
+          <!-- Primary years -->
+          <td><input type="checkbox" id="primary-1" name="primary-1" (change)="handleCheckboxChange($event, 6)"><label
+              for="primary-1">1<sup>re</sup> --- 6 ans</label></td>
+          <td><input type="checkbox" id="primary-2" name="primary-2" (change)="handleCheckboxChange($event, 7)"><label
+              for="primary-2">2<sup>e</sup> --- 7 ans</label></td>
+          <td><input type="checkbox" id="primary-3" name="primary-3" (change)="handleCheckboxChange($event, 8)"><label
+              for="primary-3">3<sup>e</sup> --- 8 ans</label></td>
+          <td><input type="checkbox" id="primary-4" name="primary-4" (change)="handleCheckboxChange($event, 9)"><label
+              for="primary-4">4<sup>e</sup> --- 9 ans</label></td>
+          <td><input type="checkbox" id="primary-5" name="primary-5"
+              (change)="handleCheckboxChange($event, 10)"><label for="primary-5">5<sup>e</sup> --- 10 ans</label></td>
+          <td><input type="checkbox" id="primary-6" name="primary-6"
+              (change)="handleCheckboxChange($event, 11)"><label for="primary-6">6<sup>e</sup> --- 11 ans</label></td>
+
+          <!-- Secondary years -->
+          <td><input type="checkbox" id="secondary-1" name="secondary-1"
+              (change)="handleCheckboxChange($event, 12)"><label for="secondary-1">1<sup>re</sup> --- 12 ans</label>
+          </td>
+          <td><input type="checkbox" id="secondary-2" name="secondary-2"
+              (change)="handleCheckboxChange($event, 13)"><label for="secondary-2">2<sup>e</sup> --- 13 ans</label>
+          </td>
+          <td><input type="checkbox" id="secondary-3" name="secondary-3"
+              (change)="handleCheckboxChange($event, 14)"><label for="secondary-3">3<sup>e</sup> --- 14 ans</label>
+          </td>
+          <td><input type="checkbox" id="secondary-4" name="secondary-4"
+              (change)="handleCheckboxChange($event, 15)"><label for="secondary-4">4<sup>e</sup> --- 15 ans</label>
+          </td>
+          <td><input type="checkbox" id="secondary-5" name="secondary-5"
+              (change)="handleCheckboxChange($event, 16)"><label for="secondary-5">5<sup>e</sup> --- 16 ans</label>
+          </td>
+        </tr>
+      </table>
     </div>
-  </div>
+    <div class="theme-search">
+      <!-- Theme Search Input -->
+      <input type="text" [(ngModel)]="searchTheme" placeholder="Rechercher par thème" class="search-input">
+      <button (click)="searchByTheme()" class="search-button">Rechercher</button>
+    </div>
+    <div class="theme-search">
+      <button (click)="search()" class="search-button">Rechercher le livre</button>
+    </div>
+
+    <div class="loader" *ngIf="loader">
+      <i class="fas fa-spinner fa-spin"></i> Chargement...
+    </div>

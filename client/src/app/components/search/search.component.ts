@@ -1,13 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormsModule, FormControl, ReactiveFormsModule} from '@angular/forms';
-import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
 import { GENRES, TITLES, AWARDS, AUTHORS, LANGUAGES } from 'src/app/constants/constants';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 import { NgIf, NgFor } from '@angular/common';
-import { books$ } from 'src/app/classes/subjects';
 import { Appreciation } from 'src/app/constants/Appreciation';
-import { Book } from 'src/app/constants/Book';
 import { Categories, SOURCE_Categories } from 'src/app/constants/Categories';
 
 @Component({
@@ -17,12 +13,10 @@ import { Categories, SOURCE_Categories } from 'src/app/constants/Categories';
   imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor],
   styleUrls: ['./search.component.css']
 })
-export class SearchComponent implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
+export class SearchComponent implements OnInit {
 
   // TODO regroup all the filters in a single object
   // From the forms
-  books: Book[] = [];
   selectedGenre = 'Aucun genre sélectionné';
   selectedLanguage = 'No Language Selected';
   filterAge = 'Aucun age sélectionné';
@@ -58,11 +52,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   Appreciation = Appreciation;
   bookAppreciation: Appreciation;
 
-  constructor(public socketService: SocketSparqlService, private readonly router: Router) {
-    books$.pipe(takeUntil(this.destroy$)).subscribe(books => {
-      this.books = books;
-    });
-  }
+  constructor(public socketService: SocketSparqlService) {}
 
   searchByTheme(): void {
     if (this.searchTheme) {
@@ -111,23 +101,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   onSelectBookAppreciation(appreciation: Appreciation) {
     this.bookAppreciation = appreciation;
     this.socketService.filterBooksByAppreciation(this.bookAppreciation);
-  }
-
-  navigateToAuthor(authorName: string): void {
-    this.router.navigate(['/author', authorName]);
-  }
-
-  navigateToAward(awardName: string): void {
-    this.router.navigate(['/award', awardName]);
-  }
-
-  navigateToBook(book: Book): void {
-    this.router.navigate(['/book', book.title]);
-    this.socketService.bingSearchBook(book);
-  }
-
-  navigateToPublisher(publisher: string) {
-    this.socketService.bingSearchPublisher(publisher);
   }
 
   selectGenre() {
@@ -189,9 +162,4 @@ export class SearchComponent implements OnInit, OnDestroy {
   onBlurTitle() { setTimeout(() => { this.isBlurredTitle = true; }, 100); } 
   onBlurAward() { setTimeout(() => { this.isBlurredAward = true; }, 100); } 
   onBlurAuthor() { setTimeout(() => { this.isBlurredAuthor = true; }, 100); }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 }

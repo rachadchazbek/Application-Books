@@ -1,0 +1,74 @@
+
+<div class="book-list">
+    <div *ngFor="let book of books" class="book-card">
+      <h2 class="book-title" (click)="navigateToBook(book)" tabindex="0" (keydown)="handleKeyDown($event, book)">{{ book.title }}</h2>
+      <p>
+        <i class="fas fa-user"></i>
+        <ng-container *ngFor="let author of book.authors; let i = index">
+          <span (click)="navigateToAuthor(author)" (keydown)="handleKeyDown($event, author)" tabindex="0">{{ author }}</span>
+          <span *ngIf="i < book.authors.length - 1">, </span>
+          <span *ngIf="i === book.authors.length - 1">&nbsp;</span>
+        </ng-container>
+      </p>
+      <p *ngIf="book.publisher" (click)="navigateToPublisher(book.publisher)" (keydown)="handleKeyDown($event, book.publisher)" class="publisher-info" tabindex="0">
+        <i class="fas fa-building"></i> {{ book.publisher }}
+      </p>
+      <p *ngIf="book.datePublished">
+        <i class="fas fa-calendar-alt"></i>
+        {{book.datePublished}}
+      </p>
+      <p *ngIf="book.isbn">
+        <i class="fas fa-barcode"></i>
+        {{ book.isbn }}
+      </p>
+      <p *ngIf="book.inLanguage">
+        <i class="fas fa-globe"></i>
+        {{ book.inLanguage === 'fre' ? 'Français' : (book.inLanguage === 'eng' ? 'Anglais' : book.inLanguage) }}
+      </p>
+      <p *ngIf="book.illustrator && book.illustrator.length > 0">
+        <i class="fas fa-paint-brush"></i>
+        <ng-container *ngFor="let illustrator of book.illustrator; let i = index">
+          <!-- <span (click)="navigateToIllustrator(illustrator)" (keydown)="handleKeyDown($event, illustrator)" tabindex="0">{{ illustrator }}</span> -->
+          <span *ngIf="i < book.illustrator.length - 1">, </span>
+          <span *ngIf="i === book.illustrator.length - 1">&nbsp;</span>
+        </ng-container>
+      </p>
+      <p *ngIf="book.countryOfOrigin">
+        <i class="fas fa-flag"></i> {{ book.countryOfOrigin }}
+      </p>
+      <!-- Subject Thema Display -->
+      <p *ngIf="book.subjectThema">
+        <i class="fas fa-bookmark"></i>
+        {{ book.subjectThema }}
+      </p>
+      <div class="award-section" *ngFor="let award of book.awards">
+        <p class="award-name" (click)="navigateToAward(award.name)" (keydown)="handleKeyDown($event, award.name)" tabindex="0">
+          <i class="fas fa-trophy"></i> {{ award.name }} ({{ award.year }})
+        </p>
+        <p>
+          <strong>Genre:</strong> {{ award.genre }}
+        </p>
+        <p *ngIf="award.ageRange && award.ageRange.length > 0">
+          <strong>Age:</strong> {{ award.ageRange.join(', ') }}
+        </p>
+      </div>
+      <div *ngIf="book.reviews && book.reviews.length > 0 && book.reviews[0].reviewContent.length > 0" class="reviews-section">
+        <h3>Critique</h3>
+        <ul>
+          <li *ngFor="let review of book.reviews">
+            <p *ngIf="review.reviewContent" class="review-content">{{ review.reviewContent }}</p>
+            <p *ngIf="review.reviewAuthor" class="review-author">Par {{ review.reviewAuthor }}</p>
+            <!-- <p *ngIf="review.reviewDatePublished" class="review-date">Publié le: {{ review.reviewDatePublished | date:
+              'mediumDate' }}</p> -->
+            <p *ngIf="review.reviewRating" class="review-rating">Note: {{ review.reviewRating }}</p>
+            <p *ngIf="review.averageReview" class="review-average">Note moyenne: {{ review.averageReview }}</p>
+            <p *ngIf="review.thumbsUp" class="review-thumbs-up">Pouces levés: {{ review.thumbsUp }}</p>
+            <p *ngIf="review.avis" class="review-avis">Avis: {{ review.avis }}</p>
+            <p *ngIf="review.source" class="review-source">Source: {{ review.source }}</p>
+            <a *ngIf="review.reviewURL" href="{{ review.reviewURL }}" target="_blank" class="review-link">Lire l'avis
+              complet</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
