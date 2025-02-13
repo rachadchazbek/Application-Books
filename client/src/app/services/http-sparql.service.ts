@@ -21,7 +21,9 @@ export class HttpSparqlService {
   constructor(private readonly http: HttpClient) { }
 
   async postQuery(sparqlQuery: string): Promise<SparqlResponse> {
-    const repositoryUrl = 'http://Rachads-MacBook-Pro-2.local:7200/repositories/Books-app';
+    // const repositoryUrl = 'http://Rachads-MacBook-Pro-2.local:7200/repositories/Books-app' --> Local version
+    const repositoryUrl = 'http://148.113.191.18:7200/repositories/books';
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/sparql-query',
       'Accept': 'application/sparql-results+json',
