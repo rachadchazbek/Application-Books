@@ -10,4 +10,4 @@ RUN npm install
 
 EXPOSE 7200
 
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+CMD ["ng", "serve", "--disable-host-check", "0.0.0.0"]
