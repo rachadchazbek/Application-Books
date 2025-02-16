@@ -54,12 +54,12 @@ export class SearchComponent implements OnInit {
 
   constructor(public socketService: SocketSparqlService) {}
 
-  searchByTheme(): void {
-    if (this.searchTheme) {
-      const filter = `FILTER(UCASE(?subjectThema) = "${this.searchTheme.toUpperCase()}")`;
-      this.socketService.runBtlfQuery(filter, this.searchTheme);
-    }
-  }
+  // searchByTheme(): void {
+  //   if (this.searchTheme) {
+  //     const filter = `FILTER(UCASE(?subjectThema) = "${this.searchTheme.toUpperCase()}")`;
+  //     this.socketService.runBtlfQuery(filter, this.searchTheme);
+  //   }
+  // }
   
   search(): void {
     this.loader = true;
