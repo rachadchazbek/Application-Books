@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -8,6 +8,15 @@ RUN npm install -g @angular/cli
 
 RUN npm install
 
-EXPOSE 7200
+RUN ng build
 
-CMD ["ng", "serve", "--disable-host-check", "0.0.0.0"]
+RUN echo "Building client image done"
+
+FROM nginx:alpine
+
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /usr/src/app/dist/client /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
