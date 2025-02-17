@@ -10,11 +10,12 @@ import { MainPageComponent } from './main-page/main-page.component';
 // Import your components here
 
 const routes: Routes = [
-  { path: '', component: MainPageComponent }, // Default route
+  { path: '', component: MainPageComponent, pathMatch:"full" }, // Default route
   { path: 'search', component: SearchComponent },
   { path: 'author/:authorName', component: AuthorComponent },
   { path: 'award/:awardName', component: AwardComponent },
-  { path: 'book/:bookName', component: BookComponent }
+  { path: 'book/:bookName', component: BookComponent },
+  { path: '**', redirectTo: '' }
   // More routes can be added here
 ];
 
