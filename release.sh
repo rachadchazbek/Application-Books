@@ -16,7 +16,6 @@ sudo docker rmi $IMAGE_NAME
 # Pull the latest code from GitHub
 echo "Pulling latest code from GitHub..."
 sudo git pull 
-cd client
 
 # Build the Docker image
 echo "Building the Docker image..."

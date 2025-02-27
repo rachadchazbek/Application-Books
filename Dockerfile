@@ -15,7 +15,7 @@ RUN echo "Building client image done"
 FROM nginx:alpine
 
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /usr/src/app/dist/client /usr/share/nginx/html
+COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
