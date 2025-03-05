@@ -1,74 +1,207 @@
 
-<div class="book-list">
-    <div *ngFor="let book of books" class="book-card">
-      <h2 class="book-title" (click)="navigateToBook(book)" tabindex="0" (keydown)="handleKeyDown($event, book)">{{ book.title }}</h2>
-      <p>
-        <i class="fas fa-user"></i>
-        <ng-container *ngFor="let author of book.authors; let i = index">
-          <span (click)="navigateToAuthor(author)" (keydown)="handleKeyDown($event, author)" tabindex="0">{{ author }}</span>
-          <span *ngIf="i < book.authors.length - 1">, </span>
-          <span *ngIf="i === book.authors.length - 1">&nbsp;</span>
-        </ng-container>
-      </p>
-      <p *ngIf="book.publisher" (click)="navigateToPublisher(book.publisher)" (keydown)="handleKeyDown($event, book.publisher)" class="publisher-info" tabindex="0">
-        <i class="fas fa-building"></i> {{ book.publisher }}
-      </p>
-      <p *ngIf="book.datePublished">
-        <i class="fas fa-calendar-alt"></i>
-        {{book.datePublished}}
-      </p>
-      <p *ngIf="book.isbn">
-        <i class="fas fa-barcode"></i>
-        {{ book.isbn }}
-      </p>
-      <p *ngIf="book.inLanguage">
-        <i class="fas fa-globe"></i>
-        {{ book.inLanguage === 'fre' ? 'Français' : (book.inLanguage === 'eng' ? 'Anglais' : book.inLanguage) }}
-      </p>
-      <p *ngIf="book.illustrator && book.illustrator.length > 0">
-        <i class="fas fa-paint-brush"></i>
-        <ng-container *ngFor="let illustrator of book.illustrator; let i = index">
-          <!-- <span (click)="navigateToIllustrator(illustrator)" (keydown)="handleKeyDown($event, illustrator)" tabindex="0">{{ illustrator }}</span> -->
-          <span *ngIf="i < book.illustrator.length - 1">, </span>
-          <span *ngIf="i === book.illustrator.length - 1">&nbsp;</span>
-        </ng-container>
-      </p>
-      <p *ngIf="book.countryOfOrigin">
-        <i class="fas fa-flag"></i> {{ book.countryOfOrigin }}
-      </p>
-      <!-- Subject Thema Display -->
-      <p *ngIf="book.subjectThema">
-        <i class="fas fa-bookmark"></i>
-        {{ book.subjectThema }}
-      </p>
-      <div class="award-section" *ngFor="let award of book.awards">
-        <p class="award-name" (click)="navigateToAward(award.name)" (keydown)="handleKeyDown($event, award.name)" tabindex="0">
-          <i class="fas fa-trophy"></i> {{ award.name }} ({{ award.year }})
-        </p>
-        <p>
-          <strong>Genre:</strong> {{ award.genre }}
-        </p>
-        <p *ngIf="award.ageRange && award.ageRange.length > 0">
-          <strong>Age:</strong> {{ award.ageRange.join(', ') }}
-        </p>
+<div class="book-list-container">
+  <!-- Controls section -->
+  <div class="book-list-controls">
+    <div class="view-controls">
+      <button class="view-button" [class.active]="viewMode === 'grid'" (click)="toggleViewMode()" aria-label="Vue en grille">
+        <i class="fas fa-th-large"></i>
+      </button>
+      <button class="view-button" [class.active]="viewMode === 'list'" (click)="toggleViewMode()" aria-label="Vue en liste">
+        <i class="fas fa-list"></i>
+      </button>
+    </div>
+    
+    <div class="sort-controls">
+      <span>Trier par:</span>
+      <button class="sort-button" [class.active]="sortOption === 'title'" (click)="setSortOption('title')" aria-label="Trier par titre">
+        Titre
+        <i *ngIf="sortOption === 'title'" class="fas" [class.fa-sort-up]="sortDirection === 'asc'" [class.fa-sort-down]="sortDirection === 'desc'"></i>
+      </button>
+      <button class="sort-button" [class.active]="sortOption === 'author'" (click)="setSortOption('author')" aria-label="Trier par auteur">
+        Auteur
+        <i *ngIf="sortOption === 'author'" class="fas" [class.fa-sort-up]="sortDirection === 'asc'" [class.fa-sort-down]="sortDirection === 'desc'"></i>
+      </button>
+      <button class="sort-button" [class.active]="sortOption === 'date'" (click)="setSortOption('date')" aria-label="Trier par date">
+        Date
+        <i *ngIf="sortOption === 'date'" class="fas" [class.fa-sort-up]="sortDirection === 'asc'" [class.fa-sort-down]="sortDirection === 'desc'"></i>
+      </button>
+    </div>
+    
+    <div class="page-size-controls">
+      <label for="page-size">Livres par page:</label>
+      <select id="page-size" (change)="onPageSizeChange($event)">
+        <option [selected]="pageSize === 12" value="12">12</option>
+        <option [selected]="pageSize === 24" value="24">24</option>
+        <option [selected]="pageSize === 48" value="48">48</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Results count -->
+  <div class="results-count">
+    <p>{{ allBooks.length }} résultats trouvés</p>
+  </div>
+  
+  <!-- Book list -->
+  <div class="book-list" [class.grid-view]="viewMode === 'grid'" [class.list-view]="viewMode === 'list'">
+    <div *ngFor="let book of books" class="book-card" [class.grid-card]="viewMode === 'grid'" [class.list-card]="viewMode === 'list'">
+      <div class="book-card-content">
+        <!-- Book cover placeholder -->
+        <div class="book-cover">
+          <i class="fas fa-book"></i>
+        </div>
+        
+        <div class="book-details">
+          <h2 class="book-title" (click)="navigateToBook(book)" tabindex="0" (keydown)="handleKeyDown($event, book)">{{ book.title }}</h2>
+          
+          <div class="book-meta">
+            <p class="book-authors">
+              <i class="fas fa-user"></i>
+              <ng-container *ngFor="let author of book.authors; let i = index">
+                <span (click)="navigateToAuthor(author)" (keydown)="handleKeyDown($event, author)" tabindex="0" class="author-link">{{ author }}</span>
+                <span *ngIf="i < book.authors.length - 1">, </span>
+              </ng-container>
+            </p>
+            
+            <p *ngIf="book.publisher" class="publisher-info" (click)="navigateToPublisher(book.publisher)" (keydown)="handleKeyDown($event, book.publisher)" tabindex="0">
+              <i class="fas fa-building"></i> {{ book.publisher }}
+            </p>
+            
+            <p *ngIf="book.datePublished" class="date-info">
+              <i class="fas fa-calendar-alt"></i> {{ book.datePublished }}
+            </p>
+            
+            <p *ngIf="book.inLanguage" class="language-info">
+              <i class="fas fa-globe"></i> {{ book.inLanguage === 'fre' ? 'Français' : (book.inLanguage === 'eng' ? 'Anglais' : book.inLanguage) }}
+            </p>
+            
+            <p *ngIf="book.isbn" class="isbn-info">
+              <i class="fas fa-barcode"></i> {{ book.isbn }}
+            </p>
+          </div>
+          
+          <!-- Awards badges -->
+          <div *ngIf="book.awards && book.awards.length > 0" class="award-badges">
+            <span *ngFor="let award of book.awards" class="award-badge" (click)="navigateToAward(award.name)" (keydown)="handleKeyDown($event, award.name)" tabindex="0">
+              <i class="fas fa-trophy"></i> {{ award.name }}
+            </span>
+          </div>
+          
+          <!-- Review summary if available -->
+          <div *ngIf="book.reviews && book.reviews.length > 0 && book.reviews[0].reviewRating" class="review-summary">
+            <div class="rating">
+              <i class="fas fa-star"></i>
+              <span>{{ book.reviews[0].reviewRating }}</span>
+            </div>
+          </div>
+          
+          <!-- View details button -->
+          <button class="view-details-btn" (click)="navigateToBook(book)">
+            <i class="fas fa-info-circle"></i> Voir les détails
+          </button>
+        </div>
       </div>
-      <div *ngIf="book.reviews && book.reviews.length > 0 && book.reviews[0].reviewContent.length > 0" class="reviews-section">
-        <h3>Critique</h3>
-        <ul>
-          <li *ngFor="let review of book.reviews">
-            <p *ngIf="review.reviewContent" class="review-content">{{ review.reviewContent }}</p>
-            <p *ngIf="review.reviewAuthor" class="review-author">Par {{ review.reviewAuthor }}</p>
-            <!-- <p *ngIf="review.reviewDatePublished" class="review-date">Publié le: {{ review.reviewDatePublished | date:
-              'mediumDate' }}</p> -->
-            <p *ngIf="review.reviewRating" class="review-rating">Note: {{ review.reviewRating }}</p>
-            <p *ngIf="review.averageReview" class="review-average">Note moyenne: {{ review.averageReview }}</p>
-            <p *ngIf="review.thumbsUp" class="review-thumbs-up">Pouces levés: {{ review.thumbsUp }}</p>
-            <p *ngIf="review.avis" class="review-avis">Avis: {{ review.avis }}</p>
-            <p *ngIf="review.source" class="review-source">Source: {{ review.source }}</p>
-            <a *ngIf="review.reviewURL" href="{{ review.reviewURL }}" target="_blank" class="review-link">Lire l'avis
-              complet</a>
-          </li>
-        </ul>
+      
+      <!-- Expanded content for list view -->
+      <div *ngIf="viewMode === 'list'" class="expanded-details">
+        <!-- Subject Thema Display -->
+        <p *ngIf="book.subjectThema" class="subject-info">
+          <i class="fas fa-bookmark"></i> {{ book.subjectThema }}
+        </p>
+        
+        <!-- Country of origin -->
+        <p *ngIf="book.countryOfOrigin" class="country-info">
+          <i class="fas fa-flag"></i> {{ book.countryOfOrigin }}
+        </p>
+        
+        <!-- Illustrators -->
+        <p *ngIf="book.illustrator && book.illustrator.length > 0" class="illustrator-info">
+          <i class="fas fa-paint-brush"></i>
+          <ng-container *ngFor="let illustrator of book.illustrator; let i = index">
+            {{ illustrator }}<span *ngIf="i < book.illustrator.length - 1">, </span>
+          </ng-container>
+        </p>
+        
+        <!-- Award details -->
+        <div *ngFor="let award of book.awards" class="award-detail">
+          <p class="award-name">
+            <i class="fas fa-trophy"></i> {{ award.name }} ({{ award.year }})
+          </p>
+          <p *ngIf="award.genre">
+            <strong>Genre:</strong> {{ award.genre }}
+          </p>
+          <p *ngIf="award.ageRange && award.ageRange.length > 0">
+            <strong>Age:</strong> {{ award.ageRange.join(', ') }}
+          </p>
+        </div>
+        
+        <!-- Review preview -->
+        <div *ngIf="book.reviews && book.reviews.length > 0 && book.reviews[0].reviewContent" class="review-preview">
+          <h4>Critique</h4>
+          <p class="review-content">
+            {{ book.reviews[0].reviewContent.length > 150 ? 
+                 (book.reviews[0].reviewContent.substring(0, 150) + '...') : 
+                 book.reviews[0].reviewContent }}
+          </p>
+          <p *ngIf="book.reviews[0].reviewAuthor" class="review-author">Par {{ book.reviews[0].reviewAuthor }}</p>
+        </div>
       </div>
     </div>
   </div>
+  
+  <!-- Empty state -->
+  <div *ngIf="books.length === 0" class="empty-state">
+    <i class="fas fa-search"></i>
+    <p>Aucun livre trouvé</p>
+  </div>
+  
+  <!-- Pagination controls -->
+  <div *ngIf="totalPages > 1" class="pagination-controls">
+    <button 
+      class="pagination-button" 
+      [disabled]="currentPage === 1" 
+      (click)="goToPage(1)" 
+      aria-label="Première page">
+      <i class="fas fa-angle-double-left"></i>
+    </button>
+    
+    <button 
+      class="pagination-button" 
+      [disabled]="currentPage === 1" 
+      (click)="previousPage()" 
+      aria-label="Page précédente">
+      <i class="fas fa-angle-left"></i>
+    </button>
+    
+    <div class="page-numbers">
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="page-number" 
+        [class.active]="page === currentPage" 
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+    </div>
+    
+    <button 
+      class="pagination-button" 
+      [disabled]="currentPage === totalPages" 
+      (click)="nextPage()" 
+      aria-label="Page suivante">
+      <i class="fas fa-angle-right"></i>
+    </button>
+    
+    <button 
+      class="pagination-button" 
+      [disabled]="currentPage === totalPages" 
+      (click)="goToPage(totalPages)" 
+      aria-label="Dernière page">
+      <i class="fas fa-angle-double-right"></i>
+    </button>
+  </div>
+  
+  <!-- Page info -->
+  <div *ngIf="allBooks.length > 0" class="page-info">
+    <p>Page {{ currentPage }} sur {{ totalPages }}</p>
+  </div>
+</div>
