@@ -24,6 +24,13 @@
         </div>
       </div>
     </div>
+    <div class="search-container">
+      <i class="fas fa-book fa-lg"></i>
+      <input type="text" [formControl]="myControlISBN" placeholder="Recherchez un ISBN..."
+        class="search-bar" (blur)="onBlurISBN()" (focus)="isBlurredISBN = false"
+        (keydown.enter)="selectISBN(myControlISBN.value)">
+    </div>
+
   </div>
   <div class="search-section">
     <h2>Recherchez un auteur</h2>

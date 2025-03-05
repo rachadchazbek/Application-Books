@@ -1,0 +1,470 @@
+<div class="search-container">
+  <!-- Main search bar for quick searches -->
+  <div class="main-search">
+    <div class="search-input-wrapper">
+      <i class="fas fa-search"></i>
+      <input 
+        type="text" 
+        [formControl]="quickSearchControl" 
+        placeholder="Recherchez un livre..." 
+        class="primary-search-input"
+        (keydown.enter)="quickSearch()">
+    </div>
+    <button class="search-button" (click)="quickSearch()" (keydown.enter)="quickSearch()" tabindex="0">Rechercher</button>
+  </div>
+  
+  <!-- Tabbed interface for advanced search options -->
+  <div class="advanced-search">
+    <div class="tabs" role="tablist">
+      <div 
+        class="tab" 
+        [class.active]="activeTab === 'book'" 
+        (click)="setActiveTab('book')" 
+        (keydown.enter)="setActiveTab('book')" 
+        (keydown.space)="setActiveTab('book')" 
+        tabindex="0"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'book'"
+        aria-controls="book-tab">
+        <i class="fas fa-book"></i> Livre
+      </div>
+      <div 
+        class="tab" 
+        [class.active]="activeTab === 'author'" 
+        (click)="setActiveTab('author')" 
+        (keydown.enter)="setActiveTab('author')" 
+        (keydown.space)="setActiveTab('author')" 
+        tabindex="0"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'author'"
+        aria-controls="author-tab">
+        <i class="fas fa-user"></i> Auteur
+      </div>
+      <div 
+        class="tab" 
+        [class.active]="activeTab === 'education'" 
+        (click)="setActiveTab('education')" 
+        (keydown.enter)="setActiveTab('education')" 
+        (keydown.space)="setActiveTab('education')" 
+        tabindex="0"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'education'"
+        aria-controls="education-tab">
+        <i class="fas fa-graduation-cap"></i> Éducation
+      </div>
+      <div 
+        class="tab" 
+        [class.active]="activeTab === 'source'" 
+        (click)="setActiveTab('source')" 
+        (keydown.enter)="setActiveTab('source')" 
+        (keydown.space)="setActiveTab('source')" 
+        tabindex="0"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'source'"
+        aria-controls="source-tab">
+        <i class="fas fa-database"></i> Source
+      </div>
+    </div>
+    
+    <!-- Tab content -->
+    <div class="tab-content">
+      <!-- Book tab -->
+      <div *ngIf="activeTab === 'book'" class="tab-pane" id="book-tab" role="tabpanel">
+        <div class="search-row">
+          <!-- Title search -->
+          <div class="search-field">
+            <label for="title-input">Titre</label>
+            <div class="input-with-icon">
+              <i class="fas fa-book"></i>
+              <input 
+                type="text" 
+                id="title-input"
+                [formControl]="titleControl" 
+                placeholder="Recherchez par titre..." 
+                class="filter-input"
+                (blur)="onBlurTitle()" 
+                (focus)="isBlurredTitle = false"
+                (keydown.enter)="applyFilter('title', titleControl.value)">
+              <div class="autocomplete-items" *ngIf="titleControl.value && filteredTitles.length && !isBlurredTitle">
+                <div 
+                  *ngFor="let title of filteredTitles" 
+                  (click)="applyFilter('title', title); isBlurredTitle = true"
+                  tabindex="0" 
+                  (keydown)="handleKeyDown($event, title)">
+                  {{ title }}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- ISBN search -->
+          <div class="search-field">
+            <label for="isbn-input">ISBN</label>
+            <div class="input-with-icon">
+              <i class="fas fa-barcode"></i>
+              <input 
+                type="text" 
+                id="isbn-input"
+                [formControl]="isbnControl" 
+                placeholder="Recherchez par ISBN..." 
+                class="filter-input"
+                (keydown.enter)="applyFilter('isbn', isbnControl.value)">
+            </div>
+          </div>
+        </div>
+        
+        <div class="search-row">
+          <!-- Genre filter -->
+          <div class="search-field">
+            <label for="genre-select">Genre</label>
+            <div class="input-with-icon">
+              <i class="fas fa-theater-masks"></i>
+              <select 
+                id="genre-select"
+                [(ngModel)]="selectedGenre" 
+                (change)="applyFilter('genre', selectedGenre)" 
+                class="filter-input">
+                <option value="" disabled selected>Selectionnez un genre...</option>
+                <option value="">Aucun genre sélectionné</option>
+                <option *ngFor="let genre of genres">{{ genre }}</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Language filter -->
+          <div class="search-field">
+            <label for="language-select">Langue</label>
+            <div class="input-with-icon">
+              <i class="fas fa-language"></i>
+              <select 
+                id="language-select"
+                [(ngModel)]="selectedLanguage" 
+                (change)="applyFilter('inLanguage', selectedLanguage)" 
+                class="filter-input">
+                <option value="" disabled selected>Selectionnez une langue...</option>
+                <option value="">Aucune langue sélectionnée</option>
+                <option *ngFor="let language of languages">{{ language }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Author tab -->
+      <div *ngIf="activeTab === 'author'" class="tab-pane" id="author-tab" role="tabpanel">
+        <div class="search-row">
+          <!-- Author search -->
+          <div class="search-field">
+            <label for="author-input">Auteur</label>
+            <div class="input-with-icon">
+              <i class="fas fa-user"></i>
+              <input 
+                type="text" 
+                id="author-input"
+                [formControl]="authorControl" 
+                placeholder="Recherchez par auteur..." 
+                class="filter-input"
+                (blur)="onBlurAuthor()" 
+                (focus)="isBlurredAuthor = false"
+                (keydown.enter)="applyFilter('author', authorControl.value)">
+              <div class="autocomplete-items" *ngIf="authorControl.value && filteredAuthors.length && !isBlurredAuthor">
+                <div 
+                  *ngFor="let author of filteredAuthors" 
+                  (click)="applyFilter('author', author); isBlurredAuthor = true"
+                  tabindex="0" 
+                  (keydown)="handleKeyDown($event, author)">
+                  {{ author }}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Nationality search -->
+          <div class="search-field">
+            <label for="nationality-input">Nationalité</label>
+            <div class="input-with-icon">
+              <i class="fas fa-flag"></i>
+              <input 
+                type="text" 
+                id="nationality-input"
+                [formControl]="nationalityControl" 
+                placeholder="Recherchez par nationalité..." 
+                class="filter-input"
+                (keydown.enter)="applyFilter('nationality', nationalityControl.value)">
+            </div>
+          </div>
+        </div>
+        
+        <div class="search-row">
+          <!-- Award search -->
+          <div class="search-field">
+            <label for="award-input">Prix</label>
+            <div class="input-with-icon">
+              <i class="fas fa-award"></i>
+              <input 
+                type="text" 
+                id="award-input"
+                [formControl]="awardControl" 
+                placeholder="Recherchez par prix..." 
+                class="filter-input"
+                (blur)="onBlurAward()" 
+                (focus)="isBlurredAward = false"
+                (keydown.enter)="applyFilter('award', awardControl.value)">
+              <div class="autocomplete-items" *ngIf="awardControl.value && filteredAwards.length && !isBlurredAward">
+                <div 
+                  *ngFor="let award of filteredAwards" 
+                  (click)="applyFilter('award', award); isBlurredAward = true"
+                  tabindex="0" 
+                  (keydown)="handleKeyDown($event, award)">
+                  {{ award }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Education tab -->
+      <div *ngIf="activeTab === 'education'" class="tab-pane" id="education-tab" role="tabpanel">
+        <h3>Niveau scolaire</h3>
+        <div class="education-levels">
+          <table>
+            <tr>
+              <th colspan="2">Préscolaire</th>
+              <th colspan="6">Primaire</th>
+              <th colspan="5">Secondaire</th>
+            </tr>
+            <tr>
+              <!-- Preschool cycles -->
+              <td colspan="2"> </td>
+
+              <!-- Primary cycles -->
+              <td colspan="2">1<sup>er</sup> cycle</td>
+              <td colspan="2">2<sup>e</sup> cycle</td>
+              <td colspan="2">3<sup>e</sup> cycle</td>
+
+              <!-- Secondary cycles -->
+              <td colspan="2">1<sup>er</sup> cycle</td>
+              <td colspan="3">2<sup>e</sup> cycle</td>
+            </tr>
+            <tr>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="preschool-4" 
+                  name="preschool-4"
+                  (change)="handleAgeCheckboxChange($event, '4')">
+                <label for="preschool-4">4 ans</label>
+              </td>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="preschool-5" 
+                  name="preschool-5"
+                  (change)="handleAgeCheckboxChange($event, '5')">
+                <label for="preschool-5">5 ans</label>
+              </td>
+
+              <!-- Primary years -->
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="primary-1" 
+                  name="primary-1" 
+                  (change)="handleAgeCheckboxChange($event, '6')">
+                <label for="primary-1">1<sup>re</sup> --- 6 ans</label>
+              </td>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="primary-2" 
+                  name="primary-2" 
+                  (change)="handleAgeCheckboxChange($event, '7')">
+                <label for="primary-2">2<sup>e</sup> --- 7 ans</label>
+              </td>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="primary-3" 
+                  name="primary-3" 
+                  (change)="handleAgeCheckboxChange($event, '8')">
+                <label for="primary-3">3<sup>e</sup> --- 8 ans</label>
+              </td>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="primary-4" 
+                  name="primary-4" 
+                  (change)="handleAgeCheckboxChange($event, '9')">
+                <label for="primary-4">4<sup>e</sup> --- 9 ans</label>
+              </td>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="primary-5" 
+                  name="primary-5"
+                  (change)="handleAgeCheckboxChange($event, '10')">
+                <label for="primary-5">5<sup>e</sup> --- 10 ans</label>
+              </td>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="primary-6" 
+                  name="primary-6"
+                  (change)="handleAgeCheckboxChange($event, '11')">
+                <label for="primary-6">6<sup>e</sup> --- 11 ans</label>
+              </td>
+
+              <!-- Secondary years -->
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="secondary-1" 
+                  name="secondary-1"
+                  (change)="handleAgeCheckboxChange($event, '12')">
+                <label for="secondary-1">1<sup>re</sup> --- 12 ans</label>
+              </td>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="secondary-2" 
+                  name="secondary-2"
+                  (change)="handleAgeCheckboxChange($event, '13')">
+                <label for="secondary-2">2<sup>e</sup> --- 13 ans</label>
+              </td>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="secondary-3" 
+                  name="secondary-3"
+                  (change)="handleAgeCheckboxChange($event, '14')">
+                <label for="secondary-3">3<sup>e</sup> --- 14 ans</label>
+              </td>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="secondary-4" 
+                  name="secondary-4"
+                  (change)="handleAgeCheckboxChange($event, '15')">
+                <label for="secondary-4">4<sup>e</sup> --- 15 ans</label>
+              </td>
+              <td>
+                <input 
+                  type="checkbox" 
+                  id="secondary-5" 
+                  name="secondary-5"
+                  (change)="handleAgeCheckboxChange($event, '16')">
+                <label for="secondary-5">5<sup>e</sup> --- 16 ans</label>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Source tab -->
+      <div *ngIf="activeTab === 'source'" class="tab-pane" id="source-tab" role="tabpanel">
+        <div class="search-row">
+          <!-- Source Selection -->
+          <div class="search-field">
+            <label for="source-select">Source</label>
+            <div class="input-with-icon">
+              <i class="fas fa-book-open"></i>
+              <select 
+                id="source-select"
+                [(ngModel)]="selectedSource" 
+                (change)="onSelectSource()" 
+                class="filter-input">
+                <option value="" disabled selected>Selectionner la source</option>
+                <option value="Babelio">Babelio</option>
+                <option value="Constellation">Constellation</option>
+                <option value="BNF">BNF</option>
+                <option value="Lurelu">Lurelu</option>
+                <option value="BTLF">BTLF</option>
+                <option value="Kaleidoscope">Kaleidoscope</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Category Selection (shown only if a source is selected and has categories) -->
+          <div class="search-field" *ngIf="selectedSource && selectedSource !== 'BTLF' && getSourceCategories(selectedSource)?.length">
+            <label for="category-select">Catégorie</label>
+            <div class="input-with-icon">
+              <i class="fas fa-bookmark"></i>
+              <select 
+                id="category-select"
+                [(ngModel)]="selectedCategory" 
+                (change)="onSelectCategory()" 
+                class="filter-input">
+                <option value="" disabled selected>Selectionner la catégorie</option>
+                <option *ngFor="let category of getSourceCategories(selectedSource)">{{ category }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div class="search-row">
+          <!-- Book Appreciation Selection -->
+          <div class="search-field">
+            <span id="appreciation-group-label">Appréciation</span>
+            <div class="appreciation-buttons">
+              <button 
+                class="appreciation-button" 
+                [class.active]="selectedAppreciation === 'HighlyAppreciated'"
+                (click)="onSelectBookAppreciation(Appreciation.HighlyAppreciated)"
+                (keydown.enter)="onSelectBookAppreciation(Appreciation.HighlyAppreciated)"
+                tabindex="0"
+                role="button"
+                aria-labelledby="appreciation-group-label">
+                <i class="fas fa-thumbs-up"></i> Livres appréciés
+              </button>
+              <button 
+                class="appreciation-button" 
+                [class.active]="selectedAppreciation === 'notHighlyAppreciated'"
+                (click)="onSelectBookAppreciation(Appreciation.NotHighlyAppreciated)"
+                (keydown.enter)="onSelectBookAppreciation(Appreciation.NotHighlyAppreciated)"
+                tabindex="0"
+                role="button"
+                aria-labelledby="appreciation-group-label">
+                <i class="fas fa-thumbs-down"></i> Livres peu appréciés
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Active filters display -->
+  <div class="active-filters" *ngIf="activeFilters.length > 0">
+    <h3>Filtres actifs</h3>
+    <div class="filter-chips">
+      <div class="filter-chip" *ngFor="let filter of activeFilters">
+        {{ filter.label }}: {{ filter.value }}
+        <button 
+          class="remove-filter" 
+          (click)="removeFilter(filter.type)" 
+          (keydown.enter)="removeFilter(filter.type)"
+          [attr.aria-label]="'Supprimer le filtre ' + filter.label">×</button>
+      </div>
+      <button 
+        class="clear-all-filters" 
+        (click)="clearAllFilters()" 
+        (keydown.enter)="clearAllFilters()"
+        [attr.aria-label]="'Effacer tous les filtres'">Effacer tous</button>
+    </div>
+  </div>
+  
+  <!-- Search button -->
+  <div class="search-actions">
+    <button 
+      (click)="search()" 
+      (keydown.enter)="search()" 
+      class="search-button"
+      tabindex="0">
+      <i class="fas fa-search"></i> Rechercher
+    </button>
+    <div class="loader" *ngIf="loader">
+      <i class="fas fa-spinner fa-spin"></i> Chargement...
+    </div>
+  </div>
+</div>

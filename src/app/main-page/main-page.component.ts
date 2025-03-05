@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SearchComponent } from "../components/search/search.component";
+import { EnhancedSearchComponent } from "../components/search/enhanced-search.component";
 import { BookListComponent } from "../components/book-list/book-list.component";
 
 
@@ -8,7 +8,8 @@ import { BookListComponent } from "../components/book-list/book-list.component";
   standalone: true,
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.css'],
-  imports: [SearchComponent, BookListComponent]
+  imports: [EnhancedSearchComponent, BookListComponent]
 })
 export class MainPageComponent {
+  // The component now uses the enhanced search component
 }

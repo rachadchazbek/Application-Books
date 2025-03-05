@@ -32,16 +32,17 @@ export class SearchComponent implements OnInit {
   awards = AWARDS;
   authors = AUTHORS;
 
-  // TODO use FormBuilder
   myControl = new FormControl();
   myControlAwards = new FormControl();
   myControlTitles = new FormControl();
+  myControlISBN = new FormControl();
   
   filteredAuthors: string[];
   filteredAwards: string[];
   filteredTitles: string[];
 
   isBlurredTitle = false;
+  isBlurredISBN = false;
   isBlurredAward = false;
   isBlurredAuthor = false;
 
@@ -148,6 +149,10 @@ export class SearchComponent implements OnInit {
     this.filteredTitles = [];
   }
 
+  selectISBN(isbn: string) {
+      return;
+  }
+
   handleCheckboxChange(event: Event, age: number) {
     if ((event.target as HTMLInputElement).checked) {
       this.socketService.ageFilter(age.toString());
@@ -160,6 +165,7 @@ export class SearchComponent implements OnInit {
   }
 
   onBlurTitle() { setTimeout(() => { this.isBlurredTitle = true; }, 100); } 
+  onBlurISBN() { setTimeout(() => { this.isBlurredISBN = true; }, 100); }
   onBlurAward() { setTimeout(() => { this.isBlurredAward = true; }, 100); } 
   onBlurAuthor() { setTimeout(() => { this.isBlurredAuthor = true; }, 100); }
 }
