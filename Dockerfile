@@ -4,11 +4,13 @@ WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 
-RUN sudo npm install -g @angular/cli
+WORKDIR /opt/
 
-RUN sudo npm install
+RUN npm install -g @angular/cli
 
-RUN sudo ng build
+RUN npm install
+
+RUN ng build
 
 RUN echo "Building client image done"
 
