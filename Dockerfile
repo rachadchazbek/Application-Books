@@ -4,12 +4,9 @@ WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 
-
 RUN npm install -g @angular/cli
 
 RUN npm install
-
-WORKDIR /opt/
 
 RUN ng build
 
