@@ -49,42 +49,55 @@ export class EnhancedSparqlQueryBuilderService {
    * @param filters The BookFilter object containing all active filters
    * @returns An array of filter clause strings
    */
+  /**
+   * Build filter clauses for the SPARQL query based on the provided filters
+   * @param filters The BookFilter object containing all active filters
+   * @returns An array of filter clause strings
+   */
   private buildFilterClauses(filters: BookFilter): string[] {
     const clauses: string[] = [];
     
     // Basic book properties
     if (filters.title) {
-      clauses.push(`FILTER(?title = "${filters.title}")`);
+      // Use CONTAINS for partial title matching
+      clauses.push(`FILTER(CONTAINS(LCASE(?title), LCASE("${filters.title}")))`);
     }
     
     if (filters.isbn) {
-      clauses.push(`FILTER(?isbn = "${filters.isbn}")`);
+      // ISBN should be exact match but case insensitive
+      clauses.push(`FILTER(LCASE(?isbn) = LCASE("${filters.isbn}"))`);
     }
     
     if (filters.inLanguage) {
-      clauses.push(`FILTER(?inLanguage = "${filters.inLanguage}")`);
+      // Language should be exact match but case insensitive
+      clauses.push(`FILTER(LCASE(?inLanguage) = LCASE("${filters.inLanguage}"))`);
     }
     
     // Creator properties
     if (filters.author) {
-      clauses.push(`FILTER(?author = "${filters.author}")`);
+      // Use CONTAINS for partial author name matching
+      clauses.push(`FILTER(CONTAINS(LCASE(?author), LCASE("${filters.author}")))`);
     }
     
     if (filters.nationality) {
-      clauses.push(`FILTER(?countryOfOrigin = "${filters.nationality}")`);
+      // Use CONTAINS for nationality matching
+      clauses.push(`FILTER(CONTAINS(LCASE(?countryOfOrigin), LCASE("${filters.nationality}")))`);
     }
     
     if (filters.illustrator) {
-      clauses.push(`FILTER(?illustrator = "${filters.illustrator}")`);
+      // Use CONTAINS for partial illustrator name matching
+      clauses.push(`FILTER(CONTAINS(LCASE(?illustrator), LCASE("${filters.illustrator}")))`);
     }
     
     // Classification properties
     if (filters.genre) {
-      clauses.push(`FILTER(?finalGenreName = "${filters.genre}")`);
+      // Genre should be exact match but case insensitive
+      clauses.push(`FILTER(LCASE(?finalGenreName) = LCASE("${filters.genre}"))`);
     }
     
     if (filters.subjectThema) {
-      clauses.push(`FILTER(?subjectThema = "${filters.subjectThema}")`);
+      // Use CONTAINS for subject matching
+      clauses.push(`FILTER(CONTAINS(LCASE(?subjectThema), LCASE("${filters.subjectThema}")))`);
     }
     
     // Educational properties
@@ -97,15 +110,18 @@ export class EnhancedSparqlQueryBuilderService {
     
     // Additional metadata
     if (filters.publisher) {
-      clauses.push(`FILTER(?publisherName = "${filters.publisher}")`);
+      // Use CONTAINS for partial publisher name matching
+      clauses.push(`FILTER(CONTAINS(LCASE(?publisherName), LCASE("${filters.publisher}")))`);
     }
     
     if (filters.datePublished) {
+      // Date published should be exact match
       clauses.push(`FILTER(?datePublished = "${filters.datePublished}")`);
     }
     
     if (filters.award) {
-      clauses.push(`FILTER(?finalAwardName = "${filters.award}")`);
+      // Use CONTAINS for partial award name matching
+      clauses.push(`FILTER(CONTAINS(LCASE(?finalAwardName), LCASE("${filters.award}")))`);
     }
     
     return clauses;

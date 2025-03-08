@@ -21,6 +21,11 @@ export class BooksService {
    * Called after receiving new data. Processes each binding and then emits the updated list.
    */
   updateData(responseData: SparqlResponse ) {
+    // Clear the book map before processing new results
+    this.bookMap = {};
+    
+    console.log(`Processing ${responseData.results.bindings.length} results`);
+    
     responseData.results.bindings.forEach((binding: Binding, index: number) => {
       // Notify subscribers about the award description if available.
       if (binding.finalAwardDescription?.value) {

@@ -281,12 +281,15 @@ export class SocketSparqlService {
     });
   }
 
-  filterBooksByAge(filterAge: any) {
+  /**
+   * Filter books by age range
+   * @param filterAge The age range to filter by
+   */
+  filterBooksByAge(filterAge: string | string[]) {
     this.bookMap = {};
-    console.log("this is filter age")
-    console.log(filterAge);
+    console.log("Filtering by age:", filterAge);
     this.filterService.activeFilters.filterAge =
-      filterAge !== 'No Age Selected' ? filterAge : null;
+      filterAge !== 'No Age Selected' ? (Array.isArray(filterAge) ? filterAge : [filterAge]) : [];
     this.sparqlQuery = this.filterService.updateFilters();
   }
 
@@ -377,10 +380,29 @@ export class SocketSparqlService {
     }
   }
 
-  async executeQuery(query: string) {
-    const response = await this.httpSparqlService.postQuery(query);
-    this.booksService.updateData(response);
-  };
+  /**
+   * Execute a SPARQL query and update the books service with the response
+   * @param query The SPARQL query to execute
+   * @returns A promise that resolves when the query is complete
+   */
+  async executeQuery(query: string): Promise<void> {
+    try {
+      // Reset state for new query
+      this.bookMap = {}; 
+      this.storedIsbns = null;
+      this.themeActive = false;
+      this.inAuthorsComponent = false;
+      this.inAwardsComponent = false;
+      
+      console.log('Executing query:', query);
+      const response = await this.httpSparqlService.postQuery(query);
+      this.booksService.updateData(response);
+      return Promise.resolve();
+    } catch (error) {
+      console.error('Error executing query:', error);
+      return Promise.reject(error);
+    }
+  }
   
   async updateBook() {
     const { filterSource, filterCategory, filterAppreciation, filterAge } = this.filterService.activeFilters;

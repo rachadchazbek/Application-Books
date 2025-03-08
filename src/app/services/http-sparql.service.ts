@@ -20,8 +20,13 @@ export class HttpSparqlService {
 
   constructor(private readonly http: HttpClient) { }
 
+  /**
+   * Execute a SPARQL query against the GraphDB repository
+   * @param sparqlQuery The SPARQL query to execute
+   * @returns A promise that resolves to the SPARQL response
+   */
   async postQuery(sparqlQuery: string): Promise<SparqlResponse> {
-    // const repositoryUrl = 'http://Rachads-MacBook-Pro-2.local:7200/repositories/Books-app' --> Local version
+    // const repositoryUrl = 'http://Rachads-MacBook-Pro-2.local:7200/repositories/Books-app' --> Local version
     const repositoryUrl = 'http://148.113.191.18:7200/repositories/books';
 
     const headers = new HttpHeaders({
@@ -29,11 +34,33 @@ export class HttpSparqlService {
       'Accept': 'application/sparql-results+json',
     });
 
-    const response = await this.http.post<SparqlResponse>(repositoryUrl, sparqlQuery, { headers }).toPromise();
-    if (!response) {
-      throw new Error('No response received from the server');
+    try {
+      console.log('Sending SPARQL query:', sparqlQuery.substring(0, 100) + '...');
+      
+      const response = await this.http.post<SparqlResponse>(
+        repositoryUrl, 
+        sparqlQuery, 
+        { headers }
+      ).toPromise();
+      
+      if (!response) {
+        throw new Error('No response received from the server');
+      }
+      
+      console.log('SPARQL query successful, received results:', 
+        response.results?.bindings?.length || 0);
+      
+      return response;
+    } catch (error) {
+      console.error('Error executing SPARQL query:', error);
+      
+      // Rethrow with more context
+      if (error instanceof Error) {
+        throw new Error(`SPARQL query failed: ${error.message}`);
+      } else {
+        throw new Error('SPARQL query failed with unknown error');
+      }
     }
-    return response;
   }
 
   async findCodeByDescription(description: string): Promise<string | undefined> {
@@ -64,5 +91,3 @@ export class HttpSparqlService {
   }
 
 }
-
-
