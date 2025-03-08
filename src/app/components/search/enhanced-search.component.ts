@@ -336,16 +336,32 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   search(): void {
     this.loader = true;
     
-    // Get current filters
-    const filters = this.filterService.getCurrentFilters();
-    
-    // Build query
-    const query = this.sparqlQueryBuilder.buildQuery(filters);
-    
-    // Execute query
-    this.socketService.executeQuery(query).finally(() => {
+    try {
+      // Get current filters
+      const filters = this.filterService.getCurrentFilters();
+      
+      // Build query
+      const query = this.sparqlQueryBuilder.buildQuery(filters);
+      
+      console.log('Executing search with filters:', filters);
+      
+      // Execute query
+      this.socketService.executeQuery(query)
+        .then(() => {
+          console.log('Search completed successfully');
+        })
+        .catch(error => {
+          console.error('Search failed:', error);
+          // You could add user-facing error handling here
+        })
+        .finally(() => {
+          this.loader = false;
+        });
+    } catch (error) {
+      console.error('Error preparing search:', error);
       this.loader = false;
-    });
+      // You could add user-facing error handling here
+    }
   }
   
   /**
