@@ -342,9 +342,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
       
       // Build query
       const query = this.sparqlQueryBuilder.buildQuery(filters);
-      
-      console.log('Executing search with filters:', filters);
-      
+          
       // Execute query
       this.socketService.executeQuery(query)
         .then(() => {

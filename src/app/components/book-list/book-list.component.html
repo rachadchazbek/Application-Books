@@ -39,7 +39,7 @@
   
   <!-- Results count -->
   <div class="results-count">
-    <p>{{ allBooks.length }} résultats trouvés</p>
+    <p>{{ allBooks? allBooks.length : 0 }} résultats trouvés</p>
   </div>
   
   <!-- Book list -->
@@ -201,7 +201,7 @@
   </div>
   
   <!-- Page info -->
-  <div *ngIf="allBooks.length > 0" class="page-info">
+  <div *ngIf="allBooks ? allBooks.length : 0 > 0" class="page-info">
     <p>Page {{ currentPage }} sur {{ totalPages }}</p>
   </div>
 </div>

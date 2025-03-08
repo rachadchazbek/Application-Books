@@ -14,12 +14,12 @@ import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 })
 export class BookListComponent implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
-  
+
   // All books from the data source
   allBooks: Book[] = [];
   // Books to display on the current page
   books: Book[] = [];
-  
+
   // Pagination properties
   currentPage = 1;
   pageSize = 12;
@@ -43,22 +43,22 @@ export class BookListComponent implements OnDestroy {
    * Calculate the total number of pages based on the total books and page size
    */
   calculateTotalPages(): void {
-    this.totalPages = Math.ceil(this.allBooks.length / this.pageSize);
+    this.totalPages = Math.ceil((this.allBooks?.length || 0) / this.pageSize);
     // Ensure current page is valid
     if (this.currentPage > this.totalPages) {
       this.currentPage = this.totalPages || 1;
     }
   }
-  
+
   /**
    * Update the books array to show only the books for the current page
    */
   updateDisplayedBooks(): void {
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, this.allBooks.length);
-    this.books = this.allBooks.slice(startIndex, endIndex);
+    const endIndex = Math.min(startIndex + this.pageSize, this.allBooks?.length || 0);
+    this.books = this.allBooks?.slice(startIndex, endIndex) || [];
   }
-  
+
   /**
    * Go to a specific page
    */
@@ -103,11 +103,11 @@ export class BookListComponent implements OnDestroy {
    */
   onPageSizeChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
-    if (target && target.value) {
+    if (target?.value) {
       this.changePageSize(+target.value);
     }
   }
-  
+
   /**
    * Toggle between grid and list view
    */
