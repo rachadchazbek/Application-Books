@@ -6,7 +6,7 @@
       <input 
         type="text" 
         [formControl]="quickSearchControl" 
-        placeholder="Recherchez un livre..." 
+        placeholder="Recherchez par mot clés..." 
         class="primary-search-input"
         (keydown.enter)="quickSearch()">
     </div>
@@ -38,7 +38,7 @@
         role="tab"
         [attr.aria-selected]="activeTab === 'author'"
         aria-controls="author-tab">
-        <i class="fas fa-user"></i> Auteur
+        <i class="fas fa-user"></i> Auteur·e
       </div>
       <div 
         class="tab" 
@@ -50,7 +50,7 @@
         role="tab"
         [attr.aria-selected]="activeTab === 'education'"
         aria-controls="education-tab">
-        <i class="fas fa-graduation-cap"></i> Éducation
+        <i class="fas fa-graduation-cap"></i> Cycle et année scolaire
       </div>
       <div 
         class="tab" 
@@ -155,7 +155,7 @@
         <div class="search-row">
           <!-- Author search -->
           <div class="search-field">
-            <label for="author-input">Auteur</label>
+            <label for="author-input">Auteur·e</label>
             <div class="input-with-icon">
               <i class="fas fa-user"></i>
               <input 
@@ -181,7 +181,7 @@
           
           <!-- Nationality search -->
           <div class="search-field">
-            <label for="nationality-input">Nationalité</label>
+            <label for="nationality-input">Origine de l'auteur</label>
             <div class="input-with-icon">
               <i class="fas fa-flag"></i>
               <input 
@@ -198,7 +198,7 @@
         <div class="search-row">
           <!-- Award search -->
           <div class="search-field">
-            <label for="award-input">Prix</label>
+            <label for="award-input">Prix littéraire</label>
             <div class="input-with-icon">
               <i class="fas fa-award"></i>
               <input 
