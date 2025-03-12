@@ -18,7 +18,7 @@ import { Book } from '../constants/Book';
 import { urlBabelioSubject, bookSummarySubject, ratingSubject, currentBookSubject } from '../classes/subjects';
 import { BooksService } from './books.service';
 import FilterService from './filter.service';
-import { SparklQueryBuilderService } from './sparkl-query-builder.service';
+import { EnhancedSparqlQueryBuilderService } from './enhanced-sparql-query-builder.service';
 import { Categories } from '../constants/Categories';
 import { Appreciation } from '../constants/Appreciation';
 
@@ -30,7 +30,7 @@ export class SocketSparqlService {
     private readonly httpSparqlService: HttpSparqlService,
     private readonly booksService: BooksService,
     private readonly filterService: FilterService,
-    private readonly sparklQueryBuilder: SparklQueryBuilderService
+    private readonly sparqlQueryBuilder: EnhancedSparqlQueryBuilderService
   ) {}
 
   sparqlQuery : string;
@@ -408,19 +408,19 @@ export class SocketSparqlService {
     const { filterSource, filterCategory, filterAppreciation, filterAge } = this.filterService.activeFilters;
     
     // Source query based on filterSource and filterCategory
-    const sourceQuery = this.sparklQueryBuilder.getSourceQuery(filterSource, filterCategory);
+    const sourceQuery = this.sparqlQueryBuilder.getSourceQuery(filterSource, filterCategory);
     if (sourceQuery) {
       await this.executeQuery(sourceQuery);
     }
 
     // Appreciation queries
-    const appreciationQueries = this.sparklQueryBuilder.getAppreciationQueries(filterAppreciation);
+    const appreciationQueries = this.sparqlQueryBuilder.getAppreciationQueries(filterAppreciation);
     appreciationQueries.forEach(query => this.executeQuery(query));
 
     // Age filter queries
     if (filterAge) {
       filterAge.forEach(age => {
-        const ageFilter = this.sparklQueryBuilder.getAgeFilter(age);
+        const ageFilter = this.sparqlQueryBuilder.buildAgeFilter(age);
         this.executeQuery(SPARQL_QUERY_BNF(ageFilter));
         this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(ageFilter));
       });

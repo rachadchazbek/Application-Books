@@ -133,7 +133,7 @@ export class EnhancedSparqlQueryBuilderService {
    * @param category The category within the source
    * @returns A SPARQL query string
    */
-  buildSourceSpecificQuery(source: Categories, category?: string): string {
+  buildSourceSpecificQuery(source: string, category?: string): string {
     switch (source) {
       case Categories.Babelio: {
         const starRating = parseInt(category?.split(' ')[0] ?? '0', 10);
@@ -184,9 +184,28 @@ export class EnhancedSparqlQueryBuilderService {
   }
 
   /**
-   * Build a filter clause for age range
+   * Compatibility method to match SparklQueryBuilderService.getSourceQuery
+   * @param filterSource The data source (e.g. 'Babelio', 'Constellation', 'BNF', etc.)
+   * @param filterCategory Additional category filter information
+   * @returns A query string
+   */
+  getSourceQuery(filterSource: string, filterCategory?: string): string {
+    return this.buildSourceSpecificQuery(filterSource, filterCategory);
+  }
+
+  /**
+   * Compatibility method to match SparklQueryBuilderService.getAppreciationQueries
+   * @param filterAppreciation The appreciation filter (e.g. 'highlyAppreciated', 'notHighlyAppreciated')
+   * @returns An array of query strings
+   */
+  getAppreciationQueries(filterAppreciation: Appreciation): string[] {
+    return this.buildAppreciationQueries(filterAppreciation);
+  }
+
+  /**
+   * Compatibility method to match SparklQueryBuilderService.getAgeFilter
    * @param age The age value
-   * @returns A SPARQL filter clause string
+   * @returns A filter string for the query
    */
   buildAgeFilter(age: string): string {
     return `FILTER(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},"))`;

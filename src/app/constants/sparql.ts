@@ -1,4 +1,4 @@
-export const SPARQL_QUERY = (filter: any) => `
+export const SPARQL_QUERY = (filter: string) => `
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX ns1: <http://schema.org/>
 PREFIX schema: <http://schema.org/>
@@ -54,7 +54,7 @@ WHERE {
   ${filter}
 }
      `;
-     export const SPARQL_BABELIO = (filter: any) => `
+     export const SPARQL_BABELIO = (filter: string) => `
      PREFIX ns1: <http://schema.org/>
 PREFIX pbs: <http://www.example.org/pbs#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -167,7 +167,7 @@ WHERE {
          
          
 
-          export const SPARQL_QUERY_CONSTELLATIONS = (filter: any) => `
+          export const SPARQL_QUERY_CONSTELLATIONS = (filter: string) => `
           PREFIX ns1: <http://schema.org/>
           PREFIX pbs: <http://www.example.org/pbs#>
           PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -215,7 +215,7 @@ WHERE {
           GROUP BY ?book
                `;
 
-               export const SPARQL_QUERY_BNF = (filter: any) => `
+               export const SPARQL_QUERY_BNF = (filter: string) => `
                 PREFIX ns1: <http://schema.org/>
                 PREFIX pbs: <http://www.example.org/pbs#>
                 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -399,7 +399,7 @@ WHERE {
           }
           `;
      
-          export const SPARQL_QUERY_DESCRIPTION = (filter: any) => `
+          export const SPARQL_QUERY_DESCRIPTION = (filter: string) => `
           PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
           PREFIX ns1: <http://schema.org/>
           PREFIX schema: <http://schema.org/>
