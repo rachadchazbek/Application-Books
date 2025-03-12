@@ -5,8 +5,8 @@ import {
   SPARQL_QUERY, 
   SPARQL_QUERY_BNF, 
   SPARQL_QUERY_CONSTELLATIONS, 
-  SPARQL_QUERY_LURELU, 
-  SPARQL_BTLF 
+  SPARQL_BTLF_FILTER,
+  SPARQL_QUERY_LURELU_FILTER
 } from '../constants/sparql';
 import { Categories } from '../constants/Categories';
 import { Appreciation } from '../constants/Appreciation';
@@ -149,10 +149,12 @@ export class EnhancedSparqlQueryBuilderService {
         return SPARQL_QUERY_BNF(`FILTER(?avis = "${category}")`);
       }
       case Categories.Lurelu: {
-        return SPARQL_QUERY_LURELU;
+        // Use the filter-specific template for Lurelu
+        return SPARQL_QUERY_LURELU_FILTER('');
       }
       case Categories.BTLF: {
-        return SPARQL_BTLF;
+        // Use the filter-specific template for BTLF
+        return SPARQL_BTLF_FILTER('');
       }
       default:
         return SPARQL_QUERY('');
@@ -168,7 +170,7 @@ export class EnhancedSparqlQueryBuilderService {
     switch (appreciation) {
       case Appreciation.HighlyAppreciated:
         return [
-          SPARQL_QUERY_LURELU,
+          SPARQL_QUERY_LURELU_FILTER(''), // Use the filter-specific template
           SPARQL_BABELIO(`FILTER(?averageReview >= 4)`),
           SPARQL_QUERY_BNF(`FILTER(?avis = "Coup de coeur !" || ?avis = "Bravo !")`),
           SPARQL_QUERY_CONSTELLATIONS(`FILTER(?isCoupDeCoeur = true)`)
