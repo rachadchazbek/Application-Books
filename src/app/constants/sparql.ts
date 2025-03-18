@@ -54,7 +54,7 @@ WHERE {
   ${filter}
 }
      `;
-     export const SPARQL_BABELIO = (filter: string) => `
+export const SPARQL_BABELIO = (filter: string) => `
      PREFIX ns1: <http://schema.org/>
 PREFIX pbs: <http://www.example.org/pbs#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -103,7 +103,7 @@ WHERE {
          `;
 
 
-         export const SPARQL_BTLF = `
+export const SPARQL_BTLF = `
          PREFIX schema: <http://schema.org/>
          PREFIX pbs: <http://www.example.org/pbs#>
          
@@ -130,7 +130,7 @@ WHERE {
          GROUP BY ?book
          `;
 
-         export const SPARQL_BTLF_FILTER = (filter: string) => `
+export const SPARQL_BTLF_FILTER = (filter: string) => `
          PREFIX schema: <http://schema.org/>
          PREFIX pbs: <http://www.example.org/pbs#>
          
@@ -164,10 +164,10 @@ WHERE {
          GROUP BY ?book
          `;
 
-         
-         
 
-          export const SPARQL_QUERY_CONSTELLATIONS = (filter: string) => `
+
+
+export const SPARQL_QUERY_CONSTELLATIONS = (filter: string) => `
           PREFIX ns1: <http://schema.org/>
           PREFIX pbs: <http://www.example.org/pbs#>
           PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -215,7 +215,7 @@ WHERE {
           GROUP BY ?book
                `;
 
-               export const SPARQL_QUERY_BNF = (filter: string) => `
+export const SPARQL_QUERY_BNF = (filter: string) => `
                 PREFIX ns1: <http://schema.org/>
                 PREFIX pbs: <http://www.example.org/pbs#>
                 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -275,9 +275,9 @@ WHERE {
                GROUP BY ?book
                     `;
 
-                  
 
-                    export const SPARQL_QUERY_LURELU = `
+
+export const SPARQL_QUERY_LURELU = `
                     PREFIX ns1: <http://schema.org/>
                     PREFIX pbs: <http://www.example.org/pbs#>
                     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -316,8 +316,8 @@ WHERE {
                     }
                     GROUP BY ?book
                          `;
-    
-                    export const SPARQL_QUERY_LURELU_FILTER = (filter: string) => `
+
+export const SPARQL_QUERY_LURELU_FILTER = (filter: string) => `
                     PREFIX ns1: <http://schema.org/>
                     PREFIX pbs: <http://www.example.org/pbs#>
                     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -357,8 +357,8 @@ WHERE {
                     }
                     GROUP BY ?book
                          `;
-     
-          export const SPARQL_WIKIDATA = (authorName: string) => `
+
+export const SPARQL_WIKIDATA = (authorName: string) => `
           SELECT 
             ?person 
             ?personLabel 
@@ -398,8 +398,8 @@ WHERE {
             SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],fr". }
           }
           `;
-     
-          export const SPARQL_QUERY_DESCRIPTION = (filter: string) => `
+
+export const SPARQL_QUERY_DESCRIPTION = (filter: string) => `
           PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
           PREFIX ns1: <http://schema.org/>
           PREFIX schema: <http://schema.org/>
@@ -462,5 +462,5 @@ WHERE {
             ${filter}
           }
                `;
-     
-     
+
+

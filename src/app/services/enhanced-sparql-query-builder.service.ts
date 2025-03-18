@@ -8,7 +8,6 @@ import {
   SPARQL_BTLF_FILTER,
   SPARQL_QUERY_LURELU_FILTER
 } from '../constants/sparql';
-import { Categories } from '../constants/Categories';
 import { Appreciation } from '../constants/Appreciation';
 
 /**
@@ -135,24 +134,24 @@ export class EnhancedSparqlQueryBuilderService {
    */
   buildSourceSpecificQuery(source: string, category?: string): string {
     switch (source) {
-      case Categories.Babelio: {
+      case 'Babelio': {
         const starRating = parseInt(category?.split(' ')[0] ?? '0', 10);
         return SPARQL_BABELIO(`FILTER(?averageReview >= ${starRating})`);
       }
-      case Categories.Constellation: {
-        const filter = category === 'Coup de coeur !'
+      case 'Constellation': {
+        const filter = category === 'Coup de Coeur'
           ? `FILTER(?isCoupDeCoeur = true)`
           : '';
         return SPARQL_QUERY_CONSTELLATIONS(filter);
       }
-      case Categories.BNF: {
+      case 'BNF': {
         return SPARQL_QUERY_BNF(`FILTER(?avis = "${category}")`);
       }
-      case Categories.Lurelu: {
+      case 'Lurelu': {
         // Use the filter-specific template for Lurelu
         return SPARQL_QUERY_LURELU_FILTER('');
       }
-      case Categories.BTLF: {
+      case 'BTLF': {
         // Use the filter-specific template for BTLF
         return SPARQL_BTLF_FILTER('');
       }

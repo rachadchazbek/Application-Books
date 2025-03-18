@@ -17,7 +17,6 @@ import { urlBabelioSubject, bookSummarySubject, ratingSubject, currentBookSubjec
 import { BooksService } from './books.service';
 import { EnhancedFilterService } from './enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from './enhanced-sparql-query-builder.service';
-import { Categories } from '../constants/Categories';
 import { Appreciation } from '../constants/Appreciation';
 
 @Injectable({
@@ -141,7 +140,7 @@ export class SocketSparqlService {
    * @param source The source to filter by
    * @param category The category within the source to filter by
    */
-  filterBooksByCategory(source: string, category: Categories) {
+  filterBooksByCategory(source: string, category: string) {
     console.log('Filtering by category:', source, category);
   }
 
@@ -381,7 +380,7 @@ export class SocketSparqlService {
    * @param query The SPARQL query to execute
    * @returns A promise that resolves when the query is complete
    */
-  async executeQuery(query: string): Promise<void> {
+  private async executeQuery(query: string): Promise<void> {
     try {
       // Reset state for new query
       this.bookMap = {}; 
@@ -395,7 +394,7 @@ export class SocketSparqlService {
       return Promise.resolve();
     } catch (error) {
       console.error('Error executing query:', error);
-      return Promise.reject(error);
+      return;
     }
   }
   
@@ -404,24 +403,38 @@ export class SocketSparqlService {
     const { source, category, appreciation, ageRange } = currentFilters;
     
     console.log('Updating book data with filters:', currentFilters);
-    console.log(source);
+    
     // Source query based on source and category
-    const sourceQuery = this.sparqlQueryBuilder.getSourceQuery(source as string, category);
-    if (sourceQuery) {
-      await this.executeQuery(sourceQuery);
+    if (source) {
+      const sourceQuery = this.sparqlQueryBuilder.getSourceQuery(source, category);
+      console.log(sourceQuery);
+
+      if (sourceQuery) {
+        await this.executeQuery(sourceQuery);
+        return; // Return early if we have a source-specific query
+      }
     }
 
     // Appreciation queries
-    const appreciationQueries = this.sparqlQueryBuilder.getAppreciationQueries(appreciation as Appreciation);
-    appreciationQueries.forEach(query => this.executeQuery(query));
+    if (appreciation) {
+      const appreciationQueries = this.sparqlQueryBuilder.getAppreciationQueries(appreciation);
+      for (const query of appreciationQueries) {
+        await this.executeQuery(query);
+      }
+      return; // Return early if we have appreciation queries
+    }
 
     // Age filter queries
     if (ageRange && ageRange.length > 0) {
-      ageRange.forEach(age => {
+      for (const age of ageRange) {
         const ageFilter = this.sparqlQueryBuilder.buildAgeFilter(age);
-        this.executeQuery(SPARQL_QUERY_BNF(ageFilter));
-        this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(ageFilter));
-      });
+        await this.executeQuery(SPARQL_QUERY_BNF(ageFilter));
+        await this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(ageFilter));
+      }
+      return; // Return early if we have age filter queries
     }
+    
+    // If no specific filters, use a general query
+    await this.executeQuery(SPARQL_QUERY(''));
   }
 }

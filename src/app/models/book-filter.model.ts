@@ -26,7 +26,7 @@ export interface BookFilter {
   educationLevel?: string[];
   
   // Source and rating properties
-  source?: Categories;
+  source?: string;
   category?: string;
   appreciation?: Appreciation;
   

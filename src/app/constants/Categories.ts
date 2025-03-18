@@ -6,7 +6,7 @@ export enum Babelio {
     FiveStars = '5 étoiles'
 }
 
-export enum Categories {
+export enum Source {
     Babelio = 'Babelio',
     Constellation = 'Constellation',
     BNF = 'BNF',
@@ -37,6 +37,17 @@ export enum Lurelu {
 }
 
 // Define the Categories for each source
+export const Categories = {
+    Babelio: ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles'],
+    Constellation: ['Coup de Coeur', 'Tout'],
+    BNF: ['Hélas !', 'Problème...', 'Pourquoi pas ?', 'Intéressant', 'Bravo !', 'Coup de coeur !', 'Réédition à signaler', 'Bibliothèque idéale'],
+    Lurelu: ['Coup de coeur'],
+    BTLF: [],
+    Kaleidoscope: [],
+    Unassigned: []
+};
+
+// Define the mapping between sources and their categories for the Source tab
 export const SOURCE_Categories = {
     Babelio: ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles'],
     Constellation: ['Coup de Coeur', 'Tout'],
