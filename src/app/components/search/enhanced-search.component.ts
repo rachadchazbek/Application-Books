@@ -4,7 +4,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { NgIf, NgFor } from '@angular/common';
 import { GENRES, TITLES, AWARDS, AUTHORS, LANGUAGES } from 'src/app/constants/constants';
 import { Appreciation } from 'src/app/constants/Appreciation';
-import { Categories, SOURCE_Categories } from 'src/app/constants/Categories';
+import { SOURCE_Categories } from 'src/app/constants/Categories';
 import { EnhancedFilterService } from 'src/app/services/enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from 'src/app/services/enhanced-sparql-query-builder.service';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
@@ -300,11 +300,15 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
    */
   onSelectSource(): void {
     if (this.selectedSource) {
-      this.applyFilter('source', this.selectedSource as Categories);
+      this.applyFilter('source', this.selectedSource);
       
+      console.log('Selected source:', this.selectedSource);
       // Reset category when source changes
       this.selectedCategory = '';
       this.filterService.clearFilter('category');
+      
+      // Trigger search with the updated source filter
+      this.search();
     } else {
       this.filterService.clearFilter('source');
     }
@@ -316,6 +320,9 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   onSelectCategory(): void {
     if (this.selectedCategory) {
       this.applyFilter('category', this.selectedCategory);
+      
+      // Trigger search with the updated category filter
+      this.search();
     } else {
       this.filterService.clearFilter('category');
     }
@@ -344,7 +351,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
       const query = this.sparqlQueryBuilder.buildQuery(filters);
           
       // Execute query
-      this.socketService.executeQuery(query)
+      this.socketService.updateBook()
         .then(() => {
           console.log('Search completed successfully');
         })
