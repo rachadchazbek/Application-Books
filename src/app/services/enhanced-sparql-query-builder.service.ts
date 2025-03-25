@@ -6,7 +6,8 @@ import {
   SPARQL_QUERY_BNF, 
   SPARQL_QUERY_CONSTELLATIONS, 
   SPARQL_BTLF_FILTER,
-  SPARQL_QUERY_LURELU_FILTER
+  SPARQL_QUERY_LURELU_FILTER,
+  SPARQL_QUERY_DESCRIPTION
 } from '../constants/sparql';
 import { Appreciation } from '../constants/Appreciation';
 
@@ -23,6 +24,107 @@ export class EnhancedSparqlQueryBuilderService {
 
   constructor() {
     // No initialization needed
+  }
+
+  /**
+   * Get standard prefixes used in all queries
+   * @returns A string containing all standard SPARQL prefixes
+   */
+  private getStandardPrefixes(): string {
+    return `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ns1: <http://schema.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX mcc: <http://example.org/mcc#> 
+PREFIX pbs: <http://example.org/pbs#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>`;
+  }
+  
+  /**
+   * Build the SELECT clause with all needed variables
+   * @returns A string containing the SELECT clause
+   */
+  private buildSelectClause(): string {
+    return `SELECT ?book ?title ?author ?publisherName ?inLanguage ?award ?awardYear 
+       ?finalAwardName ?finalGenreName ?ageRange ?illustrator ?countryOfOrigin`;
+  }
+  
+  /**
+   * Build the core WHERE clause with all OPTIONAL patterns
+   * @returns A string containing the WHERE clause patterns
+   */
+  private buildWhereClause(): string {
+    return `  ?book rdf:type ns1:Book .
+  OPTIONAL { ?book ns1:name ?title . }
+  OPTIONAL { ?book ns1:author ?author . }
+  OPTIONAL { ?book ns1:illustrator ?illustrator . }
+  OPTIONAL { ?book ns1:countryOfOrigin ?countryOfOrigin . }
+  OPTIONAL { ?book ns1:publisher ?publisher .
+    ?publisher ns1:name ?publisherName . }
+  OPTIONAL { ?book ns1:inLanguage ?inLanguage . }
+  
+  OPTIONAL {
+    ?award mcc:R37 ?book .
+    ?award mcc:MCC-R35-4 ?awardYear .
+    ?award pbs:award ?awardName .
+    OPTIONAL {
+      ?awardName schema:name ?name .
+    }
+    OPTIONAL {
+      ?awardName pbs:genreLittéraire ?awardGenre .
+      ?awardGenre rdfs:label ?genreName .
+    }
+    OPTIONAL {
+      ?awardName pbs:groupeAge ?childAgeRange .
+    }
+    OPTIONAL {
+      ?parentAward skos:narrower ?awardName .
+      OPTIONAL {
+        ?parentAward schema:name ?parentName .
+      }
+      OPTIONAL {
+        ?parentAward pbs:groupeAge ?parentAgeRange .
+      }
+      OPTIONAL {
+        ?parentAward pbs:genreLittéraire ?parentGenre .
+        ?parentGenre rdfs:label ?parentGenreName .
+      }
+    }
+  }
+
+  BIND (COALESCE(?name, ?parentName, "") AS ?finalAwardName)
+  BIND (IF(BOUND(?genreName), ?genreName, IF(BOUND(?parentGenreName), ?parentGenreName, "")) AS ?finalGenreName)
+  BIND (IF(BOUND(?childAgeRange), ?childAgeRange, IF(BOUND(?parentAgeRange), ?parentAgeRange, "")) AS ?ageRange)`;
+  }
+  
+  /**
+   * Build the GROUP BY clause if needed
+   * @returns A string containing the GROUP BY clause, or empty string if not needed
+   */
+  private buildGroupByClause(): string {
+    return ''; // Default to no GROUP BY, override in specific query methods if needed
+  }
+
+  /**
+   * Build a comprehensive query with multiple filters
+   * @param filters Complete BookFilter object with all filter criteria
+   * @returns A complete SPARQL query string
+   */
+  buildComprehensiveQuery(filters: BookFilter): string {
+    // Start with base query parts
+    const prefixes = this.getStandardPrefixes();
+    const selectClause = this.buildSelectClause();
+    const whereClause = this.buildWhereClause();
+    const filterClauses = this.buildFilterClauses(filters);
+    const groupByClause = this.buildGroupByClause();
+    
+    // Combine all parts
+    return `${prefixes}
+${selectClause}
+WHERE {
+${whereClause}
+${filterClauses.length > 0 ? filterClauses.join('\n') : ''}
+}${groupByClause ? '\n' + groupByClause : ''}`;
   }
 
   /**
@@ -43,11 +145,6 @@ export class EnhancedSparqlQueryBuilderService {
     return SPARQL_QUERY(filterClauses.join(' '));
   }
 
-  /**
-   * Build filter clauses for the SPARQL query based on the provided filters
-   * @param filters The BookFilter object containing all active filters
-   * @returns An array of filter clause strings
-   */
   /**
    * Build filter clauses for the SPARQL query based on the provided filters
    * @param filters The BookFilter object containing all active filters
@@ -210,5 +307,72 @@ export class EnhancedSparqlQueryBuilderService {
    */
   buildAgeFilter(age: string): string {
     return `FILTER(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},"))`;
+  }
+
+  /**
+   * Build a similarity search query for finding books similar to a given book
+   * @param bookUri URI of the book to find similar books for
+   * @returns A SPARQL query string
+   */
+  buildSimilaritySearchQuery(bookUri: string): string {
+    return `${this.getStandardPrefixes()}
+    
+SELECT ?similarBook ?title ?author ?publisherName ?genre ?subjectThema
+WHERE {
+  # Get properties of the source book
+  <${bookUri}> schema:genre ?genre .
+  OPTIONAL { <${bookUri}> pbs:subjectThema ?subjectThema . }
+  
+  # Find books with the same genre or subject
+  ?similarBook rdf:type schema:Book .
+  {
+    ?similarBook schema:genre ?genre .
+  } UNION {
+    ?similarBook pbs:subjectThema ?subjectThema .
+  }
+  
+  # Exclude the source book
+  FILTER(?similarBook != <${bookUri}>)
+  
+  # Get properties of similar books
+  OPTIONAL { ?similarBook schema:name ?title . }
+  OPTIONAL { ?similarBook schema:author ?author . }
+  OPTIONAL { ?similarBook schema:publisher ?publisher .
+             ?publisher schema:name ?publisherName . }
+}
+LIMIT 10`;
+  }
+  
+  /**
+   * Build an enhanced author query to get detailed information about an author
+   * @param authorName Name of the author to search for
+   * @returns A SPARQL query string
+   */
+  buildEnhancedAuthorQuery(authorName: string): string {
+    return `${this.getStandardPrefixes()}
+    
+SELECT ?author ?name ?birthDate ?nationality ?award ?awardName ?book ?bookTitle
+WHERE {
+  ?author rdf:type schema:Person .
+  ?author schema:name ?name .
+  
+  FILTER(CONTAINS(LCASE(?name), LCASE("${authorName}")))
+  
+  OPTIONAL { ?author schema:birthDate ?birthDate . }
+  OPTIONAL { ?author schema:nationality ?nationality . }
+  OPTIONAL { ?author schema:award ?award .
+             ?award schema:name ?awardName . }
+  OPTIONAL { ?book schema:author ?author .
+             ?book schema:name ?bookTitle . }
+}`;
+  }
+
+  /**
+   * Build an enhanced query with book description using SPARQL_QUERY_DESCRIPTION
+   * @param filter The filter to apply to the query
+   * @returns A SPARQL query string
+   */
+  buildBookWithDescriptionQuery(filter: string): string {
+    return SPARQL_QUERY_DESCRIPTION(filter);
   }
 }

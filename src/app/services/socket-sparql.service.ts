@@ -4,7 +4,6 @@ import {
   SPARQL_QUERY,
   SPARQL_QUERY_BNF,
   SPARQL_QUERY_CONSTELLATIONS,
-  SPARQL_QUERY_DESCRIPTION,
   SPARQL_WIKIDATA,
   SPARQL_BTLF_FILTER,
   SPARQL_QUERY_LURELU_FILTER,
@@ -18,6 +17,7 @@ import { BooksService } from './books.service';
 import { EnhancedFilterService } from './enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from './enhanced-sparql-query-builder.service';
 import { Appreciation } from '../constants/Appreciation';
+import { BookFilter } from '../models/book-filter.model';
 
 @Injectable({
   providedIn: 'root',
@@ -40,6 +40,64 @@ export class SocketSparqlService {
 
   inAuthorsComponent = false;
   inAwardsComponent = false;
+  
+  /**
+   * Apply multiple filters at once and execute a query
+   * @param filters BookFilter object with all filter criteria
+   * @returns Promise that resolves when the query is complete
+   */
+  applyFilters(filters: BookFilter): Promise<void> {
+    // Reset state
+    this.bookMap = {};
+    this.storedIsbns = null;
+    this.themeActive = false;
+    this.inAuthorsComponent = false;
+    this.inAwardsComponent = false;
+    
+    // Update filter service with all filters
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && this.isValidFilterKey(key)) {
+        this.enhancedFilterService.updateFilter(key as keyof BookFilter, value);
+      }
+    });
+    
+    // Build and execute query
+    const query = this.sparqlQueryBuilder.buildComprehensiveQuery(filters);
+    return this.httpSparqlService.postQuery(query)
+      .then(response => {
+        this.booksService.updateData(response);
+      })
+      .catch((error: Error) => {
+        console.error('Error executing query with filters:', error);
+        throw error; // Rethrow to allow caller to handle the error
+      });
+  }
+  
+  /**
+   * Find books similar to a given book
+   * @param bookUri URI of the book to find similar books for
+   */
+  findSimilarBooks(bookUri: string): void {
+    const query = this.sparqlQueryBuilder.buildSimilaritySearchQuery(bookUri);
+    this.httpSparqlService.postQuery(query).then(response => {
+      this.booksService.updateData(response);
+    }).catch(error => {
+      console.error('Error finding similar books:', error);
+    });
+  }
+  
+  /**
+   * Get enhanced author information
+   * @param authorName Name of the author to search for
+   */
+  getEnhancedAuthorInfo(authorName: string): void {
+    const query = this.sparqlQueryBuilder.buildEnhancedAuthorQuery(authorName);
+    this.httpSparqlService.postQuery(query).then(response => {
+      this.booksService.updateData(response);
+    }).catch(error => {
+      console.error('Error getting author info:', error);
+    });
+  }
 
   runBtlfQuery(filter: string, description: string): void {
     this.bookMap = {};
@@ -160,18 +218,25 @@ export class SocketSparqlService {
       const currentAgeRange = currentFilters.ageRange || [];
       this.enhancedFilterService.updateFilter('ageRange', [...currentAgeRange, ageString]);
       const updatedFilters = this.enhancedFilterService.getCurrentFilters();
-      for (const age of updatedFilters.ageRange || []) {
+      
+      // Combine all age filters into a single expression
+      if (updatedFilters.ageRange && updatedFilters.ageRange.length > 0) {
+        const ageFilters = updatedFilters.ageRange.map(age => 
+          `(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},"))`
+        );
+        
+        // Create a single query with all age filters combined
+        const combinedAgeFilter = ageFilters.join(' || ');
+        
         const query_bnf = SPARQL_QUERY_BNF(`
-    FILTER((STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},")) &&
+    FILTER((${combinedAgeFilter}) &&
            ?isbn IN (${isbns}))`);
 
         const query_constellations = SPARQL_QUERY_CONSTELLATIONS(`
-    FILTER((STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},")) &&
+    FILTER((${combinedAgeFilter}) &&
            ?isbn IN (${isbns}))`);
 
-        // Send each query separately through the socket service
-        // this.socketService.send('getSparqlData', query_bnf);
-        // this.socketService.send('getSparqlData', query_constellations);
+        // Send the combined queries instead of individual ones
         this.httpSparqlService.postQuery(query_bnf);
         this.httpSparqlService.postQuery(query_constellations);
       }
@@ -238,43 +303,68 @@ export class SocketSparqlService {
     }
   }
 
+  /**
+   * Filter books by title
+   * @param name The title to filter by
+   */
   filterName(name: string) {
-    this.bookMap = {};
-    this.enhancedFilterService.updateFilter('title', name);
-    this.updateBook();
+    this.applyFilters({ title: name });
   }
 
+  /**
+   * Filter books by genre
+   * @param genre The genre to filter by
+   */
   filterGenre(genre: string) {
-    this.bookMap = {};
-    this.enhancedFilterService.updateFilter('genre', 
-      genre !== 'No Genre Selected' ? genre : undefined);
-    this.updateBook();
+    this.applyFilters({ 
+      genre: genre !== 'No Genre Selected' ? genre : undefined 
+    });
   }
 
+  /**
+   * Filter books by author
+   * @param author The author to filter by
+   */
   filterBooksByAuthor(author: string) {
-    this.bookMap = {};
-    this.enhancedFilterService.updateFilter('author', author);
-    this.updateBook();
+    this.applyFilters({ author });
+  }
+
+  /**
+   * Filter books by award name
+   * @param filterAward The award name to filter by
+   */
+  /**
+   * Check if a key is a valid filter key
+   * @param key The key to check
+   * @returns True if key is a valid BookFilter key
+   */
+  private isValidFilterKey(key: string): key is keyof BookFilter {
+    return [
+      'title', 'isbn', 'inLanguage', 'author', 'nationality', 
+      'illustrator', 'genre', 'subjectThema', 'ageRange',
+      'educationLevel', 'source', 'category', 'appreciation',
+      'publisher', 'datePublished', 'award'
+    ].includes(key);
   }
 
   filterBooksByAward(filterAward: string) {
-    this.bookMap = {};
     this.inAwardsComponent = true;
-    const sparqlQuery = SPARQL_QUERY_DESCRIPTION(
-      `FILTER(CONTAINS(?finalAwardName, "${filterAward}"))`
-    );
+    // Use SPARQL_QUERY_DESCRIPTION directly instead of going through the builder
+    const sparqlQuery = this.sparqlQueryBuilder.buildComprehensiveQuery({ 
+      award: filterAward 
+    });
     this.httpSparqlService.postQuery(sparqlQuery).then((response) => {
         this.booksService.updateData(response);
     });
   }
 
+  /**
+   * Filter books by a specific author
+   * @param filterAuthor The author name to filter by
+   */
   filterAuthorBooks(filterAuthor: string) {
-    this.bookMap = {};
     this.inAuthorsComponent = true;
-    const sparqlQuery = SPARQL_QUERY(`FILTER(?author = "${filterAuthor}")`);
-    this.httpSparqlService.postQuery(sparqlQuery).then((response) => {
-        this.booksService.updateData(response);
-    });
+    this.applyFilters({ author: filterAuthor });
   }
 
   /**
@@ -282,24 +372,29 @@ export class SocketSparqlService {
    * @param ageRange The age range to filter by
    */
   filterBooksByAge(ageRange: string | string[]) {
-    this.bookMap = {};
     console.log("Filtering by age:", ageRange);
-    this.enhancedFilterService.updateFilter('ageRange',
-      ageRange !== 'No Age Selected' ? (Array.isArray(ageRange) ? ageRange : [ageRange]) : []);
-    this.updateBook();
+    this.applyFilters({ 
+      ageRange: ageRange !== 'No Age Selected' ? 
+        (Array.isArray(ageRange) ? ageRange : [ageRange]) : []
+    });
   }
 
+  /**
+   * Filter books by award
+   * @param award The award to filter by
+   */
   filterAward(award: string) {
-    this.bookMap = {};
-    this.enhancedFilterService.updateFilter('award', award);
-    this.updateBook();
+    this.applyFilters({ award });
   }
 
+  /**
+   * Filter books by language
+   * @param language The language to filter by
+   */
   filterLanguage(language: string) {
-    this.bookMap = {};
-    this.enhancedFilterService.updateFilter('inLanguage',
-      language !== 'No Language Selected' ? language : undefined);
-    this.updateBook();
+    this.applyFilters({ 
+      inLanguage: language !== 'No Language Selected' ? language : undefined
+    });
   }
 
   getAuthorInfo(filterAuthor: string) {
@@ -426,11 +521,18 @@ export class SocketSparqlService {
 
     // Age filter queries
     if (ageRange && ageRange.length > 0) {
-      for (const age of ageRange) {
-        const ageFilter = this.sparqlQueryBuilder.buildAgeFilter(age);
-        await this.executeQuery(SPARQL_QUERY_BNF(ageFilter));
-        await this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(ageFilter));
-      }
+      // Combine all age filters into a single expression
+      const ageFilters = ageRange.map(age => 
+        `(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},"))`
+      );
+      
+      // Create a single filter with all age filters combined with OR
+      const combinedAgeFilter = `FILTER(${ageFilters.join(' || ')})`;
+      
+      // Send just two queries (one for each source) with all ages combined
+      await this.executeQuery(SPARQL_QUERY_BNF(combinedAgeFilter));
+      await this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(combinedAgeFilter));
+      
       return; // Return early if we have age filter queries
     }
     
