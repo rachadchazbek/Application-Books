@@ -35,7 +35,14 @@ export class HttpSparqlService {
     });
 
     try {
-      console.log('Sending SPARQL query:', sparqlQuery.substring(0, 100) + '...');
+      // Log query for debugging (truncate long queries)
+      const queryPreview = sparqlQuery.length > 500 
+        ? sparqlQuery.substring(0, 500) + '...' 
+        : sparqlQuery;
+      console.log('Executing SPARQL query:', queryPreview);
+      
+      // Measure query execution time
+      const startTime = performance.now();
       
       const response = await this.http.post<SparqlResponse>(
         repositoryUrl, 
@@ -43,12 +50,15 @@ export class HttpSparqlService {
         { headers }
       ).toPromise();
       
+      const endTime = performance.now();
+      const executionTime = (endTime - startTime).toFixed(2);
+      
       if (!response) {
         throw new Error('No response received from the server');
       }
       
-      console.log('SPARQL query successful, received results:', 
-        response.results?.bindings?.length || 0);
+      const resultCount = response.results?.bindings?.length || 0;
+      console.log(`Query executed in ${executionTime}ms, returned ${resultCount} results`);
       
       return response;
     } catch (error) {

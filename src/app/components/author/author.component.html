@@ -10,51 +10,63 @@
         {{authorData?.personLabel}}
       </h2>
       <ul>
-        <li *ngIf="authorData?.dateOfBirth">
+<div class="page">
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  </head>
+
+  <div class="container">
+    <div class="author-information">
+      <h2 class="author-name">
+        <i class="fas fa-user"></i> 
+        {{authorData?.['personLabel']}}
+      </h2>
+      <ul>
+        <li *ngIf="authorData?.['dateOfBirth']">
           <i class="fas fa-birthday-cake"></i> 
-          {{authorData?.dateOfBirth}}
+          {{authorData?.['dateOfBirth']}}
         </li>
-        <li *ngIf="authorData?.placeOfBirthLabel">
+        <li *ngIf="authorData?.['placeOfBirthLabel']">
           <i class="fas fa-map-marker-alt"></i> 
-          {{authorData?.placeOfBirthLabel}}
+          {{authorData?.['placeOfBirthLabel']}}
         </li>
-        <li *ngIf="authorData?.occupationLabel">
+        <li *ngIf="authorData?.['occupationLabel']">
           <i class="fas fa-briefcase"></i> 
-          {{authorData?.occupationLabel}}
+          {{authorData?.['occupationLabel']}}
         </li>
-        <li *ngIf="authorData?.countryOfCitizenshipLabel">
+        <li *ngIf="authorData?.['countryOfCitizenshipLabel']">
           <i class="fas fa-flag"></i> 
-          {{authorData?.countryOfCitizenshipLabel}}
+          {{authorData?.['countryOfCitizenshipLabel']}}
         </li>
-        <li *ngIf="authorData?.educationLabel">
+        <li *ngIf="authorData?.['educationLabel']">
           <i class="fas fa-graduation-cap"></i> 
-          {{authorData?.educationLabel}}
+          {{authorData?.['educationLabel']}}
         </li>
-        <li *ngIf="authorData?.genderLabel">
+        <li *ngIf="authorData?.['genderLabel']">
           <i class="fas fa-venus-mars"></i> 
-          {{authorData?.genderLabel}}
+          {{authorData?.['genderLabel']}}
         </li>
-        <li *ngIf="authorData?.languageSpokenLabel">
+        <li *ngIf="authorData?.['languageSpokenLabel']">
           <i class="fas fa-globe"></i> 
-          {{authorData?.languageSpokenLabel}}
+          {{authorData?.['languageSpokenLabel']}}
         </li>
-        <li *ngIf="authorData?.awardReceivedLabel">
+        <li *ngIf="authorData?.['awardReceivedLabel']">
           <i class="fas fa-trophy"></i> 
-          {{authorData?.awardReceivedLabel}}
+          {{authorData?.['awardReceivedLabel']}}
         </li>
-        <li *ngIf="authorData?.notableWorkLabel">
+        <li *ngIf="authorData?.['notableWorkLabel']">
           <i class="fas fa-book"></i> 
-          {{authorData?.notableWorkLabel}}
+          {{authorData?.['notableWorkLabel']}}
         </li>
-        <li *ngIf="authorData?.website">
+        <li *ngIf="authorData?.['website']">
           <i class="fas fa-globe-europe"></i> 
-          <a href="{{authorData?.website}}">{{authorData?.website}}</a>
+          <a href="{{authorData?.['website']}}">{{authorData?.['website']}}</a>
         </li>
-        <li *ngIf="authorData?.wikidataLink">
+        <li *ngIf="authorData?.['wikidataLink']">
           <i class="fab fa-wikipedia-w"></i> 
-          <a href="{{authorData?.wikidataLink}}">{{authorData?.wikidataLink}}</a>
+          <a href="{{authorData?.['wikidataLink']}}">{{authorData?.['wikidataLink']}}</a>
         </li>
-        <li *ngIf="authorData?.babelioAuthorID">
+        <li *ngIf="authorData?.['babelioAuthorID']">
           <i class="fas fa-link"></i> 
           <a [href]="generateBabelioLink()">Babelio Link</a>
         </li>  
@@ -71,7 +83,7 @@
           <i class="fas fa-user"></i> 
           <ng-container *ngFor="let author of book.authors; let i = index">
             <span>{{author}}</span>
-            <span *ngIf="i < book.authors.length - 1">, </span>
+            <span *ngIf="i < book.authors.length - 1">,</span>
             <span *ngIf="i === book.authors.length - 1">&nbsp;</span>
           </ng-container>
         </p>
@@ -87,7 +99,7 @@
           <i class="fas fa-paint-brush"></i>
           <ng-container *ngFor="let illustrator of book.illustrator; let i = index">
             <!-- <span (click)="navigateToIllustrator(illustrator)">{{ illustrator }}</span> -->
-            <span *ngIf="i < book.illustrator.length - 1">, </span>
+            <span *ngIf="i < book.illustrator.length - 1">,</span>
             <span *ngIf="i === book.illustrator.length - 1">&nbsp;</span>
           </ng-container>
         </p>

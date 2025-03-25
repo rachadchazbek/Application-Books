@@ -307,8 +307,6 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
       this.selectedCategory = '';
       this.filterService.clearFilter('category');
       
-      // Trigger search with the updated source filter
-      this.search();
     } else {
       this.filterService.clearFilter('source');
     }
@@ -321,8 +319,6 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
     if (this.selectedCategory) {
       this.applyFilter('category', this.selectedCategory);
       
-      // Trigger search with the updated category filter
-      this.search();
     } else {
       this.filterService.clearFilter('category');
     }
@@ -347,11 +343,8 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
       // Get current filters
       const filters = this.filterService.getCurrentFilters();
       
-      // Build query
-      const query = this.sparqlQueryBuilder.buildQuery(filters);
-          
-      // Execute query
-      this.socketService.updateBook()
+      // Use applyFilters instead of updateBook to ensure all filters are applied
+      this.socketService.applyFilters(filters)
         .then(() => {
           console.log('Search completed successfully');
         })
