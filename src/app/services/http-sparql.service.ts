@@ -26,8 +26,9 @@ export class HttpSparqlService {
    * @returns A promise that resolves to the SPARQL response
    */
   async postQuery(sparqlQuery: string): Promise<SparqlResponse> {
-    const repositoryUrl = 'http://Rachads-MacBook-Pro-2.local:7200/repositories/Books-app'
+    // const repositoryUrl = 'http://Rachads-MacBook-Pro-2.local:7200/repositories/Books-app'
     // const repositoryUrl = 'http://148.113.191.18:7200/repositories/books';
+    const repositoryUrl = 'http://51.79.51.204:7200/repositories/books';
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/sparql-query',
