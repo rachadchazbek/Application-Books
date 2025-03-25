@@ -94,11 +94,14 @@
         <button class="tab-button" [class.active]="activeTab === 'summary'" (click)="setActiveTab('summary')">
           <i class="fas fa-info-circle"></i> Résumé
         </button>
-        <button class="tab-button" [class.active]="activeTab === 'awards'" (click)="setActiveTab('awards')" *ngIf="(currentBookData?.awards?.length ?? 0) > 0">
+        <button class="tab-button" [class.active]="activeTab === 'awards'" (click)="setActiveTab('awards')">
           <i class="fas fa-trophy"></i> Prix
         </button>
         <button class="tab-button" [class.active]="activeTab === 'details'" (click)="setActiveTab('details')">
           <i class="fas fa-list"></i> Détails
+        </button>
+        <button class="tab-button" [class.active]="activeTab === 'similar'" (click)="setActiveTab('similar')">
+          <i class="fas fa-book-open"></i> Livres Similaires
         </button>
       </div>
       
@@ -129,6 +132,9 @@
                 </p>
               </div>
             </div>
+          </div>
+          <div class="no-content" *ngIf="!currentBookData?.awards || (currentBookData?.awards?.length ?? 0) === 0">
+            <p>Aucun prix trouvé pour ce livre.</p>
           </div>
         </div>
         
@@ -171,6 +177,32 @@
                 {{ currentBookData?.subjectThema }}
               </div>
             </div>
+          </div>
+        </div>
+        
+        <!-- Similar Books tab -->
+        <div *ngIf="activeTab === 'similar'" class="tab-pane">
+          <div class="similar-books-list" *ngIf="similarBooks.length > 0">
+            <div class="similar-book-item" *ngFor="let book of similarBooks">
+              <div class="similar-book-header">
+                <i class="fas fa-book"></i>
+                <h3>{{ book.title }}</h3>
+              </div>
+              <div class="similar-book-details">
+                <p *ngIf="book.authors && book.authors.length > 0">
+                  <strong>Auteur(s):</strong> {{ book.authors.join(', ') }}
+                </p>
+                <p *ngIf="book.publisher">
+                  <strong>Éditeur:</strong> {{ book.publisher }}
+                </p>
+                <button class="view-book-button" (click)="navigateToAuthor(book.authors[0])" *ngIf="book.authors && book.authors.length > 0">
+                  <i class="fas fa-user"></i> Voir l'auteur
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="no-content" *ngIf="similarBooks.length === 0">
+            <p>Aucun livre similaire trouvé.</p>
           </div>
         </div>
       </div>

@@ -1,6 +1,4 @@
 import { Appreciation } from '../constants/Appreciation';
-import { Categories } from '../constants/Categories';
-
 /**
  * Enhanced filter model aligned with schema.org
  * This interface represents all possible filters that can be applied

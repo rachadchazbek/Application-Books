@@ -1,8 +1,8 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-import { bookSummary$, currentBook$, rating$, urlBabelio$ } from 'src/app/classes/subjects';
+import { bookSummary$, books$, currentBook$, rating$, urlBabelio$ } from 'src/app/classes/subjects';
 import { Book } from 'src/app/constants/Book';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 import { Location } from '@angular/common';
@@ -14,15 +14,16 @@ import { Location } from '@angular/common';
   imports: [NgIf, NgFor],
   styleUrls: ['./book.component.css']
 })
-export class BookComponent implements OnDestroy {
+export class BookComponent implements OnInit, OnDestroy {
   // Book data properties
   summaryBook: string | null = null;
   ratingBook: string | null = null;
   currentBookData: Book | null = null;
   babelioLink: string | null = null;
+  similarBooks: Book[] = [];
   
   // UI state
-  activeTab: 'summary' | 'awards' | 'details' = 'summary';
+  activeTab: 'summary' | 'awards' | 'details' | 'similar' = 'summary';
   
   // Subscriptions
   private summarySubscription: Subscription;
@@ -41,6 +42,42 @@ export class BookComponent implements OnDestroy {
     this.subscribeToBookSummary();
     this.subscribeToBookRating();
     this.subscribeToCurrentBook();
+  }
+
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      const bookId = params['id'];
+      if (bookId && this.currentBookData) {
+        // Load similar books using the book URI
+        this.loadSimilarBooks(bookId);
+      }
+    });
+  }
+
+  /**
+   * Load books similar to the current book
+   * @param bookId The ID of the current book
+   */
+  loadSimilarBooks(bookId: string) {
+    // Construct the book URI based on the book ID
+    const bookUri = `http://schema.org/Book${bookId}`;
+    
+    // Find similar books
+    this.socketService.findSimilarBooks(bookUri);
+    
+    // Subscribe to the books observable to get the similar books
+    const booksSubscription = books$.subscribe((books: Book[]) => {
+      if (books && books.length > 0) {
+        this.similarBooks = books.filter((book: Book) => 
+          book.title !== this.currentBookData?.title
+        );
+      }
+    });
+    
+    // Add the subscription to be cleaned up on destroy
+    this.destroy$.subscribe(() => {
+      booksSubscription.unsubscribe();
+    });
   }
 
   /**
@@ -65,7 +102,7 @@ export class BookComponent implements OnDestroy {
   /**
    * Set the active tab
    */
-  setActiveTab(tab: 'summary' | 'awards' | 'details'): void {
+  setActiveTab(tab: 'summary' | 'awards' | 'details' | 'similar'): void {
     this.activeTab = tab;
   }
 
