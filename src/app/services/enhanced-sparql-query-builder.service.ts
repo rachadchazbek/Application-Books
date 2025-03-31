@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BookFilter } from '../models/book-filter.model';
 import { 
-  SPARQL_BABELIO, 
-  SPARQL_QUERY, 
-  SPARQL_QUERY_BNF, 
-  SPARQL_QUERY_CONSTELLATIONS, 
-  SPARQL_BTLF_FILTER,
-  SPARQL_QUERY_LURELU_FILTER,
-  SPARQL_QUERY_DESCRIPTION
+  SPARQL_WIKIDATA,
+  SPARQL_QUERY_DESCRIPTION,
+  UNIFIED_SPARQL_QUERY
 } from '../constants/sparql';
 import { Appreciation } from '../constants/Appreciation';
 
@@ -106,43 +102,163 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>`;
   }
 
   /**
+   * Helper method to escape special characters in SPARQL string literals
+   * @param value The string to escape
+   * @returns The escaped string
+   */
+  private escapeSparqlString(value: string): string {
+    if (!value) return '';
+    return value.replace(/"/g, '\\"');
+  }
+
+  /**
+   * Build unified filter clauses that work across all sources
+   * @param filters Complete BookFilter object with all filter criteria
+   * @returns A string containing all filter clauses
+   */
+  buildUnifiedFilterClauses(filters: BookFilter): string[] {
+    const clauses: string[] = [];
+    
+    // Source filter
+    if (filters.source) {
+      clauses.push(`?book pbs:infoSource pbs:${filters.source}`);
+    }
+    
+    // Basic book properties
+    if (filters.title) {
+      const escapedTitle = this.escapeSparqlString(filters.title);
+      clauses.push(`FILTER(CONTAINS(LCASE(?title), LCASE("${escapedTitle}")))`);
+    }
+    
+    if (filters.isbn) {
+      const escapedIsbn = this.escapeSparqlString(filters.isbn);
+      clauses.push(`FILTER(LCASE(?isbn) = LCASE("${escapedIsbn}"))`);
+    }
+    
+    if (filters.inLanguage) {
+      const escapedLanguage = this.escapeSparqlString(filters.inLanguage);
+      clauses.push(`FILTER(LCASE(?inLanguage) = LCASE("${escapedLanguage}"))`);
+    }
+    
+    // Creator properties
+    if (filters.author) {
+      const escapedAuthor = this.escapeSparqlString(filters.author);
+      clauses.push(`FILTER(CONTAINS(LCASE(?author), LCASE("${escapedAuthor}")))`);
+    }
+    
+    if (filters.nationality) {
+      const escapedNationality = this.escapeSparqlString(filters.nationality);
+      clauses.push(`FILTER(CONTAINS(LCASE(?countryOfOrigin), LCASE("${escapedNationality}")))`);
+    }
+    
+    if (filters.illustrator) {
+      const escapedIllustrator = this.escapeSparqlString(filters.illustrator);
+      clauses.push(`FILTER(CONTAINS(LCASE(?illustrator), LCASE("${escapedIllustrator}")))`);
+    }
+    
+    // Classification properties
+    if (filters.genre) {
+      const escapedGenre = this.escapeSparqlString(filters.genre);
+      clauses.push(`FILTER(CONTAINS(LCASE(?genreValue), LCASE("${escapedGenre}")))`);
+    }
+    
+    if (filters.subjectThema) {
+      const escapedSubject = this.escapeSparqlString(filters.subjectThema);
+      clauses.push(`FILTER(CONTAINS(LCASE(?subjectThema), LCASE("${escapedSubject}")))`);
+    }
+    
+    // Age range filter
+    if (filters.ageRange && filters.ageRange.length > 0) {
+      const ageConditions = filters.ageRange.map(age => 
+        `CONTAINS(STR(?typicalAgeRange), "${this.escapeSparqlString(age)}")`
+      );
+      clauses.push(`FILTER(${ageConditions.join(' || ')})`);
+    }
+    
+    // Additional metadata
+    if (filters.publisher) {
+      const escapedPublisher = this.escapeSparqlString(filters.publisher);
+      clauses.push(`FILTER(CONTAINS(LCASE(?publisherName), LCASE("${escapedPublisher}")))`);
+    }
+    
+    if (filters.datePublished) {
+      const escapedDate = this.escapeSparqlString(filters.datePublished);
+      clauses.push(`FILTER(?datePublished = "${escapedDate}")`);
+    }
+    
+    if (filters.award) {
+      const escapedAward = this.escapeSparqlString(filters.award);
+      clauses.push(`FILTER(CONTAINS(LCASE(?awards), LCASE("${escapedAward}")))`);
+    }
+    
+    // Category-specific filters
+    if (filters.category) {
+      if (filters.source === 'Babelio') {
+        const starRating = parseInt(filters.category.split(' ')[0], 10);
+        if (!isNaN(starRating)) {
+          clauses.push(`FILTER(?averageReview >= ${starRating})`);
+        }
+      } else if (filters.source === 'Constellation' && filters.category === 'Coup de Coeur') {
+        clauses.push(`FILTER(?isCoupDeCoeur = true)`);
+      } else if (filters.source === 'BNF') {
+        const escapedCategory = this.escapeSparqlString(filters.category);
+        clauses.push(`FILTER(?avis = "${escapedCategory}")`);
+      }
+    }
+    
+    // Appreciation filters
+    if (filters.appreciation === Appreciation.HighlyAppreciated) {
+      clauses.push(`
+      {
+        ?book pbs:infoSource pbs:Babelio .
+        FILTER(?averageReview >= 4)
+      } UNION {
+        ?book pbs:infoSource pbs:BNF .
+        FILTER(?avis = "Coup de coeur !" || ?avis = "Bravo !")
+      } UNION {
+        ?book pbs:infoSource pbs:Constellations .
+        FILTER(?isCoupDeCoeur = true)
+      } UNION {
+        ?book pbs:infoSource pbs:Lurelu
+      }
+      `);
+    } else if (filters.appreciation === Appreciation.NotHighlyAppreciated) {
+      clauses.push(`
+      {
+        ?book pbs:infoSource pbs:Babelio .
+        FILTER(?averageReview <= 3)
+      } UNION {
+        ?book pbs:infoSource pbs:BNF .
+        FILTER(?avis = "Hélas !" || ?avis = "Problème...")
+      }
+      `);
+    }
+    
+    return clauses;
+  }
+
+  /**
+   * Build a unified query that works across all sources
+   * @param filters Complete BookFilter object with all filter criteria
+   * @returns A complete SPARQL query string
+   */
+  buildUnifiedQuery(filters: BookFilter): string {
+    // Build filter clauses based on the unified filter model
+    const filterClauses = this.buildUnifiedFilterClauses(filters);
+    const filterString = filterClauses.length > 0 ? filterClauses.join(' .\n') : '';
+    
+    // Use the unified query template that works for all sources
+    return UNIFIED_SPARQL_QUERY(filterString);
+  }
+
+  /**
    * Build a comprehensive query with multiple filters
    * @param filters Complete BookFilter object with all filter criteria
    * @returns A complete SPARQL query string
    */
   buildComprehensiveQuery(filters: BookFilter): string {
-    // Start with base query parts
-    const prefixes = this.getStandardPrefixes();
-    const selectClause = this.buildSelectClause();
-    const whereClause = this.buildWhereClause();
-    const filterClauses = this.buildFilterClauses(filters);
-    const groupByClause = this.buildGroupByClause();
-    
-    // Combine all parts
-    return `${prefixes}
-${selectClause}
-WHERE {
-${whereClause}
-${filterClauses.length > 0 ? filterClauses.join('\n') : ''}
-}${groupByClause ? '\n' + groupByClause : ''}`;
-  }
-
-  /**
-   * Build a SPARQL query based on the provided filters
-   * @param filters The BookFilter object containing all active filters
-   * @returns A SPARQL query string
-   */
-  buildQuery(filters: BookFilter): string {
-    // Build filter clauses based on the unified filter model
-    const filterClauses = this.buildFilterClauses(filters);
-    
-    // If no filters are applied, return a base query
-    if (filterClauses.length === 0) {
-      return SPARQL_QUERY('');
-    }
-    
-    // Combine filter clauses and return the query
-    return SPARQL_QUERY(filterClauses.join(' '));
+    // Use the new unified query approach that works for all sources and filters
+    return this.buildUnifiedQuery(filters);
   }
 
   /**
@@ -224,83 +340,6 @@ ${filterClauses.length > 0 ? filterClauses.join('\n') : ''}
   }
 
   /**
-   * Build a source-specific query based on the source and category
-   * @param source The data source (e.g., Babelio, Constellation, BNF)
-   * @param category The category within the source
-   * @returns A SPARQL query string
-   */
-  buildSourceSpecificQuery(source: string, category?: string): string {
-    switch (source) {
-      case 'Babelio': {
-        const starRating = parseInt(category?.split(' ')[0] ?? '0', 10);
-        return SPARQL_BABELIO(`FILTER(?averageReview >= ${starRating})`);
-      }
-      case 'Constellation': {
-        const filter = category === 'Coup de Coeur'
-          ? `FILTER(?isCoupDeCoeur = true)`
-          : '';
-        return SPARQL_QUERY_CONSTELLATIONS(filter);
-      }
-      case 'BNF': {
-        return SPARQL_QUERY_BNF(`FILTER(?avis = "${category}")`);
-      }
-      case 'Lurelu': {
-        // Use the filter-specific template for Lurelu
-        return SPARQL_QUERY_LURELU_FILTER('');
-      }
-      case 'BTLF': {
-        // Use the filter-specific template for BTLF
-        return SPARQL_BTLF_FILTER('');
-      }
-      default:
-        return SPARQL_QUERY('');
-    }
-  }
-
-  /**
-   * Build queries for appreciation filters
-   * @param appreciation The appreciation filter value
-   * @returns An array of SPARQL query strings
-   */
-  buildAppreciationQueries(appreciation: Appreciation): string[] {
-    switch (appreciation) {
-      case Appreciation.HighlyAppreciated:
-        return [
-          SPARQL_QUERY_LURELU_FILTER(''), // Use the filter-specific template
-          SPARQL_BABELIO(`FILTER(?averageReview >= 4)`),
-          SPARQL_QUERY_BNF(`FILTER(?avis = "Coup de coeur !" || ?avis = "Bravo !")`),
-          SPARQL_QUERY_CONSTELLATIONS(`FILTER(?isCoupDeCoeur = true)`)
-        ];
-      case Appreciation.NotHighlyAppreciated:
-        return [
-          SPARQL_BABELIO(`FILTER(?averageReview <= 3)`),
-          SPARQL_QUERY_BNF(`FILTER((?avis = "Hélas !" || ?avis = "Problème..."))`)
-        ];
-      default:
-        return [];
-    }
-  }
-
-  /**
-   * Compatibility method to match SparklQueryBuilderService.getSourceQuery
-   * @param filterSource The data source (e.g. 'Babelio', 'Constellation', 'BNF', etc.)
-   * @param filterCategory Additional category filter information
-   * @returns A query string
-   */
-  getSourceQuery(filterSource: string, filterCategory?: string): string {
-    return this.buildSourceSpecificQuery(filterSource, filterCategory);
-  }
-
-  /**
-   * Compatibility method to match SparklQueryBuilderService.getAppreciationQueries
-   * @param filterAppreciation The appreciation filter (e.g. 'highlyAppreciated', 'notHighlyAppreciated')
-   * @returns An array of query strings
-   */
-  getAppreciationQueries(filterAppreciation: Appreciation): string[] {
-    return this.buildAppreciationQueries(filterAppreciation);
-  }
-
-  /**
    * Compatibility method to match SparklQueryBuilderService.getAgeFilter
    * @param age The age value
    * @returns A filter string for the query
@@ -349,7 +388,8 @@ LIMIT 10`;
    * @returns A SPARQL query string
    */
   buildEnhancedAuthorQuery(authorName: string): string {
-    return `${this.getStandardPrefixes()}
+    // First try to get information from our database
+    const localQuery = `${this.getStandardPrefixes()}
     
 SELECT ?author ?name ?birthDate ?nationality ?award ?awardName ?book ?bookTitle
 WHERE {
@@ -365,6 +405,28 @@ WHERE {
   OPTIONAL { ?book schema:author ?author .
              ?book schema:name ?bookTitle . }
 }`;
+    
+    // For well-known authors, we can also use Wikidata to enrich information
+    const useWikidata = this.shouldUseWikidata(authorName);
+    if (useWikidata) {
+      return SPARQL_WIKIDATA(authorName);
+    }
+    
+    return localQuery;
+  }
+  
+  /**
+   * Determine if we should use Wikidata to get author information
+   * @param authorName Name of the author
+   * @returns True if we should use Wikidata
+   */
+  private shouldUseWikidata(authorName: string): boolean {
+    // Logic to determine if we should use Wikidata
+    // For example, we might use Wikidata for well-known authors
+    const wellKnownAuthors = ['Victor Hugo', 'Albert Camus', 'Simone de Beauvoir'];
+    return wellKnownAuthors.some(author => 
+      authorName.toLowerCase().includes(author.toLowerCase())
+    );
   }
 
   /**

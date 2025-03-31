@@ -31,14 +31,14 @@ export class BooksService {
       if (binding.finalAwardDescription?.value) {
         descriptionAwardSubject.next(binding.finalAwardDescription.value);
       }
-      const title = binding.title?.value || `Empty Title ${index}`;
+      const name = binding.name?.value || `Empty Title ${index}`;
 
-      if (this.bookMap[title]) {
+      if (this.bookMap[name]) {
         // Update an existing book.
-        this.updateExistingBook(this.bookMap[title], binding);
+        this.updateExistingBook(this.bookMap[name], binding);
       } else {
         // Create a new book entry.
-        this.bookMap[title] = this.createBook(binding, index);
+        this.bookMap[name] = this.createBook(binding, index);
       }
     });
     this.emitBooks();
@@ -80,7 +80,7 @@ export class BooksService {
    * Creates a new book from a binding.
    */
   private createBook(binding: Binding, index: number): Book {
-    const title = binding.title?.value ?? `Empty Title ${index}`;
+    const title = binding.name?.value ?? `Empty Title ${index}`;
     const newBook: Book = {
       title,
       authors: binding.author?.value ? [binding.author.value] : [],
@@ -161,7 +161,7 @@ export class BooksService {
       return;
     }
 
-    const existingAward = book.awards.find(
+    const existingAward = book.awards?.find(
       (award: Award) =>
         award.name === awardName &&
         award.genre === awardGenre &&
@@ -169,7 +169,7 @@ export class BooksService {
     );
 
     if (!existingAward) {
-      book.awards.push({
+      book.awards?.push({
         year: awardYear,
         name: awardName,
         genre: awardGenre,

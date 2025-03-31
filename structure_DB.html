@@ -1,0 +1,441 @@
+<div style='text-align:left; padding: 10px 0;'>
+    <b>Color Legend:</b><br>
+    <span style='background-color: #a8d08d; padding: 2px 10px;'>Common to all datasets</span>
+    <span style='background-color: #ffe699; padding: 2px 10px; margin-left: 10px;'>Common to multiple datasets</span>
+    <span style='background-color: #f8cbad; padding: 2px 10px; margin-left: 10px;'>Unique to one dataset</span>
+    <br><br>
+    <b>Cell Values:</b> count (percentage%)
+</div>
+<div style='text-align:left; padding: 10px 0;'><b>Dataset Sizes:</b><br>babelio: 4169 books<br>bnf: 30384 books<br>BTLF:
+    26920 books<br>constellations: 11267 books<br>kaleidoscope: 472 books<br></div>
+<div style='text-align:left; padding: 10px 0;'><b>Common Attributes (8):</b> author, quatriemeCouverture, name,
+    premiereCouverture, infoSource, datePublished, publisher, isbn</div>
+
+<style type="text/css">
+    #T_f3035_row0_col0,
+    #T_f3035_row0_col1,
+    #T_f3035_row0_col2,
+    #T_f3035_row0_col3,
+    #T_f3035_row0_col4,
+    #T_f3035_row0_col5,
+    #T_f3035_row0_col6,
+    #T_f3035_row0_col7,
+    #T_f3035_row1_col0,
+    #T_f3035_row1_col1,
+    #T_f3035_row1_col2,
+    #T_f3035_row1_col3,
+    #T_f3035_row1_col4,
+    #T_f3035_row1_col5,
+    #T_f3035_row1_col6,
+    #T_f3035_row1_col7,
+    #T_f3035_row2_col0,
+    #T_f3035_row2_col1,
+    #T_f3035_row2_col2,
+    #T_f3035_row2_col3,
+    #T_f3035_row2_col4,
+    #T_f3035_row2_col5,
+    #T_f3035_row2_col6,
+    #T_f3035_row2_col7,
+    #T_f3035_row3_col0,
+    #T_f3035_row3_col1,
+    #T_f3035_row3_col2,
+    #T_f3035_row3_col3,
+    #T_f3035_row3_col4,
+    #T_f3035_row3_col5,
+    #T_f3035_row3_col6,
+    #T_f3035_row3_col7,
+    #T_f3035_row4_col0,
+    #T_f3035_row4_col1,
+    #T_f3035_row4_col2,
+    #T_f3035_row4_col3,
+    #T_f3035_row4_col4,
+    #T_f3035_row4_col5,
+    #T_f3035_row4_col6,
+    #T_f3035_row4_col7 {
+        background-color: #a8d08d;
+    }
+
+    #T_f3035_row0_col8,
+    #T_f3035_row0_col9,
+    #T_f3035_row0_col10,
+    #T_f3035_row0_col12,
+    #T_f3035_row0_col13,
+    #T_f3035_row0_col14,
+    #T_f3035_row0_col15,
+    #T_f3035_row1_col8,
+    #T_f3035_row1_col10,
+    #T_f3035_row1_col11,
+    #T_f3035_row1_col12,
+    #T_f3035_row1_col15,
+    #T_f3035_row1_col16,
+    #T_f3035_row2_col8,
+    #T_f3035_row2_col9,
+    #T_f3035_row2_col10,
+    #T_f3035_row2_col12,
+    #T_f3035_row2_col17,
+    #T_f3035_row3_col8,
+    #T_f3035_row3_col9,
+    #T_f3035_row3_col10,
+    #T_f3035_row3_col11,
+    #T_f3035_row3_col13,
+    #T_f3035_row3_col14,
+    #T_f3035_row3_col16,
+    #T_f3035_row3_col17,
+    #T_f3035_row4_col9,
+    #T_f3035_row4_col11,
+    #T_f3035_row4_col13 {
+        background-color: #ffe699;
+    }
+
+    #T_f3035_row0_col20,
+    #T_f3035_row0_col21,
+    #T_f3035_row0_col26,
+    #T_f3035_row0_col27,
+    #T_f3035_row0_col29,
+    #T_f3035_row0_col39,
+    #T_f3035_row0_col42,
+    #T_f3035_row0_col44,
+    #T_f3035_row0_col46,
+    #T_f3035_row1_col22,
+    #T_f3035_row1_col23,
+    #T_f3035_row1_col24,
+    #T_f3035_row1_col30,
+    #T_f3035_row2_col18,
+    #T_f3035_row2_col19,
+    #T_f3035_row2_col31,
+    #T_f3035_row2_col32,
+    #T_f3035_row2_col34,
+    #T_f3035_row2_col35,
+    #T_f3035_row2_col36,
+    #T_f3035_row2_col37,
+    #T_f3035_row2_col40,
+    #T_f3035_row2_col41,
+    #T_f3035_row2_col43,
+    #T_f3035_row2_col45,
+    #T_f3035_row2_col47,
+    #T_f3035_row2_col48,
+    #T_f3035_row3_col28,
+    #T_f3035_row3_col33,
+    #T_f3035_row3_col38,
+    #T_f3035_row4_col25 {
+        background-color: #f8cbad;
+    }
+</style>
+<table id="T_f3035">
+    <thead>
+        <tr>
+            <th class="blank level0">&nbsp;</th>
+            <th id="T_f3035_level0_col0" class="col_heading level0 col0">author</th>
+            <th id="T_f3035_level0_col1" class="col_heading level0 col1">quatriemeCouverture</th>
+            <th id="T_f3035_level0_col2" class="col_heading level0 col2">name</th>
+            <th id="T_f3035_level0_col3" class="col_heading level0 col3">premiereCouverture</th>
+            <th id="T_f3035_level0_col4" class="col_heading level0 col4">infoSource</th>
+            <th id="T_f3035_level0_col5" class="col_heading level0 col5">datePublished</th>
+            <th id="T_f3035_level0_col6" class="col_heading level0 col6">publisher</th>
+            <th id="T_f3035_level0_col7" class="col_heading level0 col7">isbn</th>
+            <th id="T_f3035_level0_col8" class="col_heading level0 col8">description</th>
+            <th id="T_f3035_level0_col9" class="col_heading level0 col9">illustrator</th>
+            <th id="T_f3035_level0_col10" class="col_heading level0 col10">review</th>
+            <th id="T_f3035_level0_col11" class="col_heading level0 col11">ageRange</th>
+            <th id="T_f3035_level0_col12" class="col_heading level0 col12">inLanguage</th>
+            <th id="T_f3035_level0_col13" class="col_heading level0 col13">keywords</th>
+            <th id="T_f3035_level0_col14" class="col_heading level0 col14">constellationLink</th>
+            <th id="T_f3035_level0_col15" class="col_heading level0 col15">genre</th>
+            <th id="T_f3035_level0_col16" class="col_heading level0 col16">invalidISBN13</th>
+            <th id="T_f3035_level0_col17" class="col_heading level0 col17">numberOfPages</th>
+            <th id="T_f3035_level0_col18" class="col_heading level0 col18">abstract</th>
+            <th id="T_f3035_level0_col19" class="col_heading level0 col19">age</th>
+            <th id="T_f3035_level0_col20" class="col_heading level0 col20">averageBabelioReview</th>
+            <th id="T_f3035_level0_col21" class="col_heading level0 col21">award</th>
+            <th id="T_f3035_level0_col22" class="col_heading level0 col22">bnfLink</th>
+            <th id="T_f3035_level0_col23" class="col_heading level0 col23">bookFormat</th>
+            <th id="T_f3035_level0_col24" class="col_heading level0 col24">caracteristiques</th>
+            <th id="T_f3035_level0_col25" class="col_heading level0 col25">categorieKaleidoscope</th>
+            <th id="T_f3035_level0_col26" class="col_heading level0 col26">citation</th>
+            <th id="T_f3035_level0_col27" class="col_heading level0 col27">countryOfOrigin</th>
+            <th id="T_f3035_level0_col28" class="col_heading level0 col28">dateEdition</th>
+            <th id="T_f3035_level0_col29" class="col_heading level0 col29">dateReceived</th>
+            <th id="T_f3035_level0_col30" class="col_heading level0 col30">ean</th>
+            <th id="T_f3035_level0_col31" class="col_heading level0 col31">height</th>
+            <th id="T_f3035_level0_col32" class="col_heading level0 col32">illustrationType</th>
+            <th id="T_f3035_level0_col33" class="col_heading level0 col33">inspiredBy</th>
+            <th id="T_f3035_level0_col34" class="col_heading level0 col34">isPartOf</th>
+            <th id="T_f3035_level0_col35" class="col_heading level0 col35">locationCreated</th>
+            <th id="T_f3035_level0_col36" class="col_heading level0 col36">mainSubjectThema</th>
+            <th id="T_f3035_level0_col37" class="col_heading level0 col37">offers</th>
+            <th id="T_f3035_level0_col38" class="col_heading level0 col38">pistesExploration</th>
+            <th id="T_f3035_level0_col39" class="col_heading level0 col39">pressReview</th>
+            <th id="T_f3035_level0_col40" class="col_heading level0 col40">productForm</th>
+            <th id="T_f3035_level0_col41" class="col_heading level0 col41">productFormDetail</th>
+            <th id="T_f3035_level0_col42" class="col_heading level0 col42">reviewDistribution</th>
+            <th id="T_f3035_level0_col43" class="col_heading level0 col43">subjectThema</th>
+            <th id="T_f3035_level0_col44" class="col_heading level0 col44">technique</th>
+            <th id="T_f3035_level0_col45" class="col_heading level0 col45">translator</th>
+            <th id="T_f3035_level0_col46" class="col_heading level0 col46">url</th>
+            <th id="T_f3035_level0_col47" class="col_heading level0 col47">weight</th>
+            <th id="T_f3035_level0_col48" class="col_heading level0 col48">width</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th id="T_f3035_level0_row0" class="row_heading level0 row0">babelio</th>
+            <td id="T_f3035_row0_col0" class="data row0 col0">4137 (99.2%)</td>
+            <td id="T_f3035_row0_col1" class="data row0 col1">5 (0.1%)</td>
+            <td id="T_f3035_row0_col2" class="data row0 col2">4169 (100.0%)</td>
+            <td id="T_f3035_row0_col3" class="data row0 col3">2038 (48.9%)</td>
+            <td id="T_f3035_row0_col4" class="data row0 col4">4169 (100.0%)</td>
+            <td id="T_f3035_row0_col5" class="data row0 col5">188 (4.5%)</td>
+            <td id="T_f3035_row0_col6" class="data row0 col6">3975 (95.3%)</td>
+            <td id="T_f3035_row0_col7" class="data row0 col7">2252 (54.0%)</td>
+            <td id="T_f3035_row0_col8" class="data row0 col8">104 (2.5%)</td>
+            <td id="T_f3035_row0_col9" class="data row0 col9">193 (4.6%)</td>
+            <td id="T_f3035_row0_col10" class="data row0 col10">2216 (53.2%)</td>
+            <td id="T_f3035_row0_col11" class="data row0 col11"></td>
+            <td id="T_f3035_row0_col12" class="data row0 col12">4169 (100.0%)</td>
+            <td id="T_f3035_row0_col13" class="data row0 col13">2697 (64.7%)</td>
+            <td id="T_f3035_row0_col14" class="data row0 col14">678 (16.3%)</td>
+            <td id="T_f3035_row0_col15" class="data row0 col15">3367 (80.8%)</td>
+            <td id="T_f3035_row0_col16" class="data row0 col16"></td>
+            <td id="T_f3035_row0_col17" class="data row0 col17"></td>
+            <td id="T_f3035_row0_col18" class="data row0 col18"></td>
+            <td id="T_f3035_row0_col19" class="data row0 col19"></td>
+            <td id="T_f3035_row0_col20" class="data row0 col20">1116 (26.8%)</td>
+            <td id="T_f3035_row0_col21" class="data row0 col21">4055 (97.3%)</td>
+            <td id="T_f3035_row0_col22" class="data row0 col22"></td>
+            <td id="T_f3035_row0_col23" class="data row0 col23"></td>
+            <td id="T_f3035_row0_col24" class="data row0 col24"></td>
+            <td id="T_f3035_row0_col25" class="data row0 col25"></td>
+            <td id="T_f3035_row0_col26" class="data row0 col26">2182 (52.3%)</td>
+            <td id="T_f3035_row0_col27" class="data row0 col27">136 (3.3%)</td>
+            <td id="T_f3035_row0_col28" class="data row0 col28"></td>
+            <td id="T_f3035_row0_col29" class="data row0 col29">4059 (97.4%)</td>
+            <td id="T_f3035_row0_col30" class="data row0 col30"></td>
+            <td id="T_f3035_row0_col31" class="data row0 col31"></td>
+            <td id="T_f3035_row0_col32" class="data row0 col32"></td>
+            <td id="T_f3035_row0_col33" class="data row0 col33"></td>
+            <td id="T_f3035_row0_col34" class="data row0 col34"></td>
+            <td id="T_f3035_row0_col35" class="data row0 col35"></td>
+            <td id="T_f3035_row0_col36" class="data row0 col36"></td>
+            <td id="T_f3035_row0_col37" class="data row0 col37"></td>
+            <td id="T_f3035_row0_col38" class="data row0 col38"></td>
+            <td id="T_f3035_row0_col39" class="data row0 col39">848 (20.3%)</td>
+            <td id="T_f3035_row0_col40" class="data row0 col40"></td>
+            <td id="T_f3035_row0_col41" class="data row0 col41"></td>
+            <td id="T_f3035_row0_col42" class="data row0 col42">1116 (26.8%)</td>
+            <td id="T_f3035_row0_col43" class="data row0 col43"></td>
+            <td id="T_f3035_row0_col44" class="data row0 col44">24 (0.6%)</td>
+            <td id="T_f3035_row0_col45" class="data row0 col45"></td>
+            <td id="T_f3035_row0_col46" class="data row0 col46">4148 (99.5%)</td>
+            <td id="T_f3035_row0_col47" class="data row0 col47"></td>
+            <td id="T_f3035_row0_col48" class="data row0 col48"></td>
+        </tr>
+        <tr>
+            <th id="T_f3035_level0_row1" class="row_heading level0 row1">bnf</th>
+            <td id="T_f3035_row1_col0" class="data row1 col0">30079 (99.0%)</td>
+            <td id="T_f3035_row1_col1" class="data row1 col1">10 (0.0%)</td>
+            <td id="T_f3035_row1_col2" class="data row1 col2">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col3" class="data row1 col3">26196 (86.2%)</td>
+            <td id="T_f3035_row1_col4" class="data row1 col4">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col5" class="data row1 col5">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col6" class="data row1 col6">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col7" class="data row1 col7">30018 (98.8%)</td>
+            <td id="T_f3035_row1_col8" class="data row1 col8">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col9" class="data row1 col9"></td>
+            <td id="T_f3035_row1_col10" class="data row1 col10">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col11" class="data row1 col11">27316 (89.9%)</td>
+            <td id="T_f3035_row1_col12" class="data row1 col12">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col13" class="data row1 col13"></td>
+            <td id="T_f3035_row1_col14" class="data row1 col14"></td>
+            <td id="T_f3035_row1_col15" class="data row1 col15">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col16" class="data row1 col16">366 (1.2%)</td>
+            <td id="T_f3035_row1_col17" class="data row1 col17"></td>
+            <td id="T_f3035_row1_col18" class="data row1 col18"></td>
+            <td id="T_f3035_row1_col19" class="data row1 col19"></td>
+            <td id="T_f3035_row1_col20" class="data row1 col20"></td>
+            <td id="T_f3035_row1_col21" class="data row1 col21"></td>
+            <td id="T_f3035_row1_col22" class="data row1 col22">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col23" class="data row1 col23">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col24" class="data row1 col24">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col25" class="data row1 col25"></td>
+            <td id="T_f3035_row1_col26" class="data row1 col26"></td>
+            <td id="T_f3035_row1_col27" class="data row1 col27"></td>
+            <td id="T_f3035_row1_col28" class="data row1 col28"></td>
+            <td id="T_f3035_row1_col29" class="data row1 col29"></td>
+            <td id="T_f3035_row1_col30" class="data row1 col30">30384 (100.0%)</td>
+            <td id="T_f3035_row1_col31" class="data row1 col31"></td>
+            <td id="T_f3035_row1_col32" class="data row1 col32"></td>
+            <td id="T_f3035_row1_col33" class="data row1 col33"></td>
+            <td id="T_f3035_row1_col34" class="data row1 col34"></td>
+            <td id="T_f3035_row1_col35" class="data row1 col35"></td>
+            <td id="T_f3035_row1_col36" class="data row1 col36"></td>
+            <td id="T_f3035_row1_col37" class="data row1 col37"></td>
+            <td id="T_f3035_row1_col38" class="data row1 col38"></td>
+            <td id="T_f3035_row1_col39" class="data row1 col39"></td>
+            <td id="T_f3035_row1_col40" class="data row1 col40"></td>
+            <td id="T_f3035_row1_col41" class="data row1 col41"></td>
+            <td id="T_f3035_row1_col42" class="data row1 col42"></td>
+            <td id="T_f3035_row1_col43" class="data row1 col43"></td>
+            <td id="T_f3035_row1_col44" class="data row1 col44"></td>
+            <td id="T_f3035_row1_col45" class="data row1 col45"></td>
+            <td id="T_f3035_row1_col46" class="data row1 col46"></td>
+            <td id="T_f3035_row1_col47" class="data row1 col47"></td>
+            <td id="T_f3035_row1_col48" class="data row1 col48"></td>
+        </tr>
+        <tr>
+            <th id="T_f3035_level0_row2" class="row_heading level0 row2">BTLF</th>
+            <td id="T_f3035_row2_col0" class="data row2 col0">25879 (96.1%)</td>
+            <td id="T_f3035_row2_col1" class="data row2 col1">44 (0.2%)</td>
+            <td id="T_f3035_row2_col2" class="data row2 col2">26919 (100.0%)</td>
+            <td id="T_f3035_row2_col3" class="data row2 col3">26569 (98.7%)</td>
+            <td id="T_f3035_row2_col4" class="data row2 col4">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col5" class="data row2 col5">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col6" class="data row2 col6">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col7" class="data row2 col7">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col8" class="data row2 col8">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col9" class="data row2 col9">11087 (41.2%)</td>
+            <td id="T_f3035_row2_col10" class="data row2 col10">136 (0.5%)</td>
+            <td id="T_f3035_row2_col11" class="data row2 col11"></td>
+            <td id="T_f3035_row2_col12" class="data row2 col12">26494 (98.4%)</td>
+            <td id="T_f3035_row2_col13" class="data row2 col13"></td>
+            <td id="T_f3035_row2_col14" class="data row2 col14"></td>
+            <td id="T_f3035_row2_col15" class="data row2 col15"></td>
+            <td id="T_f3035_row2_col16" class="data row2 col16"></td>
+            <td id="T_f3035_row2_col17" class="data row2 col17">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col18" class="data row2 col18">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col19" class="data row2 col19">26817 (99.6%)</td>
+            <td id="T_f3035_row2_col20" class="data row2 col20"></td>
+            <td id="T_f3035_row2_col21" class="data row2 col21"></td>
+            <td id="T_f3035_row2_col22" class="data row2 col22"></td>
+            <td id="T_f3035_row2_col23" class="data row2 col23"></td>
+            <td id="T_f3035_row2_col24" class="data row2 col24"></td>
+            <td id="T_f3035_row2_col25" class="data row2 col25"></td>
+            <td id="T_f3035_row2_col26" class="data row2 col26"></td>
+            <td id="T_f3035_row2_col27" class="data row2 col27"></td>
+            <td id="T_f3035_row2_col28" class="data row2 col28"></td>
+            <td id="T_f3035_row2_col29" class="data row2 col29"></td>
+            <td id="T_f3035_row2_col30" class="data row2 col30"></td>
+            <td id="T_f3035_row2_col31" class="data row2 col31">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col32" class="data row2 col32">19646 (73.0%)</td>
+            <td id="T_f3035_row2_col33" class="data row2 col33"></td>
+            <td id="T_f3035_row2_col34" class="data row2 col34">17687 (65.7%)</td>
+            <td id="T_f3035_row2_col35" class="data row2 col35">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col36" class="data row2 col36">26830 (99.7%)</td>
+            <td id="T_f3035_row2_col37" class="data row2 col37">23749 (88.2%)</td>
+            <td id="T_f3035_row2_col38" class="data row2 col38"></td>
+            <td id="T_f3035_row2_col39" class="data row2 col39"></td>
+            <td id="T_f3035_row2_col40" class="data row2 col40">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col41" class="data row2 col41">9277 (34.5%)</td>
+            <td id="T_f3035_row2_col42" class="data row2 col42"></td>
+            <td id="T_f3035_row2_col43" class="data row2 col43">26856 (99.8%)</td>
+            <td id="T_f3035_row2_col44" class="data row2 col44"></td>
+            <td id="T_f3035_row2_col45" class="data row2 col45">7458 (27.7%)</td>
+            <td id="T_f3035_row2_col46" class="data row2 col46"></td>
+            <td id="T_f3035_row2_col47" class="data row2 col47">26920 (100.0%)</td>
+            <td id="T_f3035_row2_col48" class="data row2 col48">26920 (100.0%)</td>
+        </tr>
+        <tr>
+            <th id="T_f3035_level0_row3" class="row_heading level0 row3">constellations</th>
+            <td id="T_f3035_row3_col0" class="data row3 col0">11224 (99.6%)</td>
+            <td id="T_f3035_row3_col1" class="data row3 col1">34 (0.3%)</td>
+            <td id="T_f3035_row3_col2" class="data row3 col2">11267 (100.0%)</td>
+            <td id="T_f3035_row3_col3" class="data row3 col3">7876 (69.9%)</td>
+            <td id="T_f3035_row3_col4" class="data row3 col4">11267 (100.0%)</td>
+            <td id="T_f3035_row3_col5" class="data row3 col5">11198 (99.4%)</td>
+            <td id="T_f3035_row3_col6" class="data row3 col6">11266 (100.0%)</td>
+            <td id="T_f3035_row3_col7" class="data row3 col7">11177 (99.2%)</td>
+            <td id="T_f3035_row3_col8" class="data row3 col8">11267 (100.0%)</td>
+            <td id="T_f3035_row3_col9" class="data row3 col9">5534 (49.1%)</td>
+            <td id="T_f3035_row3_col10" class="data row3 col10">11267 (100.0%)</td>
+            <td id="T_f3035_row3_col11" class="data row3 col11">11266 (100.0%)</td>
+            <td id="T_f3035_row3_col12" class="data row3 col12"></td>
+            <td id="T_f3035_row3_col13" class="data row3 col13">11267 (100.0%)</td>
+            <td id="T_f3035_row3_col14" class="data row3 col14">11267 (100.0%)</td>
+            <td id="T_f3035_row3_col15" class="data row3 col15"></td>
+            <td id="T_f3035_row3_col16" class="data row3 col16">90 (0.8%)</td>
+            <td id="T_f3035_row3_col17" class="data row3 col17">6110 (54.2%)</td>
+            <td id="T_f3035_row3_col18" class="data row3 col18"></td>
+            <td id="T_f3035_row3_col19" class="data row3 col19"></td>
+            <td id="T_f3035_row3_col20" class="data row3 col20"></td>
+            <td id="T_f3035_row3_col21" class="data row3 col21"></td>
+            <td id="T_f3035_row3_col22" class="data row3 col22"></td>
+            <td id="T_f3035_row3_col23" class="data row3 col23"></td>
+            <td id="T_f3035_row3_col24" class="data row3 col24"></td>
+            <td id="T_f3035_row3_col25" class="data row3 col25"></td>
+            <td id="T_f3035_row3_col26" class="data row3 col26"></td>
+            <td id="T_f3035_row3_col27" class="data row3 col27"></td>
+            <td id="T_f3035_row3_col28" class="data row3 col28">11267 (100.0%)</td>
+            <td id="T_f3035_row3_col29" class="data row3 col29"></td>
+            <td id="T_f3035_row3_col30" class="data row3 col30"></td>
+            <td id="T_f3035_row3_col31" class="data row3 col31"></td>
+            <td id="T_f3035_row3_col32" class="data row3 col32"></td>
+            <td id="T_f3035_row3_col33" class="data row3 col33">197 (1.7%)</td>
+            <td id="T_f3035_row3_col34" class="data row3 col34"></td>
+            <td id="T_f3035_row3_col35" class="data row3 col35"></td>
+            <td id="T_f3035_row3_col36" class="data row3 col36"></td>
+            <td id="T_f3035_row3_col37" class="data row3 col37"></td>
+            <td id="T_f3035_row3_col38" class="data row3 col38">11267 (100.0%)</td>
+            <td id="T_f3035_row3_col39" class="data row3 col39"></td>
+            <td id="T_f3035_row3_col40" class="data row3 col40"></td>
+            <td id="T_f3035_row3_col41" class="data row3 col41"></td>
+            <td id="T_f3035_row3_col42" class="data row3 col42"></td>
+            <td id="T_f3035_row3_col43" class="data row3 col43"></td>
+            <td id="T_f3035_row3_col44" class="data row3 col44"></td>
+            <td id="T_f3035_row3_col45" class="data row3 col45"></td>
+            <td id="T_f3035_row3_col46" class="data row3 col46"></td>
+            <td id="T_f3035_row3_col47" class="data row3 col47"></td>
+            <td id="T_f3035_row3_col48" class="data row3 col48"></td>
+        </tr>
+        <tr>
+            <th id="T_f3035_level0_row4" class="row_heading level0 row4">kaleidoscope</th>
+            <td id="T_f3035_row4_col0" class="data row4 col0">472 (100.0%)</td>
+            <td id="T_f3035_row4_col1" class="data row4 col1">2 (0.4%)</td>
+            <td id="T_f3035_row4_col2" class="data row4 col2">472 (100.0%)</td>
+            <td id="T_f3035_row4_col3" class="data row4 col3">151 (32.0%)</td>
+            <td id="T_f3035_row4_col4" class="data row4 col4">472 (100.0%)</td>
+            <td id="T_f3035_row4_col5" class="data row4 col5">472 (100.0%)</td>
+            <td id="T_f3035_row4_col6" class="data row4 col6">472 (100.0%)</td>
+            <td id="T_f3035_row4_col7" class="data row4 col7">472 (100.0%)</td>
+            <td id="T_f3035_row4_col8" class="data row4 col8"></td>
+            <td id="T_f3035_row4_col9" class="data row4 col9">472 (100.0%)</td>
+            <td id="T_f3035_row4_col10" class="data row4 col10"></td>
+            <td id="T_f3035_row4_col11" class="data row4 col11">472 (100.0%)</td>
+            <td id="T_f3035_row4_col12" class="data row4 col12"></td>
+            <td id="T_f3035_row4_col13" class="data row4 col13">472 (100.0%)</td>
+            <td id="T_f3035_row4_col14" class="data row4 col14"></td>
+            <td id="T_f3035_row4_col15" class="data row4 col15"></td>
+            <td id="T_f3035_row4_col16" class="data row4 col16"></td>
+            <td id="T_f3035_row4_col17" class="data row4 col17"></td>
+            <td id="T_f3035_row4_col18" class="data row4 col18"></td>
+            <td id="T_f3035_row4_col19" class="data row4 col19"></td>
+            <td id="T_f3035_row4_col20" class="data row4 col20"></td>
+            <td id="T_f3035_row4_col21" class="data row4 col21"></td>
+            <td id="T_f3035_row4_col22" class="data row4 col22"></td>
+            <td id="T_f3035_row4_col23" class="data row4 col23"></td>
+            <td id="T_f3035_row4_col24" class="data row4 col24"></td>
+            <td id="T_f3035_row4_col25" class="data row4 col25">472 (100.0%)</td>
+            <td id="T_f3035_row4_col26" class="data row4 col26"></td>
+            <td id="T_f3035_row4_col27" class="data row4 col27"></td>
+            <td id="T_f3035_row4_col28" class="data row4 col28"></td>
+            <td id="T_f3035_row4_col29" class="data row4 col29"></td>
+            <td id="T_f3035_row4_col30" class="data row4 col30"></td>
+            <td id="T_f3035_row4_col31" class="data row4 col31"></td>
+            <td id="T_f3035_row4_col32" class="data row4 col32"></td>
+            <td id="T_f3035_row4_col33" class="data row4 col33"></td>
+            <td id="T_f3035_row4_col34" class="data row4 col34"></td>
+            <td id="T_f3035_row4_col35" class="data row4 col35"></td>
+            <td id="T_f3035_row4_col36" class="data row4 col36"></td>
+            <td id="T_f3035_row4_col37" class="data row4 col37"></td>
+            <td id="T_f3035_row4_col38" class="data row4 col38"></td>
+            <td id="T_f3035_row4_col39" class="data row4 col39"></td>
+            <td id="T_f3035_row4_col40" class="data row4 col40"></td>
+            <td id="T_f3035_row4_col41" class="data row4 col41"></td>
+            <td id="T_f3035_row4_col42" class="data row4 col42"></td>
+            <td id="T_f3035_row4_col43" class="data row4 col43"></td>
+            <td id="T_f3035_row4_col44" class="data row4 col44"></td>
+            <td id="T_f3035_row4_col45" class="data row4 col45"></td>
+            <td id="T_f3035_row4_col46" class="data row4 col46"></td>
+            <td id="T_f3035_row4_col47" class="data row4 col47"></td>
+            <td id="T_f3035_row4_col48" class="data row4 col48"></td>
+        </tr>
+    </tbody>
+</table>

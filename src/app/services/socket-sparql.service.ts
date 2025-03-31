@@ -1,13 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  SPARQL_BABELIO,
-  SPARQL_QUERY,
-  SPARQL_QUERY_BNF,
-  SPARQL_QUERY_CONSTELLATIONS,
-  SPARQL_WIKIDATA,
-  SPARQL_BTLF_FILTER,
-  SPARQL_QUERY_LURELU_FILTER,
-} from '../constants/sparql';
+import { SPARQL_WIKIDATA } from '../constants/sparql';
 import axios from 'axios';
 import { load } from 'cheerio';
 import { HttpSparqlService } from './http-sparql.service';
@@ -34,23 +26,19 @@ export class SocketSparqlService {
   bookMap: Record<string, Book> = {};
 
   // TODO define ?
-  private themeCode: string;
-  private storedIsbns: string | null = null;  
-  private themeActive = false;
-
   inAuthorsComponent = false;
   inAwardsComponent = false;
   
   /**
-   * Apply multiple filters at once and execute a query
+   * Apply multiple filters at once and execute a unified query
    * @param filters BookFilter object with all filter criteria
    * @returns Promise that resolves when the query is complete
    */
   applyFilters(filters: BookFilter): Promise<void> {
+    console.log('Applying filters with unified query:', filters);
+    
     // Reset state
     this.bookMap = {};
-    this.storedIsbns = null;
-    this.themeActive = false;
     this.inAuthorsComponent = false;
     this.inAwardsComponent = false;
     
@@ -61,14 +49,17 @@ export class SocketSparqlService {
       }
     });
     
-    // Build and execute query
-    const query = this.sparqlQueryBuilder.buildComprehensiveQuery(filters);
+    // Build and execute unified query that works across all sources
+    const query = this.sparqlQueryBuilder.buildUnifiedQuery(filters);
+    console.log('Executing unified query:', query.substring(0, 500) + '...');
+    
     return this.httpSparqlService.postQuery(query)
       .then(response => {
+        console.log(`Unified query returned ${response.results?.bindings?.length || 0} results`);
         this.booksService.updateData(response);
       })
       .catch((error: Error) => {
-        console.error('Error executing query with filters:', error);
+        console.error('Error executing unified query with filters:', error);
         throw error; // Rethrow to allow caller to handle the error
       });
   }
@@ -99,29 +90,11 @@ export class SocketSparqlService {
     });
   }
 
-  runBtlfQuery(filter: string, description: string): void {
-    this.bookMap = {};
-    this.storedIsbns = null;
-    this.themeActive = true;
-    this.themeCode = description;
-    const sparqlQuery = SPARQL_BTLF_FILTER(filter);
-    this.httpSparqlService.postQuery(sparqlQuery);
-
-    // Subscribe to the Observable to handle the response from findCodeByDescription
-    this.httpSparqlService.findCodeByDescription(description).then((codeValue) => {
-      if (codeValue) {
-        this.themeCode = codeValue;
-        // Optionally perform further actions if codeValue is successfully retrieved
-        console.log(`Found code value: ${codeValue}`);
-      } else {
-        console.log('No code value found for the given description.');
-      }
-    }).catch((err) => {
-      console.error('Error finding code by description:', err);
-    });
-  }
-
-  getIsbnsFromBookMap() {
+  /**
+   * Get ISBNs from the current book map
+   * @returns Array of ISBNs
+   */
+  private getIsbnsFromBookMap(): string[] {
     const isbns = [];
     for (const key in this.bookMap) {
       if (this.bookMap[key]?.isbn) {
@@ -129,65 +102,6 @@ export class SocketSparqlService {
       }
     }
     return isbns;
-  }
-
-  updateBooksByIsbn() {
-    const isbns = this.getIsbnsFromBookMap()
-      .map((isbn) => `"${isbn}"`)
-      .join(', ');
-    console.log(isbns);
-    if (!isbns.length) {
-      console.log('No ISBNs found in bookMap, aborting query.');
-      return;
-    }
-    let baseQuery;
-
-
-    const currentFilters = this.enhancedFilterService.getCurrentFilters();
-    switch (currentFilters.source) {
-      case 'Babelio': { 
-        const starRating = parseInt(
-          currentFilters.category?.split(' ')[0] ?? '',
-          10
-        );
-        baseQuery = SPARQL_BABELIO(
-          `FILTER(?averageReview >= ${starRating} && ?isbn IN (${isbns}))`
-        );
-        break; }
-      case 'Constellation':
-        console.log(2222);
-        if (currentFilters.category === 'Coup de coeur') {
-          baseQuery = SPARQL_QUERY_CONSTELLATIONS(
-            `FILTER(?isCoupDeCoeur = true && ?isbn IN (${isbns}))`
-          );
-          console.log('SPARQL Query: ', baseQuery);
-          break;
-        } else {
-          baseQuery = SPARQL_QUERY_CONSTELLATIONS(
-            `FILTER(?isbn IN (${isbns}))`
-          );
-          console.log('SPARQL Query: ', baseQuery);
-          break;
-        }
-      case 'BNF':
-        baseQuery = SPARQL_QUERY_BNF(
-          `FILTER(?avis = "${currentFilters.category}" && (?isbn IN (${isbns}) || ?ean IN (${isbns})))`
-        );
-        break;
-      case 'Lurelu':
-        baseQuery = SPARQL_QUERY_LURELU_FILTER(`FILTER(?isbn IN (${isbns}))`);
-        break;
-      case 'BTLF':
-        baseQuery = SPARQL_BTLF_FILTER(`FILTER(?isbn IN (${isbns}))`);
-        break;
-      default:
-        console.log('Unhandled source case');
-        return;
-    }
-    this.httpSparqlService.postQuery(baseQuery).then((response) => {
-        this.booksService.updateData(response);
-
-    });
   }
 
   // TODO Change to filter class
@@ -200,107 +114,39 @@ export class SocketSparqlService {
    */
   filterBooksByCategory(source: string, category: string) {
     console.log('Filtering by category:', source, category);
+    this.applyFilters({
+      source: source,
+      category: category
+    });
   }
 
+  /**
+   * Filter books by age
+   * @param age The age value to add to the age filter
+   */
   ageFilter(age: string) {
-    if (this.themeActive) {
-      const isbns =
-        this.storedIsbns ?? 
-        this.getIsbnsFromBookMap()
-          .map((isbn) => `"${isbn}"`)
-          .join(', ');
-      if (!this.storedIsbns) {
-        this.storedIsbns = isbns;
-      }
-      this.bookMap = {};
-      const ageString = age.toString();
-      const currentFilters = this.enhancedFilterService.getCurrentFilters();
-      const currentAgeRange = currentFilters.ageRange || [];
-      this.enhancedFilterService.updateFilter('ageRange', [...currentAgeRange, ageString]);
-      const updatedFilters = this.enhancedFilterService.getCurrentFilters();
-      
-      // Combine all age filters into a single expression
-      if (updatedFilters.ageRange && updatedFilters.ageRange.length > 0) {
-        const ageFilters = updatedFilters.ageRange.map(age => 
-          `(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},"))`
-        );
-        
-        // Create a single query with all age filters combined
-        const combinedAgeFilter = ageFilters.join(' || ');
-        
-        const query_bnf = SPARQL_QUERY_BNF(`
-    FILTER((${combinedAgeFilter}) &&
-           ?isbn IN (${isbns}))`);
-
-        const query_constellations = SPARQL_QUERY_CONSTELLATIONS(`
-    FILTER((${combinedAgeFilter}) &&
-           ?isbn IN (${isbns}))`);
-
-        // Send the combined queries instead of individual ones
-        this.httpSparqlService.postQuery(query_bnf);
-        this.httpSparqlService.postQuery(query_constellations);
-      }
-    } else {
-      this.bookMap = {};
-      const ageString = age.toString();
-      const currentFilters = this.enhancedFilterService.getCurrentFilters();
-      const currentAgeRange = currentFilters.ageRange || [];
-      this.enhancedFilterService.updateFilter('ageRange', [...currentAgeRange, ageString]);
-      this.updateBook();
-    }
+    const ageString = age.toString();
+    
+    // Get current age range and add the new age
+    const currentFilters = this.enhancedFilterService.getCurrentFilters();
+    const currentAgeRange = currentFilters.ageRange || [];
+    const newAgeRange = [...currentAgeRange, ageString];
+    
+    // Use unified query approach for all cases
+    this.applyFilters({ 
+      ageRange: newAgeRange
+    });
   }
 
+  /**
+   * Filter books by appreciation level
+   * @param appreciation The appreciation level to filter by
+   */
   filterBooksByAppreciation(appreciation: Appreciation) {
-    if (this.themeActive) {
-      const isbns = this.getIsbnsFromBookMap()
-        .map((isbn) => `"${isbn}"`)
-        .join(', ');
-      this.storedIsbns = null;
-      this.bookMap = {};
-      this.enhancedFilterService.updateFilter('appreciation', appreciation);
-      const currentFilters = this.enhancedFilterService.getCurrentFilters();
-      switch (currentFilters.appreciation) {
-        case Appreciation.HighlyAppreciated: {
-          const query_lurelu = SPARQL_QUERY_LURELU_FILTER(
-            `FILTER(?isbn IN (${isbns}))`
-          );
-          const query_babelio = SPARQL_BABELIO(
-            `FILTER(?averageReview >= 4 && ?isbn IN (${isbns}))`
-          );
-          const query_bnf = SPARQL_QUERY_BNF(
-            `FILTER((?avis = "Coup de coeur !" || ?avis = "Bravo !") && ?isbn IN (${isbns}))`
-          );
-          const query_constellations = SPARQL_QUERY_CONSTELLATIONS(
-            `FILTER(?isCoupDeCoeur = true && ?isbn IN (${isbns}))`
-          );
-
-          this.httpSparqlService.postQuery(query_lurelu);
-          this.httpSparqlService.postQuery(query_babelio);
-          this.httpSparqlService.postQuery(query_bnf);
-          this.httpSparqlService.postQuery(query_constellations);
-          break;
-        }
-        case 'notHighlyAppreciated': {
-          const query_babelio_not_appreciated = SPARQL_BABELIO(
-            `FILTER(?averageReview <= 3 && ?isbn IN (${isbns}))`
-          );
-          const query_bnf_not_appreciated = SPARQL_QUERY_BNF(
-            `FILTER((?avis = "Hélas !" || ?avis = "Problème...") && ?isbn IN (${isbns}))`
-          );
-          this.httpSparqlService.postQuery(query_babelio_not_appreciated).then((response) => {
-            this.booksService.updateData(response);
-        });
-          this.httpSparqlService.postQuery(query_bnf_not_appreciated).then((response) => {
-            this.booksService.updateData(response);
-        });
-          break;
-        }
-      }
-    } else {
-      this.bookMap = {};
-      this.enhancedFilterService.updateFilter('appreciation', appreciation);
-      this.updateBook();
-    }
+    // Use unified query approach for all cases
+    this.applyFilters({ 
+      appreciation: appreciation 
+    });
   }
 
   /**
@@ -330,10 +176,6 @@ export class SocketSparqlService {
   }
 
   /**
-   * Filter books by award name
-   * @param filterAward The award name to filter by
-   */
-  /**
    * Check if a key is a valid filter key
    * @param key The key to check
    * @returns True if key is a valid BookFilter key
@@ -347,15 +189,13 @@ export class SocketSparqlService {
     ].includes(key);
   }
 
+  /**
+   * Filter books by award name
+   * @param filterAward The award name to filter by
+   */
   filterBooksByAward(filterAward: string) {
     this.inAwardsComponent = true;
-    // Use SPARQL_QUERY_DESCRIPTION directly instead of going through the builder
-    const sparqlQuery = this.sparqlQueryBuilder.buildComprehensiveQuery({ 
-      award: filterAward 
-    });
-    this.httpSparqlService.postQuery(sparqlQuery).then((response) => {
-        this.booksService.updateData(response);
-    });
+    this.applyFilters({ award: filterAward });
   }
 
   /**
@@ -379,13 +219,7 @@ export class SocketSparqlService {
     });
   }
 
-  /**
-   * Filter books by award
-   * @param award The award to filter by
-   */
-  filterAward(award: string) {
-    this.applyFilters({ award });
-  }
+  // Duplicate method removed - filterAward was redundant with filterBooksByAward
 
   /**
    * Filter books by language
@@ -478,9 +312,7 @@ export class SocketSparqlService {
   private async executeQuery(query: string): Promise<void> {
     try {
       // Reset state for new query
-      this.bookMap = {}; 
-      this.storedIsbns = null;
-      this.themeActive = false;
+      this.bookMap = {};
       this.inAuthorsComponent = false;
       this.inAwardsComponent = false;
       
@@ -493,50 +325,24 @@ export class SocketSparqlService {
     }
   }
   
+  /**
+   * Update books data using the current filters
+   * Uses the unified query approach to fetch data from all relevant sources
+   */
   async updateBook() {
     const currentFilters = this.enhancedFilterService.getCurrentFilters();
-    const { source, category, appreciation, ageRange } = currentFilters;
-    
     console.log('Updating book data with filters:', currentFilters);
     
-    // Source query based on source and category
-    if (source) {
-      const sourceQuery = this.sparqlQueryBuilder.getSourceQuery(source, category);
-      console.log(sourceQuery);
-
-      if (sourceQuery) {
-        await this.executeQuery(sourceQuery);
-        return; // Return early if we have a source-specific query
-      }
-    }
-
-    // Appreciation queries
-    if (appreciation) {
-      const appreciationQueries = this.sparqlQueryBuilder.getAppreciationQueries(appreciation);
-      for (const query of appreciationQueries) {
-        await this.executeQuery(query);
-      }
-      return; // Return early if we have appreciation queries
-    }
-
-    // Age filter queries
-    if (ageRange && ageRange.length > 0) {
-      // Combine all age filters into a single expression
-      const ageFilters = ageRange.map(age => 
-        `(STR(?ageRange) = "${age}" || STR(?ageRange) = "${age}," || STR(?ageRange) = ",${age}" || CONTAINS(STR(?ageRange), ",${age},"))`
-      );
-      
-      // Create a single filter with all age filters combined with OR
-      const combinedAgeFilter = `FILTER(${ageFilters.join(' || ')})`;
-      
-      // Send just two queries (one for each source) with all ages combined
-      await this.executeQuery(SPARQL_QUERY_BNF(combinedAgeFilter));
-      await this.executeQuery(SPARQL_QUERY_CONSTELLATIONS(combinedAgeFilter));
-      
-      return; // Return early if we have age filter queries
-    }
+    // Use the unified query approach that works for all filters and sources
+    const query = this.sparqlQueryBuilder.buildUnifiedQuery(currentFilters);
     
-    // If no specific filters, use a general query
-    await this.executeQuery(SPARQL_QUERY(''));
+    try {
+      console.log('Executing unified query for updateBook');
+      const response = await this.httpSparqlService.postQuery(query);
+      console.log(`Unified query returned ${response.results?.bindings?.length || 0} results`);
+      this.booksService.updateData(response);
+    } catch (error) {
+      console.error('Error executing unified query in updateBook:', error);
+    }
   }
 }

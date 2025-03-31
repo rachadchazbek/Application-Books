@@ -6,11 +6,23 @@ export interface Book {
   authors: string[];
   datePublished: string;
   isbn: string;
-  subjectThema: string;
-  awards: Award[];
   inLanguage: string;
   publisher?: string;
   illustrator?: string[];
+  
+  // Additional fields as requested
+  infoSource?: string;
+  quatriemeCouverture?: string;
+  premiereCouverture?: string;
+  description?: string;
+  typicalAgeRange?: string[];
+  keywords?: string[];
+  url?: string;
+  genre?: string[];
+  
+  // Keep these for backward compatibility
+  subjectThema?: string;
+  awards?: Award[];
   countryOfOrigin?: string;
   reviews?: Review[];
 }

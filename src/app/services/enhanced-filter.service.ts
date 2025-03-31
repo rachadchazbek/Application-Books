@@ -173,6 +173,6 @@ export class EnhancedFilterService {
       }
     }
     
-    return value?.toString() || '';
+    return value?.toString() ?? '';
   }
 }

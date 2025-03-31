@@ -1,0 +1,49 @@
+1- Nom et nationnalité de l'auteur:
+
+PREFIX schema: <http://schema.org/>
+
+SELECT ?isbn ?name ?nationality
+WHERE {
+  ?book a schema:Book ;
+    schema:isbn ?isbn ;
+    schema:author ?author .
+ 
+  ?author schema:nationality ?nationality ;
+          schema:givenName ?givenName ;
+          schema:familyName ?familyName .
+  BIND(CONCAT(?givenName, " ", ?familyName) AS ?name)
+}
+
+
+9- Exemple de requete minimale, sans filtre:
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX pbs: <http://www.example.org/pbs#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?book 
+       ?title
+	   (GROUP_CONCAT(DISTINCT ?name; separator= ", ") AS ?authorList)
+       ?datePublished
+       ?isbn 
+       ?language 
+       ?publisher
+       ?infoSource
+WHERE {
+  ?book a schema:Book ;
+	schema:name ?title ;
+    schema:author ?author ;
+	schema:datePublished ?datePublished ;
+	pbs:infoSource ?infoSource ;
+    schema:isbn ?isbn ;
+    schema:publisher ?publisher .
+    
+    ?author schema:nationality ?nationality ;
+          	schema:givenName ?givenName ;
+          	schema:familyName ?familyName .
+  	
+    BIND(CONCAT(?givenName, " ", ?familyName) AS ?name)  
+}
+GROUP BY ?book ?title ?datePublished ?infoSource ?isbn ?language ?publisher ?author
+  
