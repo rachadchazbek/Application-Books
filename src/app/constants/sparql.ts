@@ -10,52 +10,31 @@ PREFIX pbs: <http://example.org/pbs#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX mcc: <http://example.org/mcc#>
+PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
+PREFIX luc: <http://www.ontotext.com/connectors/lucene#>
 
-SELECT ?book 
-	     ?name
-       ?datePublished
-       ?isbn
-       ?inLanguage
-       ?quatriemeCouverture
-       ?premiereCouverture
-       ?publisherName
-       ?description
-       ?url
-       ?infoSource
-       ?averageReview
-       ?avis
-       ?isCoupDeCoeur
-       ?countryOfOrigin
-       (GROUP_CONCAT(DISTINCT ?awardNameValue; separator=", ") AS ?awards)
-       (GROUP_CONCAT(DISTINCT ?name; separator= ", ") AS ?authorList)
-       (GROUP_CONCAT(DISTINCT ?illustratorName; separator=", ") AS ?illustrator) 
-       (GROUP_CONCAT(DISTINCT ?reviewContent; separator=" || ") AS ?review) 
-       (GROUP_CONCAT(DISTINCT ?ageRange; separator=", ") AS ?typicalAgeRange) 
-       (GROUP_CONCAT(DISTINCT ?keyword; separator=", ") AS ?keywords) 
-       (GROUP_CONCAT(DISTINCT ?genreValue; separator=", ") AS ?genre)
 
-WHERE {
-  ?book rdf:type schema:Book .
-  ?book schema:name ?name .
-  ?book schema:datePublished ?datePublished  .
-
+SELECT DISTINCT
+  ?book 
+  ?name # change to titre
+  ?isbn
+  ?datePublished
+  ?publisher # Maybe Add a map between publisherURI and publisherName
+  ?inLanguage # Maybe Add a map between publisherURI and publisherName
+  ?search
   
-  # Book details
-  ?book schema:description ?quatriemeCouverture . 
-  OPTIONAL { ?book schema:image ?premiereCouverture . }
-  OPTIONAL { 
-    ?book schema:publisher ?publisher .
-    OPTIONAL { ?publisher schema:name ?publisherName . }
-    OPTIONAL { 
-      FILTER(ISURI(?publisher) && NOT EXISTS { ?publisher schema:name ?any })
-      BIND(STRAFTER(STR(?publisher), "#") AS ?publisherName) 
+    WHERE {
+      
+      ?book rdf:type schema:Book .
+      ?book schema:name ?name .
+      ?book schema:isbn ?isbn .
+      ?book schema:datePublished ?datePublished .
+      ?book schema:publisher ?publisher .
+      ?book schema:inLanguage ?inLanguage .
+
+      ${filter}
     }
-  }
-  ?book schema:isbn ?isbn .
-  
-  ${filter}
-}
-GROUP BY ?book ?name ?datePublished ?isbn ?inLanguage ?quatriemeCouverture ?premiereCouverture ?publisherName ?description ?url ?infoSource ?averageReview ?avis ?isCoupDeCoeur ?countryOfOrigin
+    GROUP BY ?book ?name ?datePublished ?isbn ?publisher ?inLanguage ?search
 `;
 
 /**

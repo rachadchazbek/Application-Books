@@ -118,7 +118,16 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>`;
    */
   buildUnifiedFilterClauses(filters: BookFilter): string[] {
     const clauses: string[] = [];
-    
+    if (filters.keywords) {
+      clauses.push(`
+      ?search a luc-index:all_fields_2 ;
+        luc:query "${filters.keywords}" ;
+        luc:entities ?book . 
+      ?book luc:score ?score .
+      `);
+    }
+
+
     // Source filter
     if (filters.source) {
       clauses.push(`?book pbs:infoSource pbs:${filters.source}`);
@@ -127,7 +136,7 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>`;
     // Basic book properties
     if (filters.title) {
       const escapedTitle = this.escapeSparqlString(filters.title);
-      clauses.push(`FILTER(CONTAINS(LCASE(?title), LCASE("${escapedTitle}")))`);
+      clauses.push(`FILTER(CONTAINS(LCASE(?name), LCASE("${escapedTitle}")))`);
     }
     
     if (filters.isbn) {
@@ -189,6 +198,11 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>`;
     if (filters.award) {
       const escapedAward = this.escapeSparqlString(filters.award);
       clauses.push(`FILTER(CONTAINS(LCASE(?awards), LCASE("${escapedAward}")))`);
+    }
+
+    if (filters.source) {
+      const escapedSource = this.escapeSparqlString(filters.source);
+      clauses.push(`FILTER(?infSource = "${escapedSource}")`);
     }
     
     // Category-specific filters
@@ -272,7 +286,7 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>`;
     // Basic book properties
     if (filters.title) {
       // Use CONTAINS for partial title matching
-      clauses.push(`FILTER(CONTAINS(LCASE(?title), LCASE("${filters.title}")))`);
+      clauses.push(`FILTER(CONTAINS(LCASE(?name), LCASE("${filters.title}")))`);
     }
     
     if (filters.isbn) {

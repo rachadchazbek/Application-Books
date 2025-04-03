@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ThemaCodes } from '../constants/thema-codes';
 import { SparqlResponse } from '../constants/Response';
 
 /**

@@ -31,14 +31,15 @@ export class BooksService {
       if (binding.finalAwardDescription?.value) {
         descriptionAwardSubject.next(binding.finalAwardDescription.value);
       }
-      const name = binding.name?.value || `Empty Title ${index}`;
 
-      if (this.bookMap[name]) {
+      const isbn = binding.isbn?.value;
+
+      if (this.bookMap[isbn]) {
         // Update an existing book.
-        this.updateExistingBook(this.bookMap[name], binding);
+        this.updateExistingBook(this.bookMap[isbn], binding);
       } else {
         // Create a new book entry.
-        this.bookMap[name] = this.createBook(binding, index);
+        this.bookMap[isbn] = this.createBook(binding, index);
       }
     });
     this.emitBooks();

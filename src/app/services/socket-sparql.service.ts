@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { SPARQL_WIKIDATA } from '../constants/sparql';
 import axios from 'axios';
 import { load } from 'cheerio';
 import { HttpSparqlService } from './http-sparql.service';
@@ -8,7 +7,6 @@ import { urlBabelioSubject, bookSummarySubject, ratingSubject, currentBookSubjec
 import { BooksService } from './books.service';
 import { EnhancedFilterService } from './enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from './enhanced-sparql-query-builder.service';
-import { Appreciation } from '../constants/Appreciation';
 import { BookFilter } from '../models/book-filter.model';
 
 @Injectable({
@@ -106,74 +104,6 @@ export class SocketSparqlService {
 
   // TODO Change to filter class
 
-  /**
-   * Filter books by source and category
-   * This method is called when a source is selected in the source tab
-   * @param source The source to filter by
-   * @param category The category within the source to filter by
-   */
-  filterBooksByCategory(source: string, category: string) {
-    console.log('Filtering by category:', source, category);
-    this.applyFilters({
-      source: source,
-      category: category
-    });
-  }
-
-  /**
-   * Filter books by age
-   * @param age The age value to add to the age filter
-   */
-  ageFilter(age: string) {
-    const ageString = age.toString();
-    
-    // Get current age range and add the new age
-    const currentFilters = this.enhancedFilterService.getCurrentFilters();
-    const currentAgeRange = currentFilters.ageRange || [];
-    const newAgeRange = [...currentAgeRange, ageString];
-    
-    // Use unified query approach for all cases
-    this.applyFilters({ 
-      ageRange: newAgeRange
-    });
-  }
-
-  /**
-   * Filter books by appreciation level
-   * @param appreciation The appreciation level to filter by
-   */
-  filterBooksByAppreciation(appreciation: Appreciation) {
-    // Use unified query approach for all cases
-    this.applyFilters({ 
-      appreciation: appreciation 
-    });
-  }
-
-  /**
-   * Filter books by title
-   * @param name The title to filter by
-   */
-  filterName(name: string) {
-    this.applyFilters({ title: name });
-  }
-
-  /**
-   * Filter books by genre
-   * @param genre The genre to filter by
-   */
-  filterGenre(genre: string) {
-    this.applyFilters({ 
-      genre: genre !== 'No Genre Selected' ? genre : undefined 
-    });
-  }
-
-  /**
-   * Filter books by author
-   * @param author The author to filter by
-   */
-  filterBooksByAuthor(author: string) {
-    this.applyFilters({ author });
-  }
 
   /**
    * Check if a key is a valid filter key
@@ -196,46 +126,6 @@ export class SocketSparqlService {
   filterBooksByAward(filterAward: string) {
     this.inAwardsComponent = true;
     this.applyFilters({ award: filterAward });
-  }
-
-  /**
-   * Filter books by a specific author
-   * @param filterAuthor The author name to filter by
-   */
-  filterAuthorBooks(filterAuthor: string) {
-    this.inAuthorsComponent = true;
-    this.applyFilters({ author: filterAuthor });
-  }
-
-  /**
-   * Filter books by age range
-   * @param ageRange The age range to filter by
-   */
-  filterBooksByAge(ageRange: string | string[]) {
-    console.log("Filtering by age:", ageRange);
-    this.applyFilters({ 
-      ageRange: ageRange !== 'No Age Selected' ? 
-        (Array.isArray(ageRange) ? ageRange : [ageRange]) : []
-    });
-  }
-
-  // Duplicate method removed - filterAward was redundant with filterBooksByAward
-
-  /**
-   * Filter books by language
-   * @param language The language to filter by
-   */
-  filterLanguage(language: string) {
-    this.applyFilters({ 
-      inLanguage: language !== 'No Language Selected' ? language : undefined
-    });
-  }
-
-  getAuthorInfo(filterAuthor: string) {
-    const sparqlQuery = SPARQL_WIKIDATA(filterAuthor);
-    this.httpSparqlService.postQuery(sparqlQuery).then((response) => {
-        this.booksService.updateData(response);
-    });
   }
 
   async bingSearchBook(book: Book) {
@@ -301,48 +191,6 @@ export class SocketSparqlService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`An error occurred: ${error.message}`);
-    }
-  }
-
-  /**
-   * Execute a SPARQL query and update the books service with the response
-   * @param query The SPARQL query to execute
-   * @returns A promise that resolves when the query is complete
-   */
-  private async executeQuery(query: string): Promise<void> {
-    try {
-      // Reset state for new query
-      this.bookMap = {};
-      this.inAuthorsComponent = false;
-      this.inAwardsComponent = false;
-      
-      const response = await this.httpSparqlService.postQuery(query);
-      this.booksService.updateData(response);
-      return Promise.resolve();
-    } catch (error) {
-      console.error('Error executing query:', error);
-      return;
-    }
-  }
-  
-  /**
-   * Update books data using the current filters
-   * Uses the unified query approach to fetch data from all relevant sources
-   */
-  async updateBook() {
-    const currentFilters = this.enhancedFilterService.getCurrentFilters();
-    console.log('Updating book data with filters:', currentFilters);
-    
-    // Use the unified query approach that works for all filters and sources
-    const query = this.sparqlQueryBuilder.buildUnifiedQuery(currentFilters);
-    
-    try {
-      console.log('Executing unified query for updateBook');
-      const response = await this.httpSparqlService.postQuery(query);
-      console.log(`Unified query returned ${response.results?.bindings?.length || 0} results`);
-      this.booksService.updateData(response);
-    } catch (error) {
-      console.error('Error executing unified query in updateBook:', error);
     }
   }
 }

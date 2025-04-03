@@ -147,20 +147,9 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   quickSearch(): void {
     const searchTerm = this.quickSearchControl.value;
     if (searchTerm) {
-      // Clear existing filters
-      this.filterService.clearAllFilters();
-      
-      // Try to determine what the search term is (title, author, ISBN)
-      if (/^[0-9-]+$/.test(searchTerm)) {
-        // Looks like an ISBN
-        this.applyFilter('isbn', searchTerm);
-      } else {
-        // Default to title search
-        this.applyFilter('title', searchTerm);
-      }
-      
-      // Execute the search
-      this.search();
+      this.applyFilter('keywords', searchTerm);
+    } else {
+      this.filterService.clearFilter('keywords');
     }
   }
   

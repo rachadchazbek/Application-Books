@@ -5,6 +5,8 @@ import { Appreciation } from '../constants/Appreciation';
  * to search for books in the graph database.
  */
 export interface BookFilter {
+  keywords?: string;
+
   // Basic book properties (schema:Book)
   title?: string;
   isbn?: string;
