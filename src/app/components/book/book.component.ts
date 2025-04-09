@@ -134,9 +134,10 @@ export class BookComponent implements OnInit, OnDestroy {
    * Navigate to publisher info
    */
   navigateToPublisher(publisher: string): void {
-    if (publisher) {
-      this.socketService.bingSearchPublisher(publisher);
-    }
+    // if (publisher) {
+      // this.socketService.bingSearchPublisher(publisher);
+    // }
+    return
   }
 
   /**

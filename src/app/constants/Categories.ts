@@ -8,7 +8,7 @@ export enum Babelio {
 
 export enum Source {
     Babelio = 'Babelio',
-    Constellation = 'Constellation',
+    Constellations = 'Constellations',
     BNF = 'BNF',
     BTLF = 'BTLF',
     Lurelu = 'Lurelu',
@@ -16,7 +16,7 @@ export enum Source {
     Unassigned = 'Unassigned'
 }
 
-export enum Constellation {
+export enum Constellations {
     Favorite = 'Coup de Coeur',
     All = 'Tout'
 }
@@ -39,7 +39,7 @@ export enum Lurelu {
 // Define the Categories for each source
 export const Categories = {
     Babelio: ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles'],
-    Constellation: ['Coup de Coeur', 'Tout'],
+    Constellations: ['Coup de Coeur', 'Tout'],
     BNF: ['Hélas !', 'Problème...', 'Pourquoi pas ?', 'Intéressant', 'Bravo !', 'Coup de coeur !', 'Réédition à signaler', 'Bibliothèque idéale'],
     Lurelu: ['Coup de coeur'],
     BTLF: [],
@@ -50,7 +50,7 @@ export const Categories = {
 // Define the mapping between sources and their categories for the Source tab
 export const SOURCE_Categories = {
     Babelio: ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles'],
-    Constellation: ['Coup de Coeur', 'Tout'],
+    Constellations: ['Coup de Coeur', 'Tout'],
     BNF: ['Hélas !', 'Problème...', 'Pourquoi pas ?', 'Intéressant', 'Bravo !', 'Coup de coeur !', 'Réédition à signaler', 'Bibliothèque idéale'],
     Lurelu: ['Coup de coeur'],
     BTLF: [],

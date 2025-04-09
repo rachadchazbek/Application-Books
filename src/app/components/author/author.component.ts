@@ -138,7 +138,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
 
   getEnhancedAuthorInfo() {
     // Use the new enhanced author info method
-    this.socketService.getEnhancedAuthorInfo(this.filterAuthor);
+    // this.socketService.getEnhancedAuthorInfo(this.filterAuthor);
   }
 
   generateBabelioLink(): string | null {

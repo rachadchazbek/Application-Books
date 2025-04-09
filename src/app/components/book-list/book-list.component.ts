@@ -163,11 +163,13 @@ export class BookListComponent implements OnDestroy {
   }
   navigateToBook(book: Book): void {
     this.router.navigate(['/book', book.title]);
-    this.socketService.bingSearchBook(book);
+    // this.socketService.bingSearchBook(book);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   navigateToPublisher(publisher: string) {
-    this.socketService.bingSearchPublisher(publisher);
+    return;
+    // this.socketService.bingSearchPublisher(publisher);
   }
 
   navigateToAuthor(authorName: string): void {

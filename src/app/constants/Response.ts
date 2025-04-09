@@ -7,6 +7,7 @@ export interface SparqlResponse {
   export interface Binding {
     name: { value: string };
     author: { value: string };
+    authorName: { value: string };
     illustrator: { value: string };
     publisherName: { value: string };
     datePublished?: { value: string };
