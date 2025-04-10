@@ -34,10 +34,7 @@ export class HttpSparqlService {
 
     try {
       // Log query for debugging (truncate long queries)
-      const queryPreview = sparqlQuery.length > 500 
-        ? sparqlQuery.substring(0, 500) + '...' 
-        : sparqlQuery;
-      console.log('Executing SPARQL query:', queryPreview);
+      console.log('Executing SPARQL query:', sparqlQuery);
       
       // Measure query execution time
       const startTime = performance.now();

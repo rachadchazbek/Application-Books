@@ -18,11 +18,11 @@
         <div class="info-item authors">
           <div class="info-label">
             <i class="fas fa-user-tie"></i>
-            <span>{{(currentBookData?.authors?.length || 0) > 1 ? 'Auteurs' : 'Auteur'}}</span>
+            <span>{{(currentBookData?.authorList?.length || 0) > 1 ? 'Auteurs' : 'Auteur'}}</span>
           </div>
           <div class="info-value">
             <ul>
-              <li *ngFor="let author of currentBookData?.authors || []">
+              <li *ngFor="let author of currentBookData?.authorList || []">
                 <button (click)="navigateToAuthor(author)" (keydown)="handleKeyDown($event)" class="author-link" tabindex="0">{{ author }}</button>
               </li>
             </ul>
@@ -189,13 +189,13 @@
                 <h3>{{ book.title }}</h3>
               </div>
               <div class="similar-book-details">
-                <p *ngIf="book.authors && book.authors.length > 0">
-                  <strong>Auteur(s):</strong> {{ book.authors.join(', ') }}
+                <p *ngIf="book.authorList && book.authorList.length > 0">
+                  <strong>Auteur(s):</strong> {{ book.authorList.join(', ') }}
                 </p>
                 <p *ngIf="book.publisher">
                   <strong>Éditeur:</strong> {{ book.publisher }}
                 </p>
-                <button class="view-book-button" (click)="navigateToAuthor(book.authors[0])" *ngIf="book.authors && book.authors.length > 0">
+                <button class="view-book-button" (click)="navigateToAuthor(book.authorList[0])" *ngIf="book.authorList && book.authorList.length > 0">
                   <i class="fas fa-user"></i> Voir l'auteur
                 </button>
               </div>

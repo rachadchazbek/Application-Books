@@ -146,9 +146,9 @@ export class BookListComponent implements OnDestroy {
           comparison = a.title.localeCompare(b.title);
           break;
         case 'author': {
-          // Compare first authors if available
-          const authorA = a.authors && a.authors.length > 0 ? a.authors[0] : '';
-          const authorB = b.authors && b.authors.length > 0 ? b.authors[0] : '';
+          // Compare first authorList if available
+          const authorA = a.authorList && a.authorList.length > 0 ? a.authorList[0] : '';
+          const authorB = b.authorList && b.authorList.length > 0 ? b.authorList[0] : '';
           comparison = authorA.localeCompare(authorB);
           break;
         }
@@ -163,7 +163,7 @@ export class BookListComponent implements OnDestroy {
   }
   navigateToBook(book: Book): void {
     this.router.navigate(['/book', book.title]);
-    // this.socketService.bingSearchBook(book);
+    this.socketService.bingSearchBook(book.isbn);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

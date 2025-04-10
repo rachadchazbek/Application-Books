@@ -57,9 +57,9 @@
           <div class="book-meta">
             <p class="book-authors">
               <i class="fas fa-user"></i>
-              <ng-container *ngFor="let author of book.authors; let i = index">
+              <ng-container *ngFor="let author of book.authorList; let i = index">
                 <span (click)="navigateToAuthor(author)" (keydown)="handleKeyDown($event, author)" tabindex="0" class="author-link">{{ author }}</span>
-                <span *ngIf="i < book.authors.length - 1">, </span>
+                <span *ngIf="i < book.authorList.length - 1">, </span>
               </ng-container>
             </p>
             

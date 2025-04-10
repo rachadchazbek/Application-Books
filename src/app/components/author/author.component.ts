@@ -117,7 +117,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         .filter(item => item.title || item.bookTitle)
         .map(item => ({
           title: item.title || item.bookTitle || 'Unknown Title',
-          authors: [item.author || this.filterAuthor],
+          authorList: [item.author || this.filterAuthor],
           datePublished: '',
           isbn: '',
           subjectThema: '',

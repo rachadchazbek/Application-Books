@@ -3,7 +3,7 @@ import { Review } from "./Review";
 
 export interface Book {
   title: string;
-  authors: string[];
+  authorList: string[];
   datePublished: string;
   isbn: string;
   inLanguage: string;

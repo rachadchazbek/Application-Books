@@ -49,7 +49,7 @@ export class BookComponent implements OnInit, OnDestroy {
       const bookId = params['id'];
       if (bookId && this.currentBookData) {
         // Load similar books using the book URI
-        this.loadSimilarBooks(bookId);
+        this.loadSimilarBooks();
       }
     });
   }
@@ -58,12 +58,11 @@ export class BookComponent implements OnInit, OnDestroy {
    * Load books similar to the current book
    * @param bookId The ID of the current book
    */
-  loadSimilarBooks(bookId: string) {
+  loadSimilarBooks() {
     // Construct the book URI based on the book ID
-    const bookUri = `http://schema.org/Book${bookId}`;
     
     // Find similar books
-    this.socketService.findSimilarBooks(bookUri);
+    this.socketService.findSimilarBooks();
     
     // Subscribe to the books observable to get the similar books
     const booksSubscription = books$.subscribe((books: Book[]) => {

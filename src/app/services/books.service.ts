@@ -24,13 +24,9 @@ export class BooksService {
     // Clear the book map before processing new results
     this.bookMap = {};
     
-    console.log(`Processing ${responseData.results.bindings.length} results`);
-    
-    responseData.results.bindings.forEach((binding: Binding, index: number) => {
-      // Notify subscribers about the award description if available.
-      if (binding.finalAwardDescription?.value) {
-        descriptionAwardSubject.next(binding.finalAwardDescription.value);
-      }
+    console.log(`Processing ${responseData.results.bindings.length} results`);    
+    responseData.results.bindings.forEach((binding: Binding) => {
+
 
       const isbn = binding.isbn?.value;
 
@@ -39,7 +35,7 @@ export class BooksService {
         this.updateExistingBook(this.bookMap[isbn], binding);
       } else {
         // Create a new book entry.
-        this.bookMap[isbn] = this.createBook(binding, index);
+        this.bookMap[isbn] = this.createBook(binding);
       }
     });
     this.emitBooks();
@@ -50,8 +46,8 @@ export class BooksService {
    */
   private updateExistingBook(book: Book, binding: Binding) {
     // Update authors.
-    if (binding.author?.value && !book.authors.includes(binding.author.value)) {
-      book.authors.push(binding.author.value);
+    if (binding.author?.value && !book.authorList.includes(binding.author.value)) {
+      book.authorList.push(binding.author.value);
     }
 
     // Update illustrators.
@@ -80,11 +76,11 @@ export class BooksService {
   /**
    * Creates a new book from a binding.
    */
-  private createBook(binding: Binding, index: number): Book {
-    const title = binding.name?.value ?? `Empty Title ${index}`;
+  private createBook(binding: Binding): Book {
+    const title = binding.name?.value ?? ``;
     const newBook: Book = {
       title,
-      authors: binding.author?.value ? [binding.author.value] : [],
+      authorList: binding.authorList?.value ? [binding.authorList.value] : [],
       publisher: binding.publisherName?.value,
       datePublished: binding.datePublished?.value ?? '',
       isbn: binding.isbn?.value ?? '',
@@ -95,15 +91,6 @@ export class BooksService {
       awards: [],
       reviews: [],
     };
-
-    // Process reviews.
-    newBook.reviews = this.parseReviews(binding);
-
-    // Process awards if they exist.
-    if (binding.award) {
-      this.processAward(newBook, binding);
-    }
-
     return newBook;
   }
 
