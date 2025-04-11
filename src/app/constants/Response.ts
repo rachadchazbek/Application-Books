@@ -32,3 +32,8 @@ export interface SparqlResponse {
     finalAwardDescription?: { value: string };
   }
   
+    
+  export interface BookBinding {
+    name: { value: string };
+    isbn: { value: string };
+  }

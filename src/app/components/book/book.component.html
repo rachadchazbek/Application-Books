@@ -74,7 +74,7 @@
             {{ currentBookData?.isbn }}
           </div>
         </div>
-        
+<!--         
         <!-- Rating -->
         <div class="info-item rating" *ngIf="ratingBook && isString(ratingBook)">
           <div class="info-label">
@@ -87,7 +87,7 @@
         </div>
       </div>
     </div>
-    
+     -->
     <!-- Right column: Tabs for different content sections -->
     <div class="book-detail-right">
       <div class="book-tabs">
@@ -212,7 +212,7 @@
   <!-- External links section -->
   <div class="external-links" *ngIf="babelioLink">
     <a [href]="babelioLink" target="_blank" class="external-link">
-      <i class="fas fa-external-link-alt"></i> Voir sur Babelio
+      <i class="fas fa-external-link-alt"></i> Voir sur
     </a>
   </div>
 </div>

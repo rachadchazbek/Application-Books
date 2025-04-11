@@ -37,6 +37,21 @@
 //     GROUP BY ?book ?name ?datePublished ?isbn ?publisher ?inLanguage ?search
 // `;
 
+export const BOOK_QUERY = (isbn: string) => `
+PREFIX schema: <http://schema.org/>
+PREFIX pbs: <http://www.example.org/pbs#>
+
+Select ?book ?name ?isbn 
+WHERE {
+  ?book a schema:Book;
+        schema:isbn ?isbn;
+        schema:isbn "${isbn}";
+        schema:name ?name .
+}
+  
+`
+
+
 export const UNIFIED_SPARQL_QUERY = (filter: string) => `
 PREFIX schema: <http://schema.org/>
 PREFIX pbs: <http://www.example.org/pbs#>

@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BookFilter } from '../models/book-filter.model';
 import { 
-  SPARQL_WIKIDATA,
-  SPARQL_QUERY_DESCRIPTION,
   UNIFIED_SPARQL_QUERY
 } from '../constants/sparql';
-import { Appreciation } from '../constants/Appreciation';
 
 /**
  * Enhanced SPARQL Query Builder Service
@@ -68,23 +65,23 @@ export class EnhancedSparqlQueryBuilderService {
     
     if (filters.inLanguage) {
       const escapedLanguage = this.escapeSparqlString(filters.inLanguage);
-      clauses.push(`FILTER(LCASE(?inLanguage) = LCASE("${escapedLanguage}"))`);
+      clauses.push(`FILTER(LCASE(?inLanguage) = LCASE("${escapedLanguage}")) .`);
     }
     
     // Creator properties
     if (filters.author) {
       const escapedAuthor = this.escapeSparqlString(filters.author);
-      clauses.push(`FILTER(CONTAINS(LCASE(?author), LCASE("${escapedAuthor}")))`);
+      clauses.push(`FILTER(CONTAINS(LCASE(?author), LCASE("${escapedAuthor}"))) .`);
     }
     
     if (filters.nationality) {
       const escapedNationality = this.escapeSparqlString(filters.nationality);
-      clauses.push(`FILTER(CONTAINS(LCASE(?countryOfOrigin), LCASE("${escapedNationality}")))`);
+      clauses.push(`FILTER(CONTAINS(LCASE(?countryOfOrigin), LCASE("${escapedNationality}"))) .`);
     }
     
     if (filters.illustrator) {
       const escapedIllustrator = this.escapeSparqlString(filters.illustrator);
-      clauses.push(`FILTER(CONTAINS(LCASE(?illustrator), LCASE("${escapedIllustrator}")))`);
+      clauses.push(`FILTER(CONTAINS(LCASE(?illustrator), LCASE("${escapedIllustrator}"))) .`);
     }
     
     // Classification properties
@@ -177,7 +174,7 @@ export class EnhancedSparqlQueryBuilderService {
   buildUnifiedQuery(filters: BookFilter): string {
     // Build filter clauses based on the unified filter model
     const filterClauses = this.buildUnifiedFilterClauses(filters);
-    const filterString = filterClauses.length > 0 ? filterClauses.join(' .\n') : '';
+    const filterString = filterClauses.length > 0 ? filterClauses.join(' \n') : '';
     
     // Use the unified query template that works for all sources
     return UNIFIED_SPARQL_QUERY(filterString);

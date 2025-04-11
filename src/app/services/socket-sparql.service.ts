@@ -5,6 +5,7 @@ import { BooksService } from './books.service';
 import { EnhancedFilterService } from './enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from './enhanced-sparql-query-builder.service';
 import { BookFilter } from '../models/book-filter.model';
+import { BOOK_QUERY } from '../constants/sparql';
 
 @Injectable({
   providedIn: 'root',
@@ -58,12 +59,12 @@ export class SocketSparqlService {
         throw error; // Rethrow to allow caller to handle the error
       });
   }
-  
+
   /**
    * Find books similar to a given book
    * @param bookUri URI of the book to find similar books for
    */
-  findSimilarBooks(bookUri: string): void {
+  findSimilarBooks(): void {
     // const query = this.sparqlQueryBuilder.buildSimilaritySearchQuery(bookUri);
     // this.httpSparqlService.postQuery(query).then(response => {
     //   this.booksService.updateData(response);
@@ -96,9 +97,23 @@ export class SocketSparqlService {
     this.applyFilters({ award: filterAward });
   }
 
+  async bingSearchBook(isbn: string) {
+    console.log('Bing search book with ISBN:', isbn);
+    const query = BOOK_QUERY(isbn);
+    
+    console.log('Bing search book query:', query);
+    const data = await this.httpSparqlService.postBookQuery(query);
+    console.log('Bing search book data:', data);
+
+    //TODO Dispatch data to the component
+    
+
+    }
+
+
   // async bingSearchBook(book: Book) {
   //   currentBookSubject.next(book);
-  //   const query = `${book.title} ${book.authors[0]} site:babelio.com`;
+  //   const query = `${book.title} ${book.authorList[0]} site:babelio.com`;
   //   const encodedQuery = encodeURIComponent(query);
   //   const url = `https://api.bing.microsoft.com/v7.0/search?q=${encodedQuery}`;
 

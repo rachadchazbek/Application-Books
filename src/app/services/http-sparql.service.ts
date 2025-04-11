@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SparqlResponse } from '../constants/Response';
+import { BookBinding, SparqlResponse } from '../constants/Response';
 
 /**
  * @description This service class is responsible for sending SPARQL queries to the GraphDB instance and handling the responses.
@@ -12,11 +12,11 @@ import { SparqlResponse } from '../constants/Response';
   providedIn: 'root'
 })
 export class HttpSparqlService {
-
-
-  private readonly jsonUrl = 'assets/thema_code_dict.json';
-
   constructor(private readonly http: HttpClient) { }
+
+  readonly repositoryUrl = 'http://51.79.51.204:7200/repositories/books';
+  // readonly repositoryUrl = 'http://Rachads-MacBook-Pro-2.local:7200/repositories/Books-app'
+
 
   /**
    * Execute a SPARQL query against the GraphDB repository
@@ -24,8 +24,6 @@ export class HttpSparqlService {
    * @returns A promise that resolves to the SPARQL response
    */
   async postQuery(sparqlQuery: string): Promise<SparqlResponse> {
-    // const repositoryUrl = 'http://Rachads-MacBook-Pro-2.local:7200/repositories/Books-app'
-    const repositoryUrl = 'http://51.79.51.204:7200/repositories/books';
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/sparql-query',
@@ -40,7 +38,7 @@ export class HttpSparqlService {
       const startTime = performance.now();
       
       const response = await this.http.post<SparqlResponse>(
-        repositoryUrl, 
+        this.repositoryUrl, 
         sparqlQuery, 
         { headers }
       ).toPromise();
@@ -66,6 +64,26 @@ export class HttpSparqlService {
         throw new Error('SPARQL query failed with unknown error');
       }
     }
+  }
+
+  async postBookQuery(sparqlBookQuery: string): Promise<BookBinding> {
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/sparql-query',
+      'Accept': 'application/sparql-results+json',
+    });
+
+    const response = await this.http.post<BookBinding>(
+      this.repositoryUrl,
+      sparqlBookQuery,
+      { headers }
+    ).toPromise();
+
+    if (!response) {
+      throw new Error('No response received from the server');
+    }
+
+    return response;
   }
 
 }
