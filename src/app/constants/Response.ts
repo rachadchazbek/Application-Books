@@ -30,10 +30,12 @@ export interface SparqlResponse {
     avis?: { value: string };
     source?: { value: string };
     finalAwardDescription?: { value: string };
+    premiereCouverture?: { value: string };
   }
   
     
   export interface BookBinding {
-    name: { value: string };
-    isbn: { value: string };
+    results: {
+      bindings: Binding[];
+    };
   }
