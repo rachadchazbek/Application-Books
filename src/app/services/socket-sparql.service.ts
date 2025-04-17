@@ -6,6 +6,7 @@ import { EnhancedFilterService } from './enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from './enhanced-sparql-query-builder.service';
 import { BookFilter } from '../models/book-filter.model';
 import { BOOK_QUERY } from '../constants/sparql';
+import { booksSource, currentBookSubject } from '../classes/subjects';
 
 @Injectable({
   providedIn: 'root',
@@ -97,18 +98,58 @@ export class SocketSparqlService {
     this.applyFilters({ award: filterAward });
   }
 
-  async bingSearchBook(isbn: string) {
-    console.log('Bing search book with ISBN:', isbn);
+  /**
+   * Search for a book using ISBN and dispatch the result to components 
+   * using subjects/observables
+   * @param isbn The ISBN of the book to search for
+   * @returns Promise that resolves to the Book object if found, null otherwise
+   */
+  async bingSearchBook(isbn: string): Promise<Book | null> {
+    console.log('Searching book with ISBN:', isbn);
     const query = BOOK_QUERY(isbn);
     
-    console.log('Bing search book query:', query);
-    const data = await this.httpSparqlService.postBookQuery(query);
-    console.log('Bing search book data:', data);
+    try {
+      const data = await this.httpSparqlService.postBookQuery(query);
+      console.log('Book search data:', data);
 
-    //TODO Dispatch data to the component
-    
+      // Extract and transform book data from response
+      if (data.results?.bindings?.length > 0) {
+        const binding = data.results.bindings[0];
 
+        
+        
+        // Create a Book object from the binding data
+        const book: Book = {
+          title: binding.name?.value || '',
+          isbn: binding.isbn?.value || isbn,
+          authorList: binding.authorList?.value ? [binding.authorList.value] : [],
+          datePublished: binding.datePublished?.value || '',
+          publisher: binding.publisherName?.value || '',
+          inLanguage: '',
+          premiereCouverture: binding.premiereCouverture?.value || ''
+        };
+        
+        console.log('Dispatching book data to component:', book);
+        
+        // Update the bookMap
+        this.bookMap[isbn] = book;
+        
+        // Dispatch to current book subject
+        currentBookSubject.next(book);
+        
+        // Also update books source with the single book as an array
+        booksSource.next([book]);
+        
+        return book;
+      } else {
+        console.warn('No book found with ISBN:', isbn);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error searching for book:', error);
+      return null;
     }
+  }
 
 
   // async bingSearchBook(book: Book) {

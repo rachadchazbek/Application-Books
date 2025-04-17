@@ -67,6 +67,7 @@ SELECT ?book
         (GROUP_CONCAT(DISTINCT ?authorName; separator= ", ") AS ?authorList)
        ?datePublished 
        ?publisherName
+       ?premiereCouverture
 WHERE {
   ?book a schema:Book ;
         schema:isbn ?isbn ;
@@ -84,13 +85,14 @@ WHERE {
 
   ?publisher schema:name ?publisherName .
 
+  OPTIONAL {?book pbs:premiereCouverture ?premiereCouverture }
 
     ${filter}
     
     BIND(CONCAT(?givenName, " ", ?familyName) AS ?authorName)  
 }
 
-GROUP BY ?book ?name ?isbn ?datePublished ?publisherName
+GROUP BY ?book ?name ?isbn ?datePublished ?publisherName ?premiereCouverture
 
 `;
 

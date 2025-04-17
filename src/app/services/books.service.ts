@@ -90,6 +90,7 @@ export class BooksService {
       countryOfOrigin: binding.countryOfOrigin?.value ?? '',
       awards: [],
       reviews: [],
+      premiereCouverture: binding.premiereCouverture?.value ?? '',
     };
     return newBook;
   }

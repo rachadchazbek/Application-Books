@@ -1,16 +1,18 @@
-<div class="book-detail-container">
+
+<div class="book-detail-container" *ngIf="currentBookData">
   <div class="book-detail-header">
     <button class="back-button" (click)="goBack()" (keydown)="handleKeyDown($event)" tabindex="0">
       <i class="fas fa-arrow-left"></i> Retour aux résultats
     </button>
-    <h1 class="book-title">{{ currentBookData?.title }}</h1>
+    <h1 class="book-title">{{ currentBookData.title }}</h1>
   </div>
   
   <div class="book-detail-content">
     <!-- Left column: Book cover and key info -->
     <div class="book-detail-left">
-      <div class="book-cover">
-        <i class="fas fa-book"></i>
+      <div class="book-cover" [class.has-image]="currentBookData.premiereCouverture">
+        <img *ngIf="currentBookData?.premiereCouverture" [src]="'http://51.79.51.204/' + currentBookData.premiereCouverture" alt="Couverture de {{currentBookData.title}}" />
+        <i *ngIf="!currentBookData?.premiereCouverture" class="fas fa-book"></i>
       </div>
       
       <div class="book-key-info">
@@ -18,7 +20,7 @@
         <div class="info-item authors">
           <div class="info-label">
             <i class="fas fa-user-tie"></i>
-            <span>{{(currentBookData?.authorList?.length || 0) > 1 ? 'Auteurs' : 'Auteur'}}</span>
+            <span>Auteurs</span>
           </div>
           <div class="info-value">
             <ul>
@@ -36,8 +38,8 @@
             <span>Éditeur</span>
           </div>
           <div class="info-value">
-            <button (click)="navigateToPublisher(currentBookData?.publisher || '')" (keydown)="handleKeyDown($event)" class="publisher-link" tabindex="0">
-              {{ currentBookData?.publisher }}
+            <button (click)="navigateToPublisher(currentBookData.publisher || '')" (keydown)="handleKeyDown($event)" class="publisher-link" tabindex="0">
+              {{ currentBookData.publisher }}
             </button>
           </div>
         </div>
@@ -49,7 +51,7 @@
             <span>Date de Publication</span>
           </div>
           <div class="info-value">
-            {{ currentBookData?.datePublished }}
+            {{ currentBookData.datePublished }}
           </div>
         </div>
         
@@ -60,7 +62,7 @@
             <span>Langue</span>
           </div>
           <div class="info-value">
-            {{ currentBookData?.inLanguage === 'fre' ? 'Français' : (currentBookData?.inLanguage === 'eng' ? 'Anglais' : currentBookData?.inLanguage) }}
+            {{ currentBookData.inLanguage === 'fre' ? 'Français' : (currentBookData.inLanguage === 'eng' ? 'Anglais' : currentBookData.inLanguage) }}
           </div>
         </div>
         
@@ -71,10 +73,9 @@
             <span>ISBN</span>
           </div>
           <div class="info-value">
-            {{ currentBookData?.isbn }}
+            {{ currentBookData.isbn }}
           </div>
         </div>
-<!--         
         <!-- Rating -->
         <div class="info-item rating" *ngIf="ratingBook && isString(ratingBook)">
           <div class="info-label">
@@ -87,7 +88,6 @@
         </div>
       </div>
     </div>
-     -->
     <!-- Right column: Tabs for different content sections -->
     <div class="book-detail-right">
       <div class="book-tabs">
@@ -148,7 +148,7 @@
                 <span>Pays d'origine</span>
               </div>
               <div class="detail-value">
-                {{ currentBookData?.countryOfOrigin }}
+                {{ currentBookData.countryOfOrigin }}
               </div>
             </div>
             
@@ -174,7 +174,7 @@
                 <span>Thème</span>
               </div>
               <div class="detail-value">
-                {{ currentBookData?.subjectThema }}
+                {{ currentBookData.subjectThema }}
               </div>
             </div>
           </div>
@@ -182,22 +182,25 @@
         
         <!-- Similar Books tab -->
         <div *ngIf="activeTab === 'similar'" class="tab-pane">
-          <div class="similar-books-list" *ngIf="similarBooks.length > 0">
-            <div class="similar-book-item" *ngFor="let book of similarBooks">
-              <div class="similar-book-header">
+          <div class="similar-books-grid" *ngIf="similarBooks.length > 0">
+            <div class="similar-book-card" *ngFor="let book of similarBooks">
+              <div class="similar-book-cover">
                 <i class="fas fa-book"></i>
-                <h3>{{ book.title }}</h3>
+                <div class="book-title-overlay">{{ book.title }}</div>
               </div>
               <div class="similar-book-details">
-                <p *ngIf="book.authorList && book.authorList.length > 0">
-                  <strong>Auteur(s):</strong> {{ book.authorList.join(', ') }}
+                <h3 class="similar-book-title">{{ book.title }}</h3>
+                <p *ngIf="book.authorList && book.authorList.length > 0" class="similar-book-author">
+                  {{ book.authorList.join(', ') }}
                 </p>
-                <p *ngIf="book.publisher">
-                  <strong>Éditeur:</strong> {{ book.publisher }}
+                <p *ngIf="book.publisher" class="similar-book-publisher">
+                  {{ book.publisher }}
                 </p>
-                <button class="view-book-button" (click)="navigateToAuthor(book.authorList[0])" *ngIf="book.authorList && book.authorList.length > 0">
-                  <i class="fas fa-user"></i> Voir l'auteur
-                </button>
+                <div class="similar-book-actions">
+                  <button class="view-author-button" (click)="navigateToAuthor(book.authorList[0])" *ngIf="book.authorList && book.authorList.length > 0">
+                    <i class="fas fa-user"></i> Voir l'auteur
+                  </button>
+                </div>
               </div>
             </div>
           </div>
