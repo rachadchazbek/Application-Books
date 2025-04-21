@@ -1,27 +1,24 @@
-.page{
-    background-color:  #E6E6FA;
-    min-height: 100vh; 
-  }
+/* Import shared styles */
+@import '../shared/styles/shared-components.css';
 
-  h1 {
-    font-size: 3em;
-    color: black;
-    text-align: center;
-    margin-top: 20px;
-  }
-  
+.page {
+  background-color: #E6E6FA; /* Restore the original lavender background color */
+  min-height: 100vh;
+}
 
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
+h1 {
+  font-size: 2.5em;
+  color: #333;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
 
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: #333;
 }
   

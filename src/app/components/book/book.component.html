@@ -1,5 +1,13 @@
 
-<div class="book-detail-container" *ngIf="currentBookData">
+<!-- Loading spinner -->
+<div class="spinner-overlay" *ngIf="loading">
+  <div class="spinner-container">
+    <div class="spinner"></div>
+    <div class="spinner-text">Chargement des informations du livre...</div>
+  </div>
+</div>
+
+<div class="book-detail-container" *ngIf="currentBookData && !loading">
   <div class="book-detail-header">
     <button class="back-button" (click)="goBack()" (keydown)="handleKeyDown($event)" tabindex="0">
       <i class="fas fa-arrow-left"></i> Retour aux résultats
@@ -38,9 +46,7 @@
             <span>Éditeur</span>
           </div>
           <div class="info-value">
-            <button (click)="navigateToPublisher(currentBookData.publisher || '')" (keydown)="handleKeyDown($event)" class="publisher-link" tabindex="0">
-              {{ currentBookData.publisher }}
-            </button>
+            <span class="publisher-text">{{ currentBookData.publisher }}</span>
           </div>
         </div>
         

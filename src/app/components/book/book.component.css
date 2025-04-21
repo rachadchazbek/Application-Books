@@ -1,58 +1,16 @@
-/* Loading indicator */
-.book-detail-loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  margin: 30px auto;
-  max-width: 1000px;
-}
+/* Import shared styles */
+@import '../../shared/styles/shared-components.css';
 
-.loader-content {
-  text-align: center;
-}
-
-.spinner {
-  font-size: 3em;
-  margin-bottom: 20px;
-  color: #5c6bc0;
-}
-
-.spinner i {
-  animation: spin 1.2s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.book-detail-loader p {
-  font-size: 1.2em;
-  color: #666;
-  margin: 0;
-}
-
-/* Book detail container */
+/* Book detail container - now extends the shared card style */
 .book-detail-container {
   max-width: 1000px;
   margin: 30px auto;
   padding: 30px;
+  font-family: 'Roboto', 'Montserrat', sans-serif;
+  animation: fadeIn 0.5s ease-in-out;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  font-family: 'Roboto', 'Montserrat', sans-serif;
-  animation: fadeIn 0.5s ease-in-out;
-  transition: transform 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Header section */

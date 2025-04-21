@@ -18,7 +18,7 @@ import { BookFilter } from 'src/app/interfaces/book-filter.model';
   imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor]
 })
 export class EnhancedSearchComponent implements OnInit, OnDestroy {
-  // Tab management
+  // Tab management - kept for backward compatibility
   activeTab = 'book';
   
   // Form controls
@@ -35,6 +35,10 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   selectedSource = '';
   selectedCategory = '';
   selectedAppreciation = '';
+  
+  // Multi-select sources
+  availableSources: string[] = ['Babelio', 'Constellations', 'BNF', 'Lurelu', 'BTLF', 'Kaleidoscope'];
+  selectedSources: string[] = [];
   
   // Data lists
   genres: string[] = GENRES;
@@ -134,7 +138,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * Set the active tab
+   * Set the active tab - keeping for backward compatibility
    * @param tab The tab to activate
    */
   setActiveTab(tab: string): void {
@@ -163,6 +167,37 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
       this.filterService.updateFilter(filterType, value);
     } else {
       this.filterService.clearFilter(filterType);
+    }
+  }
+  
+  /**
+   * Check if a source is selected
+   * @param source The source to check
+   * @returns True if the source is selected
+   */
+  isSourceSelected(source: string): boolean {
+    return this.selectedSources.includes(source);
+  }
+  
+  /**
+   * Toggle a source selection
+   * @param source The source to toggle
+   */
+  toggleSource(source: string): void {
+    const index = this.selectedSources.indexOf(source);
+    if (index > -1) {
+      // Remove source if already selected
+      this.selectedSources.splice(index, 1);
+    } else {
+      // Add source if not selected
+      this.selectedSources.push(source);
+    }
+    
+    // Apply filter with all selected sources
+    if (this.selectedSources.length > 0) {
+      this.filterService.updateFilter('source', this.selectedSources);
+    } else {
+      this.filterService.clearFilter('source');
     }
   }
   
@@ -199,6 +234,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
       case 'source':
         this.selectedSource = '';
         this.selectedCategory = '';
+        this.selectedSources = [];
         break;
       case 'category':
         this.selectedCategory = '';
@@ -233,6 +269,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
     this.selectedCategory = '';
     this.selectedAppreciation = '';
     this.selectedAges = [];
+    this.selectedSources = [];
     
     // Reset checkboxes
     this.resetAgeCheckboxes();
@@ -285,7 +322,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * Handle source selection
+   * Handle source selection - kept for backward compatibility
    */
   onSelectSource(): void {
     if (this.selectedSource) {
@@ -386,13 +423,13 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   handleKeyDown(event: KeyboardEvent, item: string): void {
     if (event.key === 'Enter' || event.key === ' ') {
       // Determine which autocomplete list is active
-      if (this.activeTab === 'book' && !this.isBlurredTitle) {
+      if (!this.isBlurredTitle) {
         this.applyFilter('title', item);
         this.isBlurredTitle = true;
-      } else if (this.activeTab === 'author' && !this.isBlurredAuthor) {
+      } else if (!this.isBlurredAuthor) {
         this.applyFilter('author', item);
         this.isBlurredAuthor = true;
-      } else if (this.activeTab === 'author' && !this.isBlurredAward) {
+      } else if (!this.isBlurredAward) {
         this.applyFilter('award', item);
         this.isBlurredAward = true;
       }

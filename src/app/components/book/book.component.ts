@@ -1,7 +1,8 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, firstValueFrom } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 import { bookSummary$, books$, currentBook$, rating$, urlBabelio$ } from 'src/app/classes/subjects';
 import { Book } from 'src/app/interfaces/Book';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
@@ -24,6 +25,7 @@ export class BookComponent implements OnInit, OnDestroy {
   
   // UI state
   activeTab: 'summary' | 'awards' | 'details' | 'similar' = 'summary';
+  loading = true;
   
   // Subscriptions
   private summarySubscription: Subscription;
@@ -44,38 +46,74 @@ export class BookComponent implements OnInit, OnDestroy {
     this.subscribeToCurrentBook();
   }
 
-  ngOnInit() {
-    this.route.params.subscribe(params => {
+  async ngOnInit() {
+    this.loading = true;
+    
+    try {
+      // Wait for the route params
+      const params = await firstValueFrom(this.route.params);
       const bookId = params['id'];
+      
+      // Wait for book data to be loaded
+      await this.waitForBookData();
+      
       if (bookId && this.currentBookData) {
         // Load similar books using the book URI
-        this.loadSimilarBooks();
+        await this.loadSimilarBooks();
       }
+    } catch (error) {
+      console.error('Error loading book data:', error);
+    } finally {
+      this.loading = false;
+    }
+  }
+  
+  /**
+   * Wait for book data to be loaded
+   */
+  private async waitForBookData(): Promise<void> {
+    // Create a promise that resolves when the book data is available
+    return new Promise<void>((resolve) => {
+      // Use take(1) to complete after first emission of a non-null value
+      currentBook$.pipe(
+        filter(book => !!book),
+        take(1)
+      ).subscribe(() => {
+        resolve();
+      });
+      
+      // Add a timeout in case the data never comes
+      setTimeout(() => resolve(), 10000);
     });
   }
 
   /**
    * Load books similar to the current book
-   * @param bookId The ID of the current book
    */
-  loadSimilarBooks() {
-    // Construct the book URI based on the book ID
-    
+  async loadSimilarBooks(): Promise<void> {
     // Find similar books
     this.socketService.findSimilarBooks();
     
-    // Subscribe to the books observable to get the similar books
-    const booksSubscription = books$.subscribe((books: Book[]) => {
-      if (books && books.length > 0) {
+    // Create a promise that resolves when similar books are loaded
+    return new Promise<void>((resolve) => {
+      const booksSubscription = books$.pipe(
+        filter(books => !!books && books.length > 0),
+        take(1)
+      ).subscribe((books: Book[]) => {
         this.similarBooks = books.filter((book: Book) => 
           book.title !== this.currentBookData?.title
         );
-      }
-    });
-    
-    // Add the subscription to be cleaned up on destroy
-    this.destroy$.subscribe(() => {
-      booksSubscription.unsubscribe();
+        
+        // Add the subscription to be cleaned up on destroy
+        this.destroy$.subscribe(() => {
+          booksSubscription.unsubscribe();
+        });
+        
+        resolve();
+      });
+      
+      // Add a timeout in case the data never comes
+      setTimeout(() => resolve(), 5000);
     });
   }
 
@@ -131,12 +169,12 @@ export class BookComponent implements OnInit, OnDestroy {
 
   /**
    * Navigate to publisher info
+   * Note: Currently disabled, but kept for future implementation
    */
-  navigateToPublisher(publisher: string): void {
-    // if (publisher) {
-      // this.socketService.bingSearchPublisher(publisher);
-    // }
-    return
+  navigateToPublisher(/* publisher */): void {
+    // Method left for future implementation
+    // This would potentially search for publisher info
+    return;
   }
 
   /**
