@@ -1,5 +1,5 @@
-import { Appreciation } from "./Appreciation";
-import { Categories } from "./Categories";
+import { Appreciation } from "../constants/Appreciation";
+import { Categories } from "../constants/Categories";
 
 export interface Filter {
     filterAge: string[];

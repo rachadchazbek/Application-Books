@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpSparqlService } from './http-sparql.service';
-import { Book } from '../constants/Book';
+import { Book } from '../interfaces/Book';
 import { BooksService } from './books.service';
 import { EnhancedFilterService } from './enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from './enhanced-sparql-query-builder.service';
-import { BookFilter } from '../models/book-filter.model';
-import { BOOK_QUERY } from '../constants/sparql';
+import { BookFilter } from '../interfaces/book-filter.model';
+import { BOOK_QUERY } from '../queries/sparql';
 import { booksSource, currentBookSubject } from '../classes/subjects';
 
 @Injectable({

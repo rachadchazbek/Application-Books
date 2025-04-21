@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BookFilter } from '../models/book-filter.model';
+import { BookFilter } from '../interfaces/book-filter.model';
 import { 
   UNIFIED_SPARQL_QUERY
-} from '../constants/sparql';
+} from '../queries/sparql';
 
 /**
  * Enhanced SPARQL Query Builder Service

@@ -8,7 +8,7 @@ import { SOURCE_Categories } from 'src/app/constants/Categories';
 import { EnhancedFilterService } from 'src/app/services/enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from 'src/app/services/enhanced-sparql-query-builder.service';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
-import { BookFilter } from 'src/app/models/book-filter.model';
+import { BookFilter } from 'src/app/interfaces/book-filter.model';
 
 @Component({
   selector: 'app-enhanced-search',

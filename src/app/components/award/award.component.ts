@@ -3,7 +3,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { booksAward$, descriptionAward$ } from 'src/app/classes/subjects';
-import { Book } from 'src/app/constants/Book';
+import { Book } from 'src/app/interfaces/Book';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 
 @Component({

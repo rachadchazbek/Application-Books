@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { authorData$, booksAuthor$, books$ } from 'src/app/classes/subjects';
-import { Book } from 'src/app/constants/Book';
+import { Book } from 'src/app/interfaces/Book';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 
 // Extended interface for author query results

@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { bookSummary$, books$, currentBook$, rating$, urlBabelio$ } from 'src/app/classes/subjects';
-import { Book } from 'src/app/constants/Book';
+import { Book } from 'src/app/interfaces/Book';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 import { Location } from '@angular/common';
 

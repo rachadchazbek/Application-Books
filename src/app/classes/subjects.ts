@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { Book } from '../constants/Book';
+import { Book } from '../interfaces/Book';
 
 
 export const booksSourceAward = new BehaviorSubject<Book[]>([]);

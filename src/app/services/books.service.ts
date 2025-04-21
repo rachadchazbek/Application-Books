@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { booksSource, booksSourceAuthor, booksSourceAward, descriptionAwardSubject } from '../classes/subjects';
-import { Award } from '../constants/Award';
-import { Book } from '../constants/Book';
-import { Binding, SparqlResponse } from '../constants/Response';
-import { Review } from '../constants/Review';
+import { Award } from '../interfaces/Award';
+import { Book } from '../interfaces/Book';
+import { Binding, SparqlResponse } from '../interfaces/Response';
+import { Review } from '../interfaces/Review';
 
 @Injectable({
   providedIn: 'root',

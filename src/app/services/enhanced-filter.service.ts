@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BookFilter } from '../models/book-filter.model';
+import { BookFilter } from '../interfaces/book-filter.model';
 import { Appreciation } from '../constants/Appreciation';
 
 /**
