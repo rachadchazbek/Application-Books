@@ -1,53 +1,17 @@
-/**
- * Unified SPARQL query template that works across all sources.
- * This template consolidates patterns from all sources and includes
- * support for all filters in a single query.
- */
-// export const UNIFIED_SPARQL_QUERY = (filter: string) => `
-// PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-// PREFIX schema: <http://schema.org/>
-// PREFIX pbs: <http://example.org/pbs#> 
-// PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-// PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-// PREFIX mcc: <http://example.org/mcc#>
-// PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
-// PREFIX luc: <http://www.ontotext.com/connectors/lucene#>
 
-
-// SELECT DISTINCT
-//   ?book 
-//   ?name # change to titre
-//   ?isbn
-//   ?datePublished
-//   ?publisher # Maybe Add a map between publisherURI and publisherName
-//   ?inLanguage # Maybe Add a map between publisherURI and publisherName
-//   ?search
-  
-//     WHERE {
-      
-//       ?book rdf:type schema:Book .
-//       ?book schema:name ?name .
-//       ?book schema:isbn ?isbn .
-//       ?book schema:datePublished ?datePublished .
-//       ?book schema:publisher ?publisher .
-//       ?book schema:inLanguage ?inLanguage .
-
-//       ${filter}
-//     }
-//     GROUP BY ?book ?name ?datePublished ?isbn ?publisher ?inLanguage ?search
-// `;
 
 export const BOOK_QUERY = (isbn: string) => `
 PREFIX schema: <http://schema.org/>
 PREFIX pbs: <http://www.example.org/pbs#>
 
-Select ?book ?name ?isbn ?premiereCouverture ?datePublished ?publisherName
+Select ?book ?name ?isbn ?premiereCouverture ?datePublished ?description ?publisherName
 WHERE {
   ?book a schema:Book;
         schema:isbn ?isbn;
         schema:isbn "${isbn}";
         schema:name ?name ;
-        schema:datePublished ?datePublished .
+        schema:datePublished ?datePublished ;
+        schema:description ?description .
 
   ?publisher schema:name ?publisherName .
 

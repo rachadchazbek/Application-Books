@@ -2,13 +2,17 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { NgIf, NgFor } from '@angular/common';
-import { GENRES, TITLES, AWARDS, AUTHORS, LANGUAGES } from 'src/app/constants/constants';
+import { TITLES } from 'src/app/constants/titles';
 import { Appreciation } from 'src/app/constants/Appreciation';
 import { SOURCE_Categories } from 'src/app/constants/Categories';
 import { EnhancedFilterService } from 'src/app/services/enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from 'src/app/services/enhanced-sparql-query-builder.service';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 import { BookFilter } from 'src/app/interfaces/book-filter.model';
+import { AUTHORS } from 'src/app/constants/authors';
+import { AWARDS } from 'src/app/constants/Award';
+import { GENRES } from 'src/app/constants/genres';
+import { LANGUAGES } from 'src/app/constants/languages';
 
 @Component({
   selector: 'app-enhanced-search',

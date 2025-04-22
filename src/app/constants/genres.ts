@@ -1,0 +1,1 @@
+export const GENRES = ['Conte', 'Magazine', 'Manga', 'Ouvrage Scientifique', 'Poésie', 'Roman Historique', 'Science-Fiction', 'Bande Dessinée', 'Relève', 'Roman Policier', 'Théâtre', 'Illustration', 'Album Francophone', 'Roman', 'Livre Jeunesse', 'Documentaire', 'Imaginaire Mediéval', 'Traduction', 'Essai' ];

@@ -47,15 +47,29 @@ export class EnhancedSparqlQueryBuilderService {
     }
 
     if (filters.source) {
-      const escapedSource = this.escapeSparqlString(filters.source);
-      clauses.push(`?book a schema:Book ; pbs:dataFrom pbs:${escapedSource}`);
+      // Handle array of sources with UNION pattern
+      if (Array.isArray(filters.source) && filters.source.length > 0) {
+        clauses.push(`{ ?book a schema:Book ; `);
+        const sourceConditions = filters.source.map(source => {
+          const escapedSource = this.escapeSparqlString(source);
+          return `{ ?book pbs:dataFrom pbs:${escapedSource} }`;
+        });
+        // Combine all source conditions with UNION
+        clauses.push(sourceConditions.join(' \n'));
+        clauses.push( "} .");
+
+      } 
+      // Fallback for backward compatibility if a single string is passed
+      else if (typeof filters.source === 'string') {
+        const escapedSource = this.escapeSparqlString(filters.source as string);
+        clauses.push(`?book a schema:Book ; pbs:dataFrom pbs:${escapedSource} .`);
+      }
     }
     
     // Basic book properties
     if (filters.title) {
       const escapedTitle = this.escapeSparqlString(filters.title);
       clauses.push(`FILTER(CONTAINS(LCASE(?name), LCASE("${escapedTitle}"))) .`);
-      // clauses.push(`schema:name schema:"${escapedTitle}"`);
     }
     
     if (filters.isbn) {
@@ -71,12 +85,12 @@ export class EnhancedSparqlQueryBuilderService {
     // Creator properties
     if (filters.author) {
       const escapedAuthor = this.escapeSparqlString(filters.author);
-      clauses.push(`FILTER(CONTAINS(LCASE(?author), LCASE("${escapedAuthor}"))) .`);
+      clauses.push(`FILTER(CONTAINS(LCASE(?authorName), LCASE("${escapedAuthor}"))) .`);
     }
     
     if (filters.nationality) {
       const escapedNationality = this.escapeSparqlString(filters.nationality);
-      clauses.push(`FILTER(CONTAINS(LCASE(?countryOfOrigin), LCASE("${escapedNationality}"))) .`);
+      clauses.push(`FILTER(CONTAINS(LCASE(?nationality), LCASE("${escapedNationality}"))) .`);
     }
     
     if (filters.illustrator) {
@@ -122,46 +136,100 @@ export class EnhancedSparqlQueryBuilderService {
     
     // Category-specific filters
     if (filters.category) {
-      if (filters.source === 'Babelio') {
+      // Helper function to check if source array includes a specific source
+      const hasSource = (sourceToCheck: string): boolean => {
+        if (Array.isArray(filters.source)) {
+          return filters.source.includes(sourceToCheck);
+        } else if (typeof filters.source === 'string') {
+          return filters.source === sourceToCheck;
+        }
+        return false;
+      };
+
+      if (hasSource('Babelio')) {
         const starRating = parseInt(filters.category.split(' ')[0], 10);
         if (!isNaN(starRating)) {
           clauses.push(`FILTER(?averageReview >= ${starRating})`);
         }
-      } else if (filters.source === 'Constellations' && filters.category === 'Coup de Coeur') {
+      } else if (hasSource('Constellations') && filters.category === 'Coup de Coeur') {
         clauses.push(`FILTER(?isCoupDeCoeur = true)`);
-      } else if (filters.source === 'BNF') {
+      } else if (hasSource('BNF')) {
         const escapedCategory = this.escapeSparqlString(filters.category);
         clauses.push(`FILTER(?avis = "${escapedCategory}")`);
       }
     }
     
-    // // Appreciation filters
-    // if (filters.appreciation === Appreciation.HighlyAppreciated) {
-    //   clauses.push(`
-    //   {
-    //     ?book pbs:infoSource pbs:Babelio .
-    //     FILTER(?averageReview >= 4)
-    //   } UNION {
-    //     ?book pbs:infoSource pbs:BNF .
-    //     FILTER(?avis = "Coup de coeur !" || ?avis = "Bravo !")
-    //   } UNION {
-    //     ?book pbs:infoSource pbs:Constellationss .
-    //     FILTER(?isCoupDeCoeur = true)
-    //   } UNION {
-    //     ?book pbs:infoSource pbs:Lurelu
-    //   }
-    //   `);
-    // } else if (filters.appreciation === Appreciation.NotHighlyAppreciated) {
-    //   clauses.push(`
-    //   {
-    //     ?book pbs:infoSource pbs:Babelio .
-    //     FILTER(?averageReview <= 3)
-    //   } UNION {
-    //     ?book pbs:infoSource pbs:BNF .
-    //     FILTER(?avis = "Hélas !" || ?avis = "Problème...")
-    //   }
-    //   `);
-    // }
+    // Appreciation filters
+    if (filters.appreciation) {
+      const hasSource = (sourceToCheck: string): boolean => {
+        if (Array.isArray(filters.source)) {
+          return filters.source.includes(sourceToCheck);
+        } else if (typeof filters.source === 'string') {
+          return filters.source === sourceToCheck;
+        }
+        return false;
+      };
+      
+      // Build appreciation filters based on selected sources
+      const appreciationClauses: string[] = [];
+      
+      // Convert appreciation value to string for comparison
+      const appreciationValue = String(filters.appreciation);
+      
+      if (appreciationValue === 'HighlyAppreciated') {
+        if (hasSource('Babelio') || !filters.source) {
+          appreciationClauses.push(`
+            {
+              ?book pbs:dataFrom pbs:Babelio .
+              FILTER(?averageReview >= 4)
+            }`);
+        }
+        
+        if (hasSource('BNF') || !filters.source) {
+          appreciationClauses.push(`
+            {
+              ?book pbs:dataFrom pbs:BNF .
+              FILTER(?avis = "Coup de coeur !" || ?avis = "Bravo !")
+            }`);
+        }
+        
+        if (hasSource('Constellations') || !filters.source) {
+          appreciationClauses.push(`
+            {
+              ?book pbs:dataFrom pbs:Constellations .
+              FILTER(?isCoupDeCoeur = true)
+            }`);
+        }
+        
+        if (hasSource('Lurelu') || !filters.source) {
+          appreciationClauses.push(`
+            {
+              ?book pbs:dataFrom pbs:Lurelu
+            }`);
+        }
+      } else if (appreciationValue === 'notHighlyAppreciated') {
+        if (hasSource('Babelio') || !filters.source) {
+          appreciationClauses.push(`
+            {
+              ?book pbs:dataFrom pbs:Babelio .
+              FILTER(?averageReview <= 3)
+            }`);
+        }
+        
+        if (hasSource('BNF') || !filters.source) {
+          appreciationClauses.push(`
+            {
+              ?book pbs:dataFrom pbs:BNF .
+              FILTER(?avis = "Hélas !" || ?avis = "Problème...")
+            }`);
+        }
+      }
+      
+      // If we have appreciation clauses, combine them with UNION
+      if (appreciationClauses.length > 0) {
+        clauses.push(appreciationClauses.join(' UNION '));
+      }
+    }
     
     return clauses;
   }
