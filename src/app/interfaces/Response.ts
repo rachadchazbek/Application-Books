@@ -11,6 +11,7 @@ export interface SparqlResponse {
     authorName: { value: string };
     illustrator: { value: string };
     publisherName: { value: string };
+    description?: { value: string };
     datePublished?: { value: string };
     isbn: { value: string };
     subjectThema?: { value: string };

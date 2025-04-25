@@ -4,19 +4,22 @@ export const BOOK_QUERY = (isbn: string) => `
 PREFIX schema: <http://schema.org/>
 PREFIX pbs: <http://www.example.org/pbs#>
 
-Select ?book ?name ?isbn ?premiereCouverture ?datePublished ?description ?publisherName
+Select ?book ?name ?isbn ?premiereCouverture ?datePublished ?description ?infosource ?publisherName
 WHERE {
   ?book a schema:Book;
         schema:isbn ?isbn;
         schema:isbn "${isbn}";
         schema:name ?name ;
         schema:datePublished ?datePublished ;
+        schema:publisher ?publisher ;
+        pbs:infoSource ?infoSource ;
         schema:description ?description .
 
   ?publisher schema:name ?publisherName .
 
   OPTIONAL {?book pbs:premiereCouverture ?premiereCouverture }
 }
+  GROUP BY ?book ?name ?isbn ?premiereCouverture ?datePublished ?publisherName ?description ?infosource
 `
 
 

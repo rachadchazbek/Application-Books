@@ -126,7 +126,8 @@ export class SocketSparqlService {
           datePublished: binding.datePublished?.value || '',
           publisher: binding.publisherName?.value || '',
           inLanguage: '',
-          premiereCouverture: binding.premiereCouverture?.value || ''
+          premiereCouverture: binding.premiereCouverture?.value || '',
+          description: binding.description?.value || '',
         };
         
         console.log('Dispatching book data to component:', book);
