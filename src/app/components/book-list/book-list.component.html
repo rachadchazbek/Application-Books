@@ -46,9 +46,10 @@
   <div class="book-list" [class.grid-view]="viewMode === 'grid'" [class.list-view]="viewMode === 'list'">
     <div *ngFor="let book of books" class="book-card" [class.grid-card]="viewMode === 'grid'" [class.list-card]="viewMode === 'list'">
       <div class="book-card-content">
-        <!-- Book cover -->
+        <!-- Book cover with proper container -->
         <div class="book-cover">
-          <img [src]="'http://51.79.51.204/' + book.premiereCouverture" alt="{{ book.title }}" />
+          <img *ngIf="book.premiereCouverture" [src]="'http://51.79.51.204/' + book.premiereCouverture" alt="{{ book.title }}" />
+          <i *ngIf="!book.premiereCouverture" class="fas fa-book"></i>
         </div>
         
         <div class="book-details">

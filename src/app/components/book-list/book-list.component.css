@@ -93,6 +93,7 @@
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
+  position: relative; /* Ensure proper stacking */
 }
 
 .book-card:hover {
@@ -122,6 +123,14 @@
   border-radius: 5px;
   color: #5c6bc0;
   font-size: 3em;
+  overflow: hidden;
+  position: relative;
+}
+
+.book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .grid-card .book-cover {
@@ -138,6 +147,9 @@
 /* Book details */
 .book-details {
   flex: 1;
+  background-color: #fff; /* Ensure background is white */
+  position: relative; /* Ensure it's above other elements */
+  z-index: 1; /* Ensure text is above images */
 }
 
 .book-title {
@@ -147,6 +159,9 @@
   cursor: pointer;
   transition: color 0.3s ease;
   line-height: 1.3;
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  padding: 5px 0;
+  border-radius: 4px;
 }
 
 .book-title:hover {
@@ -163,7 +178,10 @@
   display: flex;
   align-items: center;
   font-size: 0.9em;
-  color: #555;
+  color: #333; /* Darker color for better readability */
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  padding: 3px 5px;
+  border-radius: 4px;
 }
 
 .book-meta p i {
@@ -199,6 +217,8 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 15px;
+  position: relative; /* Ensure proper stacking */
+  z-index: 1;
 }
 
 .award-badge {
@@ -209,6 +229,8 @@
   color: #555;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+  border: 1px solid #e0e0e0; /* Add border */
 }
 
 .award-badge:hover {
@@ -228,13 +250,20 @@
 /* Review summary */
 .review-summary {
   margin-bottom: 15px;
+  position: relative; /* Ensure proper stacking */
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  padding: 5px;
+  border-radius: 4px;
+  display: inline-block; /* Only take as much width as needed */
 }
 
 .rating {
   display: flex;
   align-items: center;
   font-size: 0.9em;
-  color: #555;
+  color: #333; /* Darker for better visibility */
+  font-weight: 500; /* Make it slightly bolder */
 }
 
 .rating i {
@@ -255,6 +284,10 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  position: relative; /* Ensure it's above other elements */
+  z-index: 2; /* Higher than other elements */
+  margin-top: 10px; /* Add some space */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add shadow for emphasis */
 }
 
 .view-details-btn:hover {
@@ -270,14 +303,23 @@
   padding: 0 20px 20px;
   border-top: 1px solid #eee;
   margin-top: 10px;
+  background-color: #fff; /* Ensure white background */
+  position: relative; /* Ensure proper stacking */
+  z-index: 1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05) inset; /* Inner shadow for depth */
 }
 
 .expanded-details p {
   margin-bottom: 8px;
   font-size: 0.9em;
-  color: #555;
+  color: #333; /* Darker for better readability */
   display: flex;
   align-items: center;
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  padding: 3px 5px;
+  border-radius: 4px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .expanded-details p i {
@@ -289,8 +331,11 @@
 
 .award-detail {
   margin-bottom: 15px;
-  padding-bottom: 10px;
+  padding: 8px;
   border-bottom: 1px solid #eee;
+  background-color: #f9f9f9; /* Light gray background */
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow */
 }
 
 .award-name {
@@ -304,6 +349,10 @@
 
 .review-preview {
   margin-top: 15px;
+  background-color: #f9f9f9; /* Light gray background */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow */
 }
 
 .review-preview h4 {
