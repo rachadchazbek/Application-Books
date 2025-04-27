@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BookFilter } from '../interfaces/book-filter.model';
 import { Appreciation } from '../constants/Appreciation';
+import { COUNTRY_NAMES } from '../constants/nationalities';
 
 /**
  * Enhanced FilterService that uses the unified BookFilter model
@@ -171,6 +172,11 @@ export class EnhancedFilterService {
         default:
           return 'Non spécifié';
       }
+    }
+    
+    // Convert nationality codes to full country names
+    if (filterType === 'nationality' && typeof value === 'string') {
+      return COUNTRY_NAMES[value] || value;
     }
     
     return value?.toString() ?? '';

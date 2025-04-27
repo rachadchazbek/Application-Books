@@ -9,10 +9,11 @@ import { EnhancedFilterService } from 'src/app/services/enhanced-filter.service'
 import { EnhancedSparqlQueryBuilderService } from 'src/app/services/enhanced-sparql-query-builder.service';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 import { BookFilter } from 'src/app/interfaces/book-filter.model';
-import { AUTHORS } from 'src/app/constants/authors';
-import { AWARDS } from 'src/app/constants/Award';
+import { AUTHOR_NAMES } from 'src/app/constants/authors';
+import { AWARDS } from 'src/app/constants/award';
 import { GENRES } from 'src/app/constants/genres';
 import { LANGUAGES } from 'src/app/constants/languages';
+import { NATIONALITIES, COUNTRY_NAMES } from 'src/app/constants/nationalities';
 
 @Component({
   selector: 'app-enhanced-search',
@@ -49,18 +50,22 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   languages: string[] = LANGUAGES;
   titles = TITLES;
   awards = AWARDS;
-  authors = AUTHORS;
+  authors = AUTHOR_NAMES;
+  nationalities = NATIONALITIES;
+  countryNames = COUNTRY_NAMES;
   sourceCategories = SOURCE_Categories;
   
   // Filtered lists for autocomplete
   filteredTitles: string[] = [];
   filteredAuthors: string[] = [];
   filteredAwards: string[] = [];
+  filteredNationalities: string[] = [];
   
   // Blur state for autocomplete
   isBlurredTitle = false;
   isBlurredAuthor = false;
   isBlurredAward = false;
+  isBlurredNationality = false;
   
   // UI state
   loader = false;
@@ -139,6 +144,23 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
           this.filteredAwards = [];
         }
       });
+    
+    // Set up autocomplete for nationality search
+    this.nationalityControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(value => {
+        if (value) {
+          const searchValue = value.toLowerCase();
+          // Search in both country codes and full country names
+          this.filteredNationalities = this.nationalities.filter(code => {
+            const countryName = this.countryNames[code] || code;
+            return code.toLowerCase().includes(searchValue) || 
+                  countryName.toLowerCase().includes(searchValue);
+          });
+        } else {
+          this.filteredNationalities = [];
+        }
+      });
   }
   
   /**
@@ -168,10 +190,25 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
    */
   applyFilter(filterType: keyof BookFilter, value: unknown): void {
     if (value && (typeof value !== 'string' || value.trim() !== '')) {
-      this.filterService.updateFilter(filterType, value);
+      // Special handling for nationality to store the code but display the country name
+      if (filterType === 'nationality' && typeof value === 'string') {
+        // Store the original two-letter code
+        this.filterService.updateFilter(filterType, value);
+      } else {
+        this.filterService.updateFilter(filterType, value);
+      }
     } else {
       this.filterService.clearFilter(filterType);
     }
+  }
+  
+  /**
+   * Get full country name from nationality code
+   * @param code The two-letter nationality code
+   * @returns The full country name or the code if not found
+   */
+  getCountryName(code: string): string {
+    return this.countryNames[code] || code;
   }
   
   /**
@@ -420,6 +457,15 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   }
   
   /**
+   * Handle blur event for nationality input
+   */
+  onBlurNationality(): void {
+    setTimeout(() => {
+      this.isBlurredNationality = true;
+    }, 100);
+  }
+  
+  /**
    * Handle keyboard navigation in autocomplete lists
    * @param event The keyboard event
    * @param item The selected item
@@ -436,6 +482,9 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
       } else if (!this.isBlurredAward) {
         this.applyFilter('award', item);
         this.isBlurredAward = true;
+      } else if (!this.isBlurredNationality) {
+        this.applyFilter('nationality', item);
+        this.isBlurredNationality = true;
       }
     }
   }

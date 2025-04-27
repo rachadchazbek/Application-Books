@@ -137,7 +137,18 @@
             [formControl]="nationalityControl" 
             placeholder="Recherchez par nationalité..." 
             class="filter-input"
+            (blur)="onBlurNationality()" 
+            (focus)="isBlurredNationality = false"
             (keydown.enter)="applyFilter('nationality', nationalityControl.value)">
+          <div class="autocomplete-items" *ngIf="nationalityControl.value && filteredNationalities.length && !isBlurredNationality">
+            <div 
+              *ngFor="let code of filteredNationalities" 
+              (click)="applyFilter('nationality', code); isBlurredNationality = true"
+              tabindex="0" 
+              (keydown)="handleKeyDown($event, code)">
+              {{ getCountryName(code) }} ({{ code }})
+            </div>
+          </div>
         </div>
       </div>
     </div>

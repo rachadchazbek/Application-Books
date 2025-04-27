@@ -1,0 +1,683 @@
+{
+  "head" : {
+    "vars" : [
+      "nationality"
+    ]
+  },
+  "results" : {
+    "bindings" : [
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "AF"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "AL"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "AM"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "AO"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "AR"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "AT"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "AU"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "BA"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "BD"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "BE"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "BF"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "BG"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "BJ"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "BR"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CA"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CD"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CF"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CG"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CH"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CI"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CL"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CM"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CN"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CO"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CR"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CU"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CY"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "CZ"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "DE"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "DJ"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "DK"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "DZ"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "EE"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "EG"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "ES"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "FI"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "FR"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "GA"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "GB"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "GN"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "GR"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "GT"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "GW"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "HK"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "HR"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "HT"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "HU"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "IE"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "IL"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "IN"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "IR"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "IS"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "IT"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "JM"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "JP"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "KH"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "KM"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "KR"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "LB"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "LT"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "LU"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "LV"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "MA"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "MG"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "MK"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "ML"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "MN"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "MQ"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "MR"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "MU"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "MW"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "MX"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "MZ"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "NE"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "NG"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "NL"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "NO"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "NZ"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "None"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "PE"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "PH"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "PK"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "PL"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "PS"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "PT"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "RO"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "RS"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "RU"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "RW"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "SA"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "SC"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "SD"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "SE"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "SG"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "SI"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "SK"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "SN"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "SY"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "TD"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "TG"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "TH"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "TN"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "TR"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "TW"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "UA"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "UG"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "US"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "UY"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "VE"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "VN"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "YU"
+        }
+      },
+      {
+        "nationality" : {
+          "type" : "literal",
+          "value" : "ZA"
+        }
+      }
+    ]
+  }
+}
