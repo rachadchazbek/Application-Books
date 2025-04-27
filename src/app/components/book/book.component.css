@@ -500,6 +500,34 @@
   margin-bottom: 5px;
 }
 
+/* Sources list */
+.sources-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sources-list li {
+  margin-bottom: 5px;
+  position: relative;
+  padding-left: 20px;
+}
+
+.sources-list li:before {
+  content: "\f0e0";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #5c6bc0;
+  font-size: 0.9em;
+}
+
+.sources-list li:last-child {
+  margin-bottom: 0;
+}
+
 /* External links */
 .external-links {
   margin-top: 20px;

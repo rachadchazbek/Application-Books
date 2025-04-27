@@ -23,6 +23,7 @@ export class BookComponent implements OnInit, OnDestroy {
   babelioLink: string | null = null;
   similarBooks: Book[] = [];
   bookDescriptions = new Map<string, string[]>(); // Map of source -> descriptions
+  bookSources: string[] = []; // All sources where the book is found
   
   // UI state
   activeTab: 'summary' | 'awards' | 'details' | 'similar' = 'summary';
@@ -155,16 +156,26 @@ export class BookComponent implements OnInit, OnDestroy {
 
     console.log('Processing raw bindings:', bindings);
     
+    // Clear the sources array
+    this.bookSources = [];
+    
     // Process each binding to extract description and source
     bindings.forEach((binding, index) => {
+      let source = 'Source inconnue';
+      
+      // Extract source from infoSource if available
+      if (binding['infoSource'] && binding['infoSource'].value) {
+        source = this.formatSourceName(binding['infoSource'].value);
+        
+        // Add to sources list if not already there
+        if (!this.bookSources.includes(source)) {
+          this.bookSources.push(source);
+        }
+      }
+      
+      // Process description if available
       if (binding['description'] && binding['description'].value) {
         const description = binding['description'].value;
-        let source = 'Source inconnue';
-        
-        // Extract source from infoSource if available
-        if (binding['infoSource'] && binding['infoSource'].value) {
-          source = this.formatSourceName(binding['infoSource'].value);
-        }
         
         console.log(`Binding ${index}: Found description from source ${source}`);
         
@@ -178,6 +189,9 @@ export class BookComponent implements OnInit, OnDestroy {
         this.bookDescriptions.set(source, descriptions);
       }
     });
+    
+    // Sort the sources alphabetically for consistent display
+    this.bookSources.sort();
   }
   
   /**

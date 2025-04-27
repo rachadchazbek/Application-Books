@@ -82,6 +82,20 @@
             {{ currentBookData.isbn }}
           </div>
         </div>
+        
+        <!-- Sources -->
+        <div class="info-item sources" *ngIf="bookSources.length > 0">
+          <div class="info-label">
+            <i class="fas fa-database"></i>
+            <span>Trouvés dans</span>
+          </div>
+          <div class="info-value">
+            <ul class="sources-list">
+              <li *ngFor="let source of bookSources">{{ source }}</li>
+            </ul>
+          </div>
+        </div>
+        
         <!-- Rating -->
         <div class="info-item rating" *ngIf="ratingBook && isString(ratingBook)">
           <div class="info-label">
