@@ -19,8 +19,25 @@
     <!-- Left column: Book cover and key info -->
     <div class="book-detail-left">
       <div class="book-cover" [class.has-image]="currentBookData.premiereCouverture">
-        <img *ngIf="currentBookData?.premiereCouverture" [src]="'http://51.79.51.204/' + currentBookData.premiereCouverture" alt="Couverture de {{currentBookData.title}}" />
-        <i *ngIf="!currentBookData?.premiereCouverture" class="fas fa-book"></i>
+        <!-- Clickable cover image -->
+        <div class="cover-image-container" (click)="toggleImagePreview()" (keydown)="handleKeyDown($event)" tabindex="0" role="button" aria-label="Agrandir la couverture">
+          <img *ngIf="currentBookData?.premiereCouverture" [src]="getFullImageUrl()" alt="Couverture de {{currentBookData.title}}" />
+          <i *ngIf="!currentBookData?.premiereCouverture" class="fas fa-book"></i>
+          <div class="zoom-overlay">
+            <i class="fas fa-search-plus"></i>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Image preview modal -->
+      <div *ngIf="showImagePreview" class="image-preview-modal" (click)="toggleImagePreview()" (keydown)="handleKeyDown($event)" tabindex="-1" role="dialog" aria-labelledby="imageModalTitle">
+        <div class="modal-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="0">
+          <h2 id="imageModalTitle" class="sr-only">Image agrandie de {{currentBookData.title}}</h2>
+          <img [src]="getFullImageUrl()" alt="Couverture de {{currentBookData.title}}" />
+          <button class="close-modal" (click)="toggleImagePreview()" (keydown)="handleKeyDown($event)" tabindex="0" aria-label="Fermer l'image">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
       </div>
       
       <div class="book-key-info">
@@ -112,7 +129,7 @@
     <div class="book-detail-right">
       <div class="book-tabs">
         <button class="tab-button" [class.active]="activeTab === 'summary'" (click)="setActiveTab('summary')">
-          <i class="fas fa-info-circle"></i> Résumé
+          <i class="fas fa-file-alt"></i> Descriptions
         </button>
         <button class="tab-button" [class.active]="activeTab === 'awards'" (click)="setActiveTab('awards')">
           <i class="fas fa-trophy"></i> Prix
@@ -126,17 +143,10 @@
       </div>
       
       <div class="tab-content">
-        <!-- Summary tab -->
+        <!-- Description tab (formerly Summary) -->
         <div *ngIf="activeTab === 'summary'" class="tab-pane">
-          <!-- Book summary from Babelio -->
-          <div class="summary-content" *ngIf="summaryBook && isString(summaryBook)">
-            <h3 class="section-title">Résumé</h3>
-            <p [innerHTML]="summaryBook"></p>
-          </div>
-
           <!-- Book descriptions from all sources -->
           <div class="book-descriptions" *ngIf="hasDescriptions()">
-            <h3 class="section-title">Descriptions</h3>
             <div class="source-descriptions" *ngFor="let source of bookDescriptions | keyvalue">
               <div class="source-header">
                 <i class="fas fa-bookmark"></i>
@@ -149,8 +159,19 @@
             </div>
           </div>
           
+          <!-- Babelio summary is merged with descriptions now
+          <div class="source-descriptions" *ngIf="summaryBook && isString(summaryBook)">
+            <div class="source-header">
+              <i class="fas fa-bookmark"></i>
+              <span class="source-name">Source: Babelio</span>
+            </div>
+            <div class="description-content">
+              <p [innerHTML]="summaryBook"></p>
+            </div>
+          </div> -->
+          
           <div class="no-content" *ngIf="(!summaryBook || !isString(summaryBook)) && !hasDescriptions()">
-            <p>Aucun résumé disponible pour ce livre.</p>
+            <p>Aucune description disponible pour ce livre.</p>
           </div>
         </div>
         

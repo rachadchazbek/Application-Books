@@ -26,7 +26,7 @@ export class BookComponent implements OnInit, OnDestroy {
   bookSources: string[] = []; // All sources where the book is found
   
   // UI state
-  activeTab: 'summary' | 'awards' | 'details' | 'similar' = 'summary';
+  activeTab = 'summary'; // Using string type instead of union for flexibility
   loading = true;
   
   // Subscriptions
@@ -48,18 +48,26 @@ export class BookComponent implements OnInit, OnDestroy {
     this.subscribeToCurrentBook();
   }
 
+  // Flag for expanded image preview
+  showImagePreview = false;
+
   async ngOnInit(): Promise<void> {
     this.loading = true;
     
     try {
       // Wait for the route params
       const params = await firstValueFrom(this.route.params);
-      const bookId = params['id'];
+      const isbn = params['isbn'];
+      
+      if (isbn) {
+        // Load the book data using ISBN if coming directly to this page
+        await this.socketService.bingSearchBook(isbn);
+      }
       
       // Wait for book data to be loaded  
       await this.waitForBookData();
       
-      if (bookId && this.currentBookData) {
+      if (this.currentBookData) {
         // Load similar books using the book URI
         await this.loadSimilarBooks();
         
@@ -71,6 +79,13 @@ export class BookComponent implements OnInit, OnDestroy {
     } finally {
       this.loading = false;
     }
+  }
+  
+  /**
+   * Toggle the image preview
+   */
+  toggleImagePreview(): void {
+    this.showImagePreview = !this.showImagePreview;
   }
   
   /**
@@ -295,6 +310,16 @@ export class BookComponent implements OnInit, OnDestroy {
    */
   setActiveTab(tab: 'summary' | 'awards' | 'details' | 'similar'): void {
     this.activeTab = tab;
+  }
+  
+  /**
+   * Get full image URL
+   */
+  getFullImageUrl(): string {
+    if (!this.currentBookData?.premiereCouverture) {
+      return '';
+    }
+    return 'http://51.79.51.204/' + this.currentBookData.premiereCouverture;
   }
 
   /**

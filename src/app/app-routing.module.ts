@@ -12,7 +12,7 @@ const routes: Routes = [
   { path: '', component: MainPageComponent, pathMatch:"full" }, // Default route
   { path: 'author/:authorName', component: AuthorComponent },
   { path: 'award/:awardName', component: AwardComponent },
-  { path: 'book/:bookName', component: BookComponent },
+  { path: 'book/:isbn', component: BookComponent },
   { path: '**', redirectTo: '' }
   // More routes can be added here
 ];

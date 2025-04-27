@@ -162,7 +162,7 @@ export class BookListComponent implements OnDestroy {
     });
   }
   navigateToBook(book: Book): void {
-    this.router.navigate(['/book', book.title]);
+    this.router.navigate(['/book', book.isbn]);
     this.socketService.bingSearchBook(book.isbn);
   }
 
