@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpSparqlService } from './http-sparql.service';
-import { Book } from '../interfaces/Book';
+import { Book, SparqlBinding } from '../interfaces/Book';
 import { BooksService } from './books.service';
 import { EnhancedFilterService } from './enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from './enhanced-sparql-query-builder.service';
@@ -128,7 +128,11 @@ export class SocketSparqlService {
           inLanguage: '',
           premiereCouverture: binding.premiereCouverture?.value || '',
           description: binding.description?.value || '',
+          infoSource: binding.infoSource?.value || ''
         };
+        
+        // Add raw results to allow processing of all bindings
+        book['rawResults'] = data.results.bindings as unknown as SparqlBinding[];
         
         console.log('Dispatching book data to component:', book);
         

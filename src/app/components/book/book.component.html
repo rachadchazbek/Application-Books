@@ -114,10 +114,28 @@
       <div class="tab-content">
         <!-- Summary tab -->
         <div *ngIf="activeTab === 'summary'" class="tab-pane">
+          <!-- Book summary from Babelio -->
           <div class="summary-content" *ngIf="summaryBook && isString(summaryBook)">
+            <h3 class="section-title">Résumé</h3>
             <p [innerHTML]="summaryBook"></p>
           </div>
-          <div class="no-content" *ngIf="!summaryBook || !isString(summaryBook)">
+
+          <!-- Book descriptions from all sources -->
+          <div class="book-descriptions" *ngIf="hasDescriptions()">
+            <h3 class="section-title">Descriptions</h3>
+            <div class="source-descriptions" *ngFor="let source of bookDescriptions | keyvalue">
+              <div class="source-header">
+                <i class="fas fa-bookmark"></i>
+                <span class="source-name">Source: {{ source.key }}</span>
+              </div>
+              <div class="description-content" *ngFor="let description of source.value; let i = index">
+                <p [innerHTML]="description"></p>
+                <div class="description-divider" *ngIf="i < source.value.length - 1"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="no-content" *ngIf="(!summaryBook || !isString(summaryBook)) && !hasDescriptions()">
             <p>Aucun résumé disponible pour ce livre.</p>
           </div>
         </div>

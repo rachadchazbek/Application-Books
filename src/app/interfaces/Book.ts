@@ -25,4 +25,14 @@ export interface Book {
   awards?: Award[];
   countryOfOrigin?: string;
   reviews?: Review[];
+  
+  // Allow for extensions with any additional properties
+  [key: string]: any;
 }
+
+// Define the binding type for SPARQL query results
+export type SparqlBinding = Record<string, {
+    type: string;
+    value: string;
+    datatype?: string;
+  }>;

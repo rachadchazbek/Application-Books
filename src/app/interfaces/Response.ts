@@ -32,6 +32,7 @@ export interface SparqlResponse {
     source?: { value: string };
     finalAwardDescription?: { value: string };
     premiereCouverture?: { value: string };
+    infoSource?: { value: string };
   }
   
     
