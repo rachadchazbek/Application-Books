@@ -372,6 +372,7 @@
 
 .search-actions .search-button {
   min-width: 200px;
+  color: black;
 }
 
 .loader {

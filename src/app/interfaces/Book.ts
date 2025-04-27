@@ -16,7 +16,7 @@ export interface Book {
   premiereCouverture?: string;
   description?: string;
   typicalAgeRange?: string[];
-  keywords?: string[];
+  mots?: string[];
   url?: string;
   genre?: string[];
   

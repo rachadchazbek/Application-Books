@@ -37,10 +37,10 @@ export class EnhancedSparqlQueryBuilderService {
    */
   buildUnifiedFilterClauses(filters: BookFilter): string[] {
     const clauses: string[] = [];
-    if (filters.keywords) {
+    if (filters.mots) {
       clauses.push(`
       ?search a luc-index:all_fields_2 ;
-        luc:query "${filters.keywords}" ;
+        luc:query "${filters.mots}" ;
         luc:entities ?book . 
       ?book luc:score ?score .
       `);

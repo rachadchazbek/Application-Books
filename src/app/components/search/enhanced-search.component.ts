@@ -177,9 +177,9 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   quickSearch(): void {
     const searchTerm = this.quickSearchControl.value;
     if (searchTerm) {
-      this.applyFilter('keywords', searchTerm);
+      this.applyFilter('mots', searchTerm);
     } else {
-      this.filterService.clearFilter('keywords');
+      this.filterService.clearFilter('mots');
     }
   }
   

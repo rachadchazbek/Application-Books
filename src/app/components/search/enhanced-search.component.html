@@ -6,11 +6,11 @@
       <input 
         type="text" 
         [formControl]="quickSearchControl" 
-        placeholder="Recherchez par mot clés..." 
+        placeholder="Rechercher par mots-clés..." 
         class="primary-search-input"
         (keydown.enter)="quickSearch()">
     </div>
-    <button class="search-button" (click)="quickSearch()" (keydown.enter)="quickSearch()" tabindex="0">Rechercher</button>
+    <!-- <button class="search-button" (click)="quickSearch()" (keydown.enter)="quickSearch()" tabindex="0">Rechercher</button> -->
   </div>
   
   <!-- All filters in a single section -->
@@ -28,7 +28,7 @@
             type="text" 
             id="title-input"
             [formControl]="titleControl" 
-            placeholder="Recherchez par titre..." 
+            placeholder="Rechercher un titre..." 
             class="filter-input"
             (blur)="onBlurTitle()" 
             (focus)="isBlurredTitle = false"
@@ -54,7 +54,7 @@
             type="text" 
             id="isbn-input"
             [formControl]="isbnControl" 
-            placeholder="Recherchez par ISBN..." 
+            placeholder="Rechercher par ISBN..." 
             class="filter-input"
             (keydown.enter)="applyFilter('isbn', isbnControl.value)">
         </div>
@@ -73,7 +73,7 @@
             [(ngModel)]="selectedGenre" 
             (change)="applyFilter('genre', selectedGenre)" 
             class="filter-input">
-            <option value="" disabled selected>Selectionnez un genre...</option>
+            <option value="" disabled selected>Sélectionner un genre...</option>
             <option value="">Aucun genre sélectionné</option>
             <option *ngFor="let genre of genres">{{ genre }}</option>
           </select>
@@ -90,7 +90,7 @@
             [(ngModel)]="selectedLanguage" 
             (change)="applyFilter('inLanguage', selectedLanguage)" 
             class="filter-input">
-            <option value="" disabled selected>Selectionnez une langue...</option>
+            <option value="" disabled selected>Sélectionner une langue...</option>
             <option value="">Aucune langue sélectionnée</option>
             <option *ngFor="let language of languages">{{ language }}</option>
           </select>
@@ -109,7 +109,7 @@
             type="text" 
             id="author-input"
             [formControl]="authorControl" 
-            placeholder="Recherchez par auteur..." 
+            placeholder="Rechercher par auteur..." 
             class="filter-input"
             (blur)="onBlurAuthor()" 
             (focus)="isBlurredAuthor = false"
@@ -135,7 +135,7 @@
             type="text" 
             id="nationality-input"
             [formControl]="nationalityControl" 
-            placeholder="Recherchez par nationalité..." 
+            placeholder="Rechercher par nationalité..." 
             class="filter-input"
             (blur)="onBlurNationality()" 
             (focus)="isBlurredNationality = false"
@@ -163,7 +163,7 @@
             type="text" 
             id="award-input"
             [formControl]="awardControl" 
-            placeholder="Recherchez par prix..." 
+            placeholder="Rechercher par prix..." 
             class="filter-input"
             (blur)="onBlurAward()" 
             (focus)="isBlurredAward = false"
@@ -380,7 +380,7 @@
         class="clear-all-filters" 
         (click)="clearAllFilters()" 
         (keydown.enter)="clearAllFilters()"
-        [attr.aria-label]="'Effacer tous les filtres'">Effacer tous</button>
+        [attr.aria-label]="'Supprimer les filtres les filtres'">Supprimer les filtres</button>
     </div>
   </div>
   
