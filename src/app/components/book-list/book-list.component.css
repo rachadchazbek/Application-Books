@@ -104,10 +104,14 @@
 .book-card-content {
   display: flex;
   padding: 20px;
+  height: 100%; /* Ensure content takes full height */
 }
 
 .grid-card .book-card-content {
   flex-direction: column;
+  height: 100%; /* Make sure the content takes full height */
+  position: relative; /* For absolute positioning of the button */
+  padding-bottom: 60px; /* Leave space for button */
 }
 
 .list-card .book-card-content {
@@ -150,6 +154,8 @@
   background-color: #fff; /* Ensure background is white */
   position: relative; /* Ensure it's above other elements */
   z-index: 1; /* Ensure text is above images */
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
 }
 
 .book-title {
@@ -284,9 +290,12 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  position: relative; /* Ensure it's above other elements */
+  position: absolute; /* Position at bottom of card */
+  bottom: 40px; /* Position from bottom with padding in mind */
+  left: 20px; /* Match left padding */
+  right: 20px; /* Match right padding */
+  width: calc(100% - 40px); /* Account for left and right padding */
   z-index: 2; /* Higher than other elements */
-  margin-top: 10px; /* Add some space */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add shadow for emphasis */
 }
 
@@ -463,9 +472,24 @@
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
   
-  .list-card .book-card-content {
-    flex-direction: column;
-  }
+.list-card .book-card-content {
+  flex-direction: row;
+  padding-bottom: 20px; /* Standard padding */
+}
+
+/* For list view, position the button differently */
+.list-card .book-details {
+  position: relative; /* For relative positioning */
+  padding-bottom: 50px; /* Space for button */
+}
+
+.list-card .view-details-btn {
+  position: absolute; /* Absolute position */
+  bottom: 0; /* At the bottom */
+  left: 0; /* Left aligned */
+  right: 0; /* Right aligned */
+  width: 100%; /* Full width */
+}
   
   .list-card .book-cover {
     margin-right: 0;
