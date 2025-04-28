@@ -79,7 +79,7 @@ export class EnhancedSparqlQueryBuilderService {
     
     if (filters.inLanguage) {
       const escapedLanguage = this.escapeSparqlString(filters.inLanguage);
-      clauses.push(`FILTER(LCASE(?inLanguage) = LCASE("${escapedLanguage}")) .`);
+      clauses.push(`FILTER(LCASE(?language) = LCASE("${escapedLanguage}")) .`);
     }
     
     // Creator properties
@@ -101,18 +101,15 @@ export class EnhancedSparqlQueryBuilderService {
     // Classification properties
     if (filters.genre) {
       const escapedGenre = this.escapeSparqlString(filters.genre);
-      clauses.push(`FILTER(CONTAINS(LCASE(?genreValue), LCASE("${escapedGenre}")))`);
-    }
-    
-    if (filters.subjectThema) {
-      const escapedSubject = this.escapeSparqlString(filters.subjectThema);
-      clauses.push(`FILTER(CONTAINS(LCASE(?subjectThema), LCASE("${escapedSubject}")))`);
+      clauses.push(`FILTER(CONTAINS(LCASE(?genre), LCASE("${escapedGenre}"))) .`);
     }
     
     // Age range filter
     if (filters.ageRange && filters.ageRange.length > 0) {
       const ageConditions = filters.ageRange.map(age => 
-        `CONTAINS(STR(?typicalAgeRange), "${this.escapeSparqlString(age)}")`
+        `CONTAINS(STR(?typicalAgeRangeConstellations), "${this.escapeSparqlString(age)}") ||
+        CONTAINS(STR(?typicalAgeRangeBTLF), "${this.escapeSparqlString(age)}") ||
+        CONTAINS(STR(?typicalAgeRangeBNF), "${this.escapeSparqlString(age)}")`
       );
       clauses.push(`FILTER(${ageConditions.join(' || ')})`);
     }

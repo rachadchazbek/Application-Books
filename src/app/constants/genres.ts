@@ -1,1 +1,5 @@
-export const GENRES = ['Conte', 'Magazine', 'Manga', 'Ouvrage Scientifique', 'Poésie', 'Roman Historique', 'Science-Fiction', 'Bande Dessinée', 'Relève', 'Roman Policier', 'Théâtre', 'Illustration', 'Album Francophone', 'Roman', 'Livre Jeunesse', 'Documentaire', 'Imaginaire Mediéval', 'Traduction', 'Essai' ];
+import genres from './genres.json';
+
+export const GENRES = genres.results.bindings.map(
+    (binding) => binding.genre.value
+)

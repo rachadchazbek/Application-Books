@@ -1,0 +1,65 @@
+{
+  "head" : {
+    "vars" : [
+      "genre"
+    ]
+  },
+  "results" : {
+    "bindings" : [
+      {
+        "genre" : {
+          "type" : "literal",
+          "value" : "Poésie"
+        }
+      },
+      {
+        "genre" : {
+          "type" : "literal",
+          "value" : "Nouvelles"
+        }
+      },
+      {
+        "genre" : {
+          "type" : "literal",
+          "value" : "Romans"
+        }
+      },
+      {
+        "genre" : {
+          "type" : "literal",
+          "value" : "Bandes dessinées"
+        }
+      },
+      {
+        "genre" : {
+          "type" : "literal",
+          "value" : "Essai"
+        }
+      },
+      {
+        "genre" : {
+          "type" : "literal",
+          "value" : "Livres-Albums"
+        }
+      },
+      {
+        "genre" : {
+          "type" : "literal",
+          "value" : "Théâtre"
+        }
+      },
+      {
+        "genre" : {
+          "type" : "literal",
+          "value" : "Documentaires"
+        }
+      },
+      {
+        "genre" : {
+          "type" : "literal",
+          "value" : "Contes"
+        }
+      }
+    ]
+  }
+}

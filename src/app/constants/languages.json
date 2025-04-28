@@ -1,0 +1,371 @@
+{
+  "head" : {
+    "vars" : [
+      "language"
+    ]
+  },
+  "results" : {
+    "bindings" : [
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Français"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Allemand"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Anglais"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Espagnol"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Italien"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Multilingue"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Arabe"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Kabyle"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Créoles et pidgins basés sur le français"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Langues berbères"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Langues nigéro-congolaises"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Éwé"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Chinois"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Flamand"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Néerlandais"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Danois"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Créoles et pidgins"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Peul"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Roumain"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Bambara"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Moré"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Corse"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Hindi"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Japonais"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Langue indéterminée"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Estonien"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Grec moderne (après 1453)"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Finnois"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Hongrois"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Lituanien"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Slovène"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Maltais"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Slovaque"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Tchèque"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Letton"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Suédois"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Polonais"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Bulgare"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Malgache"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Wolof"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Éwondo"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Dioula"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Néerlandais, moyen (environ 1050-1350)"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Langues môn-khmer"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Russe"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Swahili"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Tamacheq"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Perse"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Rwanda"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Breton"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Guarani"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Cree"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Haïtien"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Haïtien créole"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Réunion Creole French"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Arménien"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Portugais"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Inuktitut"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Yiddish"
+        }
+      },
+      {
+        "language" : {
+          "type" : "literal",
+          "value" : "Basque"
+        }
+      }
+    ]
+  }
+}
