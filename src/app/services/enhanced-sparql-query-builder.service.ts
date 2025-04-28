@@ -39,7 +39,7 @@ export class EnhancedSparqlQueryBuilderService {
     const clauses: string[] = [];
     if (filters.mots) {
       clauses.push(`
-      ?search a luc-index:all_fields_2 ;
+      ?search a luc-index:all_fields_3 ;
         luc:query "${filters.mots}" ;
         luc:entities ?book . 
       ?book luc:score ?score .
