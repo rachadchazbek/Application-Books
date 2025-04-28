@@ -17,8 +17,8 @@
         Titre
         <i *ngIf="sortOption === 'title'" class="fas" [class.fa-sort-up]="sortDirection === 'asc'" [class.fa-sort-down]="sortDirection === 'desc'"></i>
       </button>
-      <button class="sort-button" [class.active]="sortOption === 'author'" (click)="setSortOption('author')" aria-label="Trier par auteur">
-        Auteur
+      <button class="sort-button" [class.active]="sortOption === 'author'" (click)="setSortOption('author')" aria-label="Trier par auteur.e">
+        Auteur.e
         <i *ngIf="sortOption === 'author'" class="fas" [class.fa-sort-up]="sortDirection === 'asc'" [class.fa-sort-down]="sortDirection === 'desc'"></i>
       </button>
       <button class="sort-button" [class.active]="sortOption === 'date'" (click)="setSortOption('date')" aria-label="Trier par date">
