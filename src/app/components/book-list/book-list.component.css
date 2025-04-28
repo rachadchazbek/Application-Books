@@ -138,14 +138,14 @@
 }
 
 .grid-card .book-cover {
-  height: 150px;
-  margin-bottom: 15px;
+  height: 500px; /* Increased from 150px */
+  margin-bottom: 10px; /* Reduced from 15px */
 }
 
 .list-card .book-cover {
-  min-width: 120px;
-  height: 180px;
-  margin-right: 20px;
+  min-width: 150px; /* Increased from 120px */
+  height: 220px; /* Increased from 180px */
+  margin-right: 15px; /* Reduced from 20px */
 }
 
 /* Book details */
@@ -159,15 +159,16 @@
 }
 
 .book-title {
-  font-size: 1.4em;
+  font-size: 1.3em; /* Slightly smaller text */
   color: #5c6bc0;
-  margin-bottom: 15px;
+  margin-bottom: 10px; /* Reduced from 15px */
   cursor: pointer;
   transition: color 0.3s ease;
   line-height: 1.3;
-  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  background-color: rgba(255, 255, 255, 0.95); /* More opaque white background */
   padding: 5px 0;
   border-radius: 4px;
+  z-index: 2; /* Ensure it's on top */
 }
 
 .book-title:hover {
@@ -176,11 +177,11 @@
 }
 
 .book-meta {
-  margin-bottom: 15px;
+  margin-bottom: 10px; /* Reduced from 15px */
 }
 
 .book-meta p {
-  margin-bottom: 8px;
+  margin-bottom: 5px; /* Reduced from 8px */
   display: flex;
   align-items: center;
   font-size: 0.9em;
