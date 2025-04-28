@@ -7,6 +7,7 @@ import { bookSummary$, books$, currentBook$, rating$, urlBabelio$ } from 'src/ap
 import { Book, SparqlBinding } from 'src/app/interfaces/Book';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 import { Location } from '@angular/common';
+import { IsbnStorageService } from 'src/app/services/isbn-storage.service';
 
 @Component({
   selector: 'app-book-component',
@@ -36,11 +37,15 @@ export class BookComponent implements OnInit, OnDestroy {
   private bookSubscription: Subscription;
   private readonly destroy$ = new Subject<void>();
 
+  // Track if the current book's ISBN is already saved
+  isCurrentBookSaved = false;
+
   constructor(
     private readonly route: ActivatedRoute, 
     public socketService: SocketSparqlService,
     private router: Router,
-    private location: Location
+    private location: Location,
+    private isbnStorageService: IsbnStorageService
   ) {
     this.subscribeToBabelioUrl();
     this.subscribeToBookSummary();
@@ -73,11 +78,58 @@ export class BookComponent implements OnInit, OnDestroy {
         
         // Process book descriptions if available
         this.processBookDescriptions();
+        
+        // Check if this book's ISBN is already saved
+        if (this.currentBookData.isbn) {
+          this.isCurrentBookSaved = this.isbnStorageService.isIsbnSaved(this.currentBookData.isbn);
+        }
       }
     } catch (error) {
       console.error('Error loading book data:', error);
     } finally {
       this.loading = false;
+    }
+  }
+
+  /**
+   * Save the current book's ISBN to storage
+   */
+  saveCurrentBookIsbn(): void {
+    if (this.currentBookData?.isbn) {
+      const saved = this.isbnStorageService.saveIsbn(this.currentBookData.isbn);
+      
+      if (saved) {
+        this.isCurrentBookSaved = true;
+        // Could show a success message here
+      } else {
+        // ISBN was already saved
+        this.isCurrentBookSaved = true;
+      }
+    }
+  }
+
+  /**
+   * Remove the current book's ISBN from storage
+   */
+  removeCurrentBookIsbn(): void {
+    if (this.currentBookData?.isbn) {
+      const removed = this.isbnStorageService.removeIsbn(this.currentBookData.isbn);
+      
+      if (removed) {
+        this.isCurrentBookSaved = false;
+        // Could show a success message here
+      }
+    }
+  }
+
+  /**
+   * Toggle saving/removing the current book's ISBN
+   */
+  toggleSaveIsbn(): void {
+    if (this.isCurrentBookSaved) {
+      this.removeCurrentBookIsbn();
+    } else {
+      this.saveCurrentBookIsbn();
     }
   }
   

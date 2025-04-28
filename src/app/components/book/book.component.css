@@ -230,6 +230,48 @@
   line-height: 1.5;
 }
 
+/* ISBN save button styles */
+.isbn-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.isbn-value {
+  margin-right: 10px;
+}
+
+.isbn-save-button {
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9em;
+  color: #666;
+  transition: all 0.2s ease-in-out;
+}
+
+.isbn-save-button i {
+  margin-right: 5px;
+}
+
+.isbn-save-button:hover {
+  background-color: #e0e0e0;
+}
+
+.isbn-save-button.active {
+  background-color: #5c6bc0;
+  color: white;
+}
+
+.isbn-save-button.active:hover {
+  background-color: #3f51b5;
+}
+
 .info-value ul {
   list-style-type: none;
   padding: 0;

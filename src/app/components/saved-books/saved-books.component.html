@@ -1,0 +1,57 @@
+<div class="saved-books-container">
+  <div class="saved-books-header">
+    <h1>Mes livres sauvegardés</h1>
+    <div class="header-actions">
+      <button (click)="exportIsbns()" class="action-button export-button" [disabled]="savedIsbns.length === 0">
+        <i class="fas fa-file-export"></i> Exporter
+      </button>
+      <div class="import-wrapper">
+        <label for="import-file" class="action-button import-button">
+          <i class="fas fa-file-import"></i> Importer
+        </label>
+        <input 
+          type="file" 
+          id="import-file" 
+          (change)="onFileSelected($event)" 
+          accept=".json" 
+          style="display: none;">
+      </div>
+    </div>
+  </div>
+  
+  <div class="import-status" *ngIf="importSuccess || importError">
+    <div *ngIf="importSuccess" class="status-message success">
+      <i class="fas fa-check-circle"></i> Importation réussie!
+    </div>
+    <div *ngIf="importError" class="status-message error">
+      <i class="fas fa-exclamation-circle"></i> {{ importError }}
+    </div>
+  </div>
+
+  <div class="saved-books-content">
+    <div *ngIf="savedIsbns.length === 0" class="no-saved-books">
+      <i class="fas fa-bookmark"></i>
+      <p>Vous n'avez pas encore sauvegardé de livres.</p>
+      <p>Cliquez sur "Sauvegarder" sur la page d'un livre pour commencer.</p>
+    </div>
+    
+    <div class="isbn-list" *ngIf="savedIsbns.length > 0">
+      <div class="list-header">
+        <span>ISBN</span>
+        <button (click)="clearAllIsbns()" class="clear-all-button">
+          <i class="fas fa-trash-alt"></i> Supprimer tout
+        </button>
+      </div>
+      <ul>
+        <li *ngFor="let isbn of savedIsbns" class="isbn-item">
+          <span class="isbn-value">{{ isbn }}</span>
+          <div class="isbn-actions">
+            <button (click)="removeIsbn(isbn)" class="remove-button" title="Supprimer">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,230 @@
+/* Import shared styles */
+@import '../../shared/styles/shared-components.css';
+
+.saved-books-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Header section */
+.saved-books-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.saved-books-header h1 {
+  font-size: 1.8em;
+  color: #333;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-button {
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #5c6bc0;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease;
+}
+
+.action-button i {
+  margin-right: 6px;
+}
+
+.action-button:hover {
+  background-color: #3f51b5;
+}
+
+.action-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.import-button {
+  background-color: #4caf50;
+}
+
+.import-button:hover {
+  background-color: #388e3c;
+}
+
+/* Import status messages */
+.import-status {
+  margin-bottom: 20px;
+}
+
+.status-message {
+  padding: 10px 15px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.status-message i {
+  margin-right: 10px;
+}
+
+.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.error {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+/* No saved books message */
+.no-saved-books {
+  text-align: center;
+  padding: 50px 0;
+  color: #888;
+}
+
+.no-saved-books i {
+  font-size: 3em;
+  margin-bottom: 15px;
+  color: #ccc;
+}
+
+.no-saved-books p {
+  margin: 8px 0;
+}
+
+/* ISBN list */
+.isbn-list {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  font-weight: 500;
+}
+
+.clear-all-button {
+  background: none;
+  border: none;
+  color: #f44336;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  font-size: 0.9em;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.clear-all-button:hover {
+  background-color: #ffebee;
+}
+
+.clear-all-button i {
+  margin-right: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.isbn-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.isbn-item:last-child {
+  border-bottom: none;
+}
+
+.isbn-value {
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.isbn-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.remove-button {
+  color: #f44336;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.remove-button:hover {
+  background-color: #ffebee;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .saved-books-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .saved-books-container {
+    padding: 15px;
+  }
+
+  .action-button {
+    padding: 6px 10px;
+    font-size: 0.85em;
+  }
+
+  .isbn-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .isbn-actions {
+    align-self: flex-end;
+  }
+}

@@ -6,7 +6,14 @@
 
     <body>
         <div class="container">
-            <h1>Titre: BookFinder Scolaire</h1>        
+            <header class="main-header">
+                <h1>BookFinder Scolaire</h1>
+                <div class="nav-links">
+                    <a routerLink="/saved-books" class="nav-link">
+                        <i class="fas fa-bookmark"></i> Mes livres sauvegardés
+                    </a>
+                </div>
+            </header>      
             <app-enhanced-search></app-enhanced-search>
             <app-book-list></app-book-list>
         </div>
