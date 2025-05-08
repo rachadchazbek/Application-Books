@@ -1,17 +1,43 @@
 <div class="search-container">
-  <!-- Main search bar for quick searches -->
-  <div class="main-search">
-    <div class="search-input-wrapper">
-      <i class="fas fa-search"></i>
-      <input 
-        type="text" 
-        [formControl]="quickSearchControl" 
-        placeholder="Rechercher par mots-clés..." 
-        class="primary-search-input"
-        (keydown.enter)="quickSearch()">
+  <!-- Main search bar with inline filter chips -->
+  <div class="main-search-with-filters">
+    <!-- Main search input -->
+    <div class="main-search">
+      <div class="search-input-wrapper">
+        <i class="fas fa-search"></i>
+        <input 
+          type="text" 
+          [formControl]="quickSearchControl" 
+          placeholder="Rechercher par mots-clés..." 
+          class="primary-search-input"
+          (input)="quickSearch()">
+      </div>
     </div>
-    <!-- <button class="search-button" (click)="quickSearch()" (keydown.enter)="quickSearch()" tabindex="0">Rechercher</button> -->
-  </div>
+    
+    <!-- Inline filter chips or message when no filters -->
+    <div class="inline-filter-section">
+      <div class="inline-filter-chips" *ngIf="activeFilters.length > 0">
+        <div class="filter-chip" *ngFor="let filter of activeFilters">
+          {{ filter.label }}: {{ filter.value }}
+          <button 
+            class="remove-filter" 
+            (click)="removeFilter(filter.type)" 
+            (keydown.enter)="removeFilter(filter.type)"
+            [attr.aria-label]="'Supprimer le filtre ' + filter.label">×</button>
+        </div>
+        <button 
+          class="clear-all-filters" 
+          (click)="clearAllFilters()" 
+          (keydown.enter)="clearAllFilters()"
+          [attr.aria-label]="'Supprimer tous les filtres'">Supprimer les filtres</button>
+      </div>
+      
+      <!-- No filters message -->
+      <div class="no-filters-message" *ngIf="activeFilters.length === 0">
+        <i class="fas fa-info-circle"></i>
+        <span class="filter-chip">Aucun filtre actif</span>
+      </div>
+    </div>
   
   <!-- All filters in a single section -->
   <div class="all-filters">
@@ -32,7 +58,7 @@
             class="filter-input"
             (blur)="onBlurTitle()" 
             (focus)="isBlurredTitle = false"
-            (keydown.enter)="applyFilter('title', titleControl.value)">
+            (input)="applyFilter('title', titleControl.value)">
           <div class="autocomplete-items" *ngIf="titleControl.value && filteredTitles.length && !isBlurredTitle">
             <div 
               *ngFor="let title of filteredTitles" 
@@ -56,7 +82,7 @@
             [formControl]="isbnControl" 
             placeholder="Rechercher par ISBN..." 
             class="filter-input"
-            (keydown.enter)="applyFilter('isbn', isbnControl.value)">
+            (input)="applyFilter('isbn', isbnControl.value)">
         </div>
       </div>
     </div>
@@ -113,7 +139,7 @@
             class="filter-input"
             (blur)="onBlurAuthor()" 
             (focus)="isBlurredAuthor = false"
-            (keydown.enter)="applyFilter('author', authorControl.value)">
+            (input)="applyFilter('author', authorControl.value)">
           <div class="autocomplete-items" *ngIf="authorControl.value && filteredAuthors.length && !isBlurredAuthor">
             <div 
               *ngFor="let author of filteredAuthors" 
@@ -139,7 +165,7 @@
             class="filter-input"
             (blur)="onBlurNationality()" 
             (focus)="isBlurredNationality = false"
-            (keydown.enter)="applyFilter('nationality', nationalityControl.value)">
+            (input)="applyFilter('nationality', nationalityControl.value)">
           <div class="autocomplete-items" *ngIf="nationalityControl.value && filteredNationalities.length && !isBlurredNationality">
             <div 
               *ngFor="let code of filteredNationalities" 
@@ -367,25 +393,6 @@
     </div>
   </div>
   
-  <!-- Active filters display -->
-  <div class="active-filters" *ngIf="activeFilters.length > 0">
-    <h3>Filtres actifs</h3>
-    <div class="filter-chips">
-      <div class="filter-chip" *ngFor="let filter of activeFilters">
-        {{ filter.label }}: {{ filter.value }}
-        <button 
-          class="remove-filter" 
-          (click)="removeFilter(filter.type)" 
-          (keydown.enter)="removeFilter(filter.type)"
-          [attr.aria-label]="'Supprimer le filtre ' + filter.label">×</button>
-      </div>
-      <button 
-        class="clear-all-filters" 
-        (click)="clearAllFilters()" 
-        (keydown.enter)="clearAllFilters()"
-        [attr.aria-label]="'Supprimer les filtres les filtres'">Supprimer les filtres</button>
-    </div>
-  </div>
   
   <!-- Search button -->
   <div class="search-actions">
