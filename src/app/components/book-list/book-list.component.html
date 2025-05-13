@@ -21,10 +21,10 @@
         Auteur.e
         <i *ngIf="sortOption === 'author'" class="fas" [class.fa-sort-up]="sortDirection === 'asc'" [class.fa-sort-down]="sortDirection === 'desc'"></i>
       </button>
-      <button class="sort-button" [class.active]="sortOption === 'date'" (click)="setSortOption('date')" aria-label="Trier par date">
+      <button class="sort-button active" [class.active]="sortOption === 'date'" (click)="setSortOption('date')" aria-label="Trier par date">
         Date
         <i *ngIf="sortOption === 'date'" class="fas" [class.fa-sort-up]="sortDirection === 'asc'" [class.fa-sort-down]="sortDirection === 'desc'"></i>
-      </button>
+       </button>
     </div>
     
     <div class="page-size-controls">

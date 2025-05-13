@@ -28,6 +28,11 @@ export class BooksService {
     responseData.results.bindings.forEach((binding: Binding) => {
 
 
+      const datePublished = binding.datePublished?.value;
+      if (!datePublished || !/^\d{4}$/.test(datePublished) || datePublished === '') {
+        return; // Skip if date is not a valid year
+      }
+
       const isbn = binding.isbn?.value;
 
       if (this.bookMap[isbn]) {

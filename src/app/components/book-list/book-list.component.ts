@@ -27,13 +27,16 @@ export class BookListComponent implements OnDestroy {
   
   // View options
   viewMode: 'grid' | 'list' = 'grid';
-  sortOption: 'title' | 'author' | 'date' | 'none' = 'none';
-  sortDirection: 'asc' | 'desc' = 'asc';
+  sortOption: 'title' | 'author' | 'date' | 'none' = 'date';
+  sortDirection: 'asc' | 'desc' = 'desc';
 
   constructor(public socketService: SocketSparqlService, private readonly router: Router) {
     books$.pipe(takeUntil(this.destroy$)).subscribe(books => {
       this.allBooks = books;
       this.calculateTotalPages();
+      // Always ensure sorting by date (newest first) is applied
+      this.sortOption = 'date';
+      this.sortDirection = 'desc';
       this.applySort();
       this.updateDisplayedBooks();
     });
@@ -121,13 +124,12 @@ export class BookListComponent implements OnDestroy {
   setSortOption(option: 'title' | 'author' | 'date' | 'none'): void {
     if (this.sortOption === option) {
       // Toggle direction if clicking the same option
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
       this.sortOption = option;
-      this.sortDirection = 'asc';
-    }
+         }
     this.applySort();
-    this.updateDisplayedBooks();
+      this.updateDisplayedBooks();
   }
   
   /**
