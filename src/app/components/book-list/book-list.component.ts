@@ -164,9 +164,10 @@ export class BookListComponent implements OnDestroy {
     });
   }
   navigateToBook(book: Book): void {
-    // Open in a new tab
+    // Just open the book details in a new tab
     window.open(`/book/${book.isbn}`, '_blank');
-    this.socketService.bingSearchBook(book.isbn);
+    
+    // Don't call socketService.bingSearchBook which would clear the books list
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
