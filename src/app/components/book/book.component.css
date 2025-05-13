@@ -202,8 +202,49 @@
   padding: 20px;
 }
 
+/* Save button at the top */
+.save-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.isbn-save-button {
+  background-color: #5c6bc0;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-size: 1em;
+  color: white;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.isbn-save-button i {
+  margin-right: 8px;
+}
+
+.isbn-save-button:hover {
+  background-color: #3f51b5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.isbn-save-button.active {
+  background-color: #4caf50;
+}
+
+.isbn-save-button.active:hover {
+  background-color: #388e3c;
+}
+
 .info-item {
   margin-bottom: 15px;
+  display: flex;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .info-item:last-child {
@@ -211,11 +252,12 @@
 }
 
 .info-label {
+  flex: 0 0 130px;
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
-  font-weight: 500;
-  color: #555;
+  margin-bottom: 0;
+  font-weight: 700;
+  color: #333;
 }
 
 .info-label i {
@@ -226,50 +268,21 @@
 }
 
 .info-value {
+  flex: 1;
   color: #666;
   line-height: 1.5;
+  padding-top: 2px;
 }
 
-/* ISBN save button styles */
+/* ISBN actions now simpler (no button) */
 .isbn-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
 }
 
 .isbn-value {
-  margin-right: 10px;
-}
-
-.isbn-save-button {
-  background-color: #f0f0f0;
-  border: none;
-  border-radius: 4px;
-  padding: 5px 10px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.9em;
-  color: #666;
-  transition: all 0.2s ease-in-out;
-}
-
-.isbn-save-button i {
-  margin-right: 5px;
-}
-
-.isbn-save-button:hover {
-  background-color: #e0e0e0;
-}
-
-.isbn-save-button.active {
-  background-color: #5c6bc0;
-  color: white;
-}
-
-.isbn-save-button.active:hover {
-  background-color: #3f51b5;
+  font-family: monospace;
+  font-size: 1.05em;
 }
 
 .info-value ul {

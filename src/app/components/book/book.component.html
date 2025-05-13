@@ -18,6 +18,21 @@
   <div class="book-detail-content">
     <!-- Left column: Book cover and key info -->
     <div class="book-detail-left">
+      <!-- Save Button Container -->
+      <div class="save-button-container" *ngIf="currentBookData?.isbn">
+        <button 
+          class="isbn-save-button" 
+          [class.active]="isCurrentBookSaved"
+          (click)="toggleSaveIsbn()" 
+          (keydown)="handleKeyDown($event)"
+          tabindex="0"
+          [attr.aria-label]="isCurrentBookSaved ? 'Retirer ce livre de vos livres sauvegardés' : 'Sauvegarder ce livre'">
+          <i *ngIf="isCurrentBookSaved" class="fas fa-bookmark"></i>
+          <i *ngIf="!isCurrentBookSaved" class="far fa-bookmark"></i>
+          {{ isCurrentBookSaved ? 'Sauvegardé' : 'Sauvegarder' }}
+        </button>
+      </div>
+
       <div class="book-cover" [class.has-image]="currentBookData.premiereCouverture">
         <!-- Clickable cover image -->
         <div class="cover-image-container" (click)="toggleImagePreview()" (keydown)="handleKeyDown($event)" tabindex="0" role="button" aria-label="Agrandir la couverture">
@@ -89,7 +104,7 @@
           </div>
         </div>
         
-        <!-- ISBN -->
+        <!-- ISBN (without save button now) -->
         <div class="info-item isbn" *ngIf="currentBookData?.isbn">
           <div class="info-label">
             <i class="fas fa-barcode"></i>
@@ -97,17 +112,6 @@
           </div>
           <div class="info-value isbn-actions">
             <span class="isbn-value">{{ currentBookData.isbn }}</span>
-            <button 
-              class="isbn-save-button" 
-              [class.active]="isCurrentBookSaved"
-              (click)="toggleSaveIsbn()" 
-              (keydown)="handleKeyDown($event)"
-              tabindex="0"
-              [attr.aria-label]="isCurrentBookSaved ? 'Retirer ce livre de vos livres sauvegardés' : 'Sauvegarder ce livre'">
-              <i *ngIf="isCurrentBookSaved" class="fas fa-bookmark"></i>
-              <i *ngIf="!isCurrentBookSaved" class="far fa-bookmark"></i>
-              {{ isCurrentBookSaved ? 'Sauvegardé' : 'Sauvegarder' }}
-            </button>
           </div>
         </div>
         
