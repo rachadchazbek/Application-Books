@@ -173,11 +173,23 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   
   /**
    * Perform a quick search using the main search bar
+   * Filter out common French articles: les, un, une, l'
    */
   quickSearch(): void {
     const searchTerm = this.quickSearchControl.value;
     if (searchTerm) {
-      this.applyFilter('mots', searchTerm);
+      // Filter out common French articles using regex
+      const filteredTerm = searchTerm.replace(/\b(les|un|une|l'|la|le)\b/gi, '').trim();
+      
+      // Replace multiple spaces with a single space
+      const cleanedTerm = filteredTerm.replace(/\s+/g, ' ');
+      
+      // Only apply filter if there are meaningful terms left
+      if (cleanedTerm) {
+        this.applyFilter('mots', cleanedTerm);
+      } else {
+        this.filterService.clearFilter('mots');
+      }
     } else {
       this.filterService.clearFilter('mots');
     }
