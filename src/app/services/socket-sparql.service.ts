@@ -5,8 +5,9 @@ import { BooksService } from './books.service';
 import { EnhancedFilterService } from './enhanced-filter.service';
 import { EnhancedSparqlQueryBuilderService } from './enhanced-sparql-query-builder.service';
 import { BookFilter } from '../interfaces/book-filter.model';
-import { BOOK_QUERY } from '../queries/sparql';
+import { BOOK_QUERY } from '../queries/book';
 import { booksSource, currentBookSubject } from '../classes/subjects';
+import { similarBooksQuery } from '../queries/similar';
 
 @Injectable({
   providedIn: 'root',
@@ -65,13 +66,18 @@ export class SocketSparqlService {
    * Find books similar to a given book
    * @param bookUri URI of the book to find similar books for
    */
-  findSimilarBooks(): void {
-    // const query = this.sparqlQueryBuilder.buildSimilaritySearchQuery(bookUri);
-    // this.httpSparqlService.postQuery(query).then(response => {
-    //   this.booksService.updateData(response);
-    // }).catch(error => {
-    //   console.error('Error finding similar books:', error);
-    // });
+  findSimilarBooks(isbn: string): void {
+    console.log('Finding similar books for ISBN:', isbn);
+
+    const query = similarBooksQuery(isbn);
+
+    this.httpSparqlService.postQuery(query).then(response => {
+      console.log(`Similar books query returned ${response.results?.bindings?.length || 0} results`);
+      this.booksService.updateData(response);
+    }).catch(error => {
+      console.error('Error finding similar books:', error);
+    });
+
   }
   
   // /**

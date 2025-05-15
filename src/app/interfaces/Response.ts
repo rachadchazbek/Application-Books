@@ -33,6 +33,8 @@ export interface SparqlResponse {
     finalAwardDescription?: { value: string };
     premiereCouverture?: { value: string };
     infoSource?: { value: string };
+    similarTo?: { value: string };
+    similarBookName?: { value: string };
   }
   
     

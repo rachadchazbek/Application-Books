@@ -76,6 +76,12 @@ export class BooksService {
     if (binding.award) {
       this.processAward(book, binding);
     }
+
+    // update similar books
+    if (binding.similarTo?.value) {
+      console.log(`Similar books: ${binding.similarTo.value}`);
+    }
+    // Update description.
   }
 
   /**

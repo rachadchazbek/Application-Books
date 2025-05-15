@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BookFilter } from '../interfaces/book-filter.model';
 import { 
   UNIFIED_SPARQL_QUERY
-} from '../queries/sparql';
+} from '../queries/unified';
 
 /**
  * Enhanced SPARQL Query Builder Service

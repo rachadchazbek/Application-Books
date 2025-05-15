@@ -66,6 +66,7 @@ export class HttpSparqlService {
     }
   }
 
+
   async postBookQuery(sparqlBookQuery: string): Promise<BookBinding> {
 
     const headers = new HttpHeaders({
@@ -78,6 +79,7 @@ export class HttpSparqlService {
       sparqlBookQuery,
       { headers }
     ).toPromise();
+
 
     if (!response) {
       throw new Error('No response received from the server');

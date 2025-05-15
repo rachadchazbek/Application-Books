@@ -56,55 +56,51 @@ export class BookComponent implements OnInit, OnDestroy {
   // Flag for expanded image preview
   showImagePreview = false;
 
-  async ngOnInit(): Promise<void> {
-    this.loading = true;
-    
-    try {
-      // Wait for the route params
-      const params = await firstValueFrom(this.route.params);
-      const isbn = params['isbn'];
-      
-      if (isbn) {
-        // Load the book data using ISBN if coming directly to this page
-        await this.socketService.bingSearchBook(isbn);
-      }
-      
-      // Wait for book data to be loaded  
-      await this.waitForBookData();
-      
-      if (this.currentBookData) {
-        // Load similar books using the book URI
-        await this.loadSimilarBooks();
-        
-        // Process book descriptions if available
-        this.processBookDescriptions();
-        
-        // Check if this book's ISBN is already saved
-        if (this.currentBookData.isbn) {
-          this.isCurrentBookSaved = this.isbnStorageService.isIsbnSaved(this.currentBookData.isbn);
+  ngOnInit(): void {
+      this.loading = true;
+  
+      (async () => {
+        try {
+          // Wait for the route params
+          const params = await firstValueFrom(this.route.params);
+          const isbn = params['isbn'];
+  
+          if (isbn) {
+            // Load the book data using ISBN if coming directly to this page
+            await this.socketService.bingSearchBook(isbn);
+          }
+  
+          // Wait for book data to be loaded  
+          await this.waitForBookData();
+          console.log("Here")
+  
+          if (this.currentBookData) {
+            // Load similar books using the book URI
+            await this.loadSimilarBooks();
+  
+            // Process book descriptions if available
+            this.processBookDescriptions();
+  
+            // Check if this book's ISBN is already saved
+            if (this.currentBookData.isbn) {
+              this.isCurrentBookSaved = this.isbnStorageService.isIsbnSaved(this.currentBookData.isbn);
+            }
+          }
+        } catch (error) {
+          console.error('Error loading book data:', error);
+        } finally {
+          this.loading = false;
         }
-      }
-    } catch (error) {
-      console.error('Error loading book data:', error);
-    } finally {
-      this.loading = false;
+      })();
     }
-  }
 
   /**
    * Save the current book's ISBN to storage
    */
   saveCurrentBookIsbn(): void {
     if (this.currentBookData?.isbn) {
-      const saved = this.isbnStorageService.saveIsbn(this.currentBookData.isbn);
-      
-      if (saved) {
-        this.isCurrentBookSaved = true;
-        // Could show a success message here
-      } else {
-        // ISBN was already saved
-        this.isCurrentBookSaved = true;
-      }
+      this.isCurrentBookSaved = this.isbnStorageService.saveIsbn(this.currentBookData.isbn) || true;
+      // Could show a success message here if needed
     }
   }
 
@@ -313,7 +309,7 @@ export class BookComponent implements OnInit, OnDestroy {
    */
   async loadSimilarBooks(): Promise<void> {
     // Find similar books
-    this.socketService.findSimilarBooks();
+    this.socketService.findSimilarBooks(this.currentBookData?.isbn ?? '');
     
     // Create a promise that resolves when similar books are loaded
     return new Promise<void>((resolve) => {
@@ -446,7 +442,7 @@ export class BookComponent implements OnInit, OnDestroy {
   private subscribeToCurrentBook() {
     this.bookSubscription = currentBook$
       .subscribe(data => {
-        this.currentBookData = data as Book;
+        this.currentBookData = data;
         // Process descriptions whenever book data changes
         if (this.currentBookData) {
           this.processBookDescriptions();
