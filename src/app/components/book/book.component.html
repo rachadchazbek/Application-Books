@@ -65,7 +65,7 @@
           <div class="info-value">
             <ul>
               <li *ngFor="let author of currentBookData?.authorList || []">
-                <button (click)="navigateToAuthor(author)" (keydown)="handleKeyDown($event)" class="author-link" tabindex="0">{{ author }}</button>
+                <span class="author-text">{{ author }}</span>
               </li>
             </ul>
           </div>
@@ -184,28 +184,6 @@
           </div>
         </div>
         
-        <!-- Awards tab -->
-        <div *ngIf="activeTab === 'awards'" class="tab-pane">
-          <div class="awards-list" *ngIf="currentBookData?.awards && (currentBookData?.awards?.length ?? 0) > 0">
-            <div class="award-item" *ngFor="let award of currentBookData!.awards">
-              <div class="award-header">
-                <i class="fas fa-trophy"></i>
-                <h3>{{ award.name }}</h3>
-                <span class="award-year">{{ award.year }}</span>
-              </div>
-              <div class="award-details">
-                <p *ngIf="award.genre"><strong>Genre:</strong> {{ award.genre }}</p>
-                <p *ngIf="award.ageRange && award.ageRange.length > 0">
-                  <strong>Âge recommandé:</strong> {{ award.ageRange.join(', ') }}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="no-content" *ngIf="!currentBookData?.awards || (currentBookData?.awards?.length ?? 0) === 0">
-            <p>Aucun prix trouvé pour ce livre.</p>
-          </div>
-        </div>
-        
         <!-- Details tab -->
         <div *ngIf="activeTab === 'details'" class="tab-pane">
           <div class="details-list">
@@ -279,13 +257,6 @@
                   {{ book.datePublished }}
                 </p>
                 <div class="similar-book-actions">
-                  <!-- Stop propagation to prevent triggering the parent click when clicking on this button -->
-                  <button class="view-author-button" 
-                         (click)="$event.stopPropagation(); navigateToAuthor(book.authorList[0])" 
-                         *ngIf="book.authorList && book.authorList.length > 0"
-                         (keydown)="handleKeyDown($event)">
-                    <i class="fas fa-user"></i> Voir l'auteur
-                  </button>
                   <button class="view-book-button" (click)="$event.stopPropagation(); navigateToBook(book.isbn)">
                     <i class="fas fa-book-open"></i> Voir le livre
                   </button>
@@ -301,10 +272,5 @@
     </div>
   </div>
   
-  <!-- External links section -->
-  <div class="external-links" *ngIf="babelioLink">
-    <a [href]="babelioLink" target="_blank" class="external-link">
-      <i class="fas fa-external-link-alt"></i> Voir sur
-    </a>
-  </div>
+  <!-- External links section removed -->
 </div>

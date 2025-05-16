@@ -60,7 +60,7 @@
             <p class="book-authors">
               <i class="fas fa-user"></i>
               <ng-container *ngFor="let author of book.authorList; let i = index">
-                <span (click)="navigateToAuthor(author)" (keydown)="handleKeyDown($event, author)" tabindex="0" class="author-link">{{ author }}</span>
+                <span class="author-text">{{ author }}</span>
                 <span *ngIf="i < book.authorList.length - 1">, </span>
               </ng-container>
             </p>
@@ -79,22 +79,6 @@
             
             <!-- ISBN removed as requested -->
           </div>
-          
-          <!-- Awards badges -->
-          <div *ngIf="book.awards && book.awards.length > 0" class="award-badges">
-            <span *ngFor="let award of book.awards" class="award-badge" (click)="navigateToAward(award.name)" (keydown)="handleKeyDown($event, award.name)" tabindex="0">
-              <i class="fas fa-trophy"></i> {{ award.name }}
-            </span>
-          </div>
-          
-          <!-- Review summary if available -->
-          <div *ngIf="book.reviews && book.reviews.length > 0 && book.reviews[0].reviewRating" class="review-summary">
-            <div class="rating">
-              <i class="fas fa-star"></i>
-              <span>{{ book.reviews[0].reviewRating }}</span>
-            </div>
-          </div>
-          
           <!-- View details button -->
           <button class="view-details-btn" (click)="navigateToBook(book)">
             <i class="fas fa-info-circle"></i> Voir les détails
@@ -121,30 +105,6 @@
             {{ illustrator }}<span *ngIf="i < book.illustrator.length - 1">, </span>
           </ng-container>
         </p>
-        
-        <!-- Award details -->
-        <div *ngFor="let award of book.awards" class="award-detail">
-          <p class="award-name">
-            <i class="fas fa-trophy"></i> {{ award.name }} ({{ award.year }})
-          </p>
-          <p *ngIf="award.genre">
-            <strong>Genre:</strong> {{ award.genre }}
-          </p>
-          <p *ngIf="award.ageRange && award.ageRange.length > 0">
-            <strong>Age:</strong> {{ award.ageRange.join(', ') }}
-          </p>
-        </div>
-        
-        <!-- Review preview -->
-        <div *ngIf="book.reviews && book.reviews.length > 0 && book.reviews[0].reviewContent" class="review-preview">
-          <h4>Critique</h4>
-          <p class="review-content">
-            {{ book.reviews[0].reviewContent.length > 150 ? 
-                 (book.reviews[0].reviewContent.substring(0, 150) + '...') : 
-                 book.reviews[0].reviewContent }}
-          </p>
-          <p *ngIf="book.reviews[0].reviewAuthor" class="review-author">Par {{ book.reviews[0].reviewAuthor }}</p>
-        </div>
       </div>
     </div>
   </div>

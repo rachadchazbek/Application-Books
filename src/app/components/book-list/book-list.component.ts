@@ -176,8 +176,14 @@ export class BookListComponent implements OnDestroy {
     // this.socketService.bingSearchPublisher(publisher);
   }
 
+  /**
+   * Navigate to author page functionality removed
+   * Keeping the method signature for compatibility with any existing calls
+   */
   navigateToAuthor(authorName: string): void {
-    this.router.navigate(['/author', authorName]);
+    // Functionality removed as per requirements
+    console.log('Author navigation disabled', authorName);
+    return;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -2,7 +2,7 @@
 
 /* Common background and container styles */
 .app-container {
-  background-color: #f5f5f5;
+  background-color: #fff;
   min-height: 100vh;
   padding: 2rem 1rem;
 }

@@ -1,6 +1,3 @@
-import { Award } from "./Award";
-import { Review } from "./Review";
-
 export interface Book {
   title: string;
   authorList: string[];
@@ -22,9 +19,7 @@ export interface Book {
   
   // Keep these for backward compatibility
   subjectThema?: string;
-  awards?: Award[];
   countryOfOrigin?: string;
-  reviews?: Review[];
   
   // Allow for extensions with any additional properties
   [key: string]: any;

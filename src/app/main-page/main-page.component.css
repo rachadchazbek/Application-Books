@@ -2,7 +2,7 @@
 @import '../shared/styles/shared-components.css';
 
 .page {
-  background-color: #E6E6FA; /* Restore the original lavender background color */
+  background-color: #fff; /* Restore the original lavender background color */
   min-height: 100vh;
 }
 

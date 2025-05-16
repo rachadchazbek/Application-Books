@@ -377,22 +377,6 @@ export class BookComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Navigate to author page
-   */
-  navigateToAuthor(authorName: string): void {
-    this.router.navigate(['/author', authorName]);
-  }
-
-  /**
-   * Navigate to publisher info
-   * Note: Currently disabled, but kept for future implementation
-   */
-  navigateToPublisher(/* publisher */): void {
-    // Method left for future implementation
-    // This would potentially search for publisher info
-    return;
-  }
 
   /**
    * Subscribe to book summary data
