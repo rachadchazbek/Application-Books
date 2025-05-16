@@ -3,8 +3,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription, firstValueFrom } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { bookSummary$, books$, currentBook$, rating$, urlBabelio$ } from 'src/app/classes/subjects';
+import { bookSummary$, currentBook$, rating$, similarBooks$, urlBabelio$ } from 'src/app/classes/subjects';
 import { Book, SparqlBinding } from 'src/app/interfaces/Book';
+import { SimilarBook } from 'src/app/interfaces/SimilarBook';
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 import { Location } from '@angular/common';
 import { IsbnStorageService } from 'src/app/services/isbn-storage.service';
@@ -22,7 +23,7 @@ export class BookComponent implements OnInit, OnDestroy {
   ratingBook: string | null = null;
   currentBookData: Book | null = null;
   babelioLink: string | null = null;
-  similarBooks: Book[] = [];
+  similarBooks: SimilarBook[] = [];
   bookDescriptions = new Map<string, string[]>(); // Map of source -> descriptions
   bookSources: string[] = []; // All sources where the book is found
   
@@ -35,6 +36,7 @@ export class BookComponent implements OnInit, OnDestroy {
   private ratingSubscription: Subscription;
   private babelioSubscription: Subscription;
   private bookSubscription: Subscription;
+  private similarBooksSubscription: Subscription;
   private readonly destroy$ = new Subject<void>();
 
   // Track if the current book's ISBN is already saved
@@ -51,6 +53,7 @@ export class BookComponent implements OnInit, OnDestroy {
     this.subscribeToBookSummary();
     this.subscribeToBookRating();
     this.subscribeToCurrentBook();
+    this.subscribeToSimilarBooks();
   }
 
   // Flag for expanded image preview
@@ -281,7 +284,6 @@ export class BookComponent implements OnInit, OnDestroy {
    * Check if there are any book descriptions available
    */
   hasDescriptions(): boolean {
-    console.log('Book descriptions:', this.bookDescriptions);
     return this.bookDescriptions.size > 0;
   }
   
@@ -309,30 +311,8 @@ export class BookComponent implements OnInit, OnDestroy {
    */
   async loadSimilarBooks(): Promise<void> {
     // Find similar books
-    this.socketService.findSimilarBooks(this.currentBookData?.isbn ?? '');
-    
-    // Create a promise that resolves when similar books are loaded
-    return new Promise<void>((resolve) => {
-      const booksSubscription = books$.pipe(
-        filter(books => !!books && books.length > 0),
-        take(1)
-      ).subscribe((books: Book[]) => {
-        this.similarBooks = books.filter((book: Book) => 
-          book.title !== this.currentBookData?.title
-        );
-        
-        // Add the subscription to be cleaned up on destroy
-        this.destroy$.subscribe(() => {
-          booksSubscription.unsubscribe();
-        });
-        
-        resolve();
-      });
-      
-      // Add a timeout in case the data never comes
-      setTimeout(() => resolve(), 5000);
-    });
-  }
+    this.socketService.findSimilarBooks(this.currentBookData?.isbn ?? '');    
+    };
 
   /**
    * Check if a value is a string
@@ -356,7 +336,7 @@ export class BookComponent implements OnInit, OnDestroy {
   /**
    * Set the active tab
    */
-  setActiveTab(tab: 'summary' | 'awards' | 'details' | 'similar'): void {
+  setActiveTab(tab: 'summary' | 'similar'): void {
     this.activeTab = tab;
   }
   
@@ -384,6 +364,16 @@ export class BookComponent implements OnInit, OnDestroy {
     if (event.key === 'Enter' || event.key === ' ') {
       // Trigger the click event on the element
       (event.target as HTMLElement).click();
+    }
+  }
+
+  /**
+   * Navigate to book detail page
+   * Opens the book in a new tab
+   */
+  navigateToBook(isbn: string): void {
+    if (isbn) {
+      window.open(`/book/${isbn}`, '_blank');
     }
   }
 
@@ -450,12 +440,26 @@ export class BookComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Subscribe to similar books data
+   */
+  private subscribeToSimilarBooks() {
+    this.similarBooksSubscription = similarBooks$
+      .subscribe(books => {
+        if (books && books.length > 0) {
+          console.log('Received similar books:', books);
+          this.similarBooks = books;
+        }
+      });
+  }
+
   ngOnDestroy() {
     // Unsubscribe from all subscriptions
     if (this.summarySubscription) this.summarySubscription.unsubscribe();
     if (this.ratingSubscription) this.ratingSubscription.unsubscribe();
     if (this.babelioSubscription) this.babelioSubscription.unsubscribe();
     if (this.bookSubscription) this.bookSubscription.unsubscribe();
+    if (this.similarBooksSubscription) this.similarBooksSubscription.unsubscribe();
     
     this.destroy$.next();
     this.destroy$.complete();

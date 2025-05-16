@@ -1,5 +1,10 @@
 import { BehaviorSubject } from 'rxjs';
 import { Book } from '../interfaces/Book';
+import { SimilarBook } from '../interfaces/SimilarBook';
+
+// Subject for similar books
+export const similarBooksSubject = new BehaviorSubject<SimilarBook[]>([]);
+export const similarBooks$ = similarBooksSubject.asObservable();
 
 
 export const booksSourceAward = new BehaviorSubject<Book[]>([]);

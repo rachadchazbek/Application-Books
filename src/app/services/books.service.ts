@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
-import { booksSource, booksSourceAuthor, booksSourceAward, descriptionAwardSubject } from '../classes/subjects';
-import { Award } from '../interfaces/Award';
+import { booksSource, booksSourceAuthor, booksSourceAward, similarBooksSubject } from '../classes/subjects';
 import { Book } from '../interfaces/Book';
 import { Binding, SparqlResponse } from '../interfaces/Response';
-import { Review } from '../interfaces/Review';
+import { SimilarBook } from '../interfaces/SimilarBook';
+import { HttpSparqlService } from './http-sparql.service';
+import { BOOK_QUERY } from '../queries/book';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BooksService {
+  constructor(private readonly httpSparqlService: HttpSparqlService) {}
+
   private bookMap: Record<string, Book> = {};
   private readonly themeCode = 'defaultTheme';
   private inAuthorsComponent = false;
@@ -68,20 +71,6 @@ export class BooksService {
     if (binding.countryOfOrigin?.value) {
       book.countryOfOrigin = binding.countryOfOrigin.value;
     }
-
-    // Append reviews.
-    book.reviews = (book.reviews || []).concat(this.parseReviews(binding));
-
-    // Process award information.
-    if (binding.award) {
-      this.processAward(book, binding);
-    }
-
-    // update similar books
-    if (binding.similarTo?.value) {
-      console.log(`Similar books: ${binding.similarTo.value}`);
-    }
-    // Update description.
   }
 
   /**
@@ -107,77 +96,49 @@ export class BooksService {
   }
 
   /**
-   * Parses reviews from a binding. If multiple reviews are provided (using a delimiter),
-   * it returns an array of review objects.
+   * Parses Similar books from bindings and emits them through the similarBooks subject
    */
-  private parseReviews(binding: Binding): Review[] {
-    const reviews: Review[] = [];
+  async uploadSimilarBooks(response: Binding[]) {
+    console.log('Processing similar books bindings:', response);
+    
+    // Create array to hold similar books
+    const similarBooks: SimilarBook[] = [];
+    // Process each binding
+    for (const binding of response) {
+      const similarBookName = binding.similarBookName?.value || '';
+      const similarTo = binding.similarTo?.value?.split('/').pop() || '';
 
-    if (binding.reviewAuthor?.value && binding.reviewContent?.value) {
-      const authors = binding.reviewAuthor.value.split('@ ');
-      const contents = binding.reviewContent.value.split('@ ');
-      const dates = binding.reviewDatePublished?.value?.split('@ ') || [];
-      const ratings = binding.reviewRating?.value?.split('@ ') || [];
-      const thumbs = binding.thumbsUp?.value?.split('@ ') || [];
+      // Get the similar book details with a query
+      const similarBookQuery = BOOK_QUERY(similarTo);
 
-      if (authors.length > 1) {
-        for (let i = 0; i < authors.length; i++) {
-          reviews.push({
-            reviewContent: contents[i],
-            reviewAuthor: authors[i],
-            reviewDatePublished: dates[i],
-            reviewRating: ratings[i],
-            thumbsUp: thumbs[i],
-            reviewURL: binding.reviewURL?.value,
-            avis: binding.avis?.value,
-            source: binding.source?.value,
-          });
-        }
-      } else {
-        reviews.push({
-          reviewContent: binding.reviewContent.value,
-          reviewAuthor: binding.reviewAuthor.value,
-          reviewDatePublished: binding.reviewDatePublished?.value,
-          reviewRating: binding.reviewRating?.value,
-          thumbsUp: binding.thumbsUp?.value,
-          reviewURL: binding.reviewURL?.value,
-          avis: binding.avis?.value,
-          source: binding.source?.value,
-        });
+      try {
+      const response = await this.httpSparqlService.postBookQuery(similarBookQuery);
+      console.log('Similar book details:', response);
+      const similarBookBinding = response.results.bindings[0];
+      if (similarBookBinding) {
+        const similarBook: SimilarBook = {
+        isbn: similarTo,
+        title: similarBookName,
+        similarTo: similarTo,
+        authorList: similarBookBinding.authorList?.value ? [similarBookBinding.authorList.value] : undefined,
+        publisher: similarBookBinding.publisherName?.value,
+        datePublished: similarBookBinding.datePublished?.value,
+        premiereCouverture: similarBookBinding.premiereCouverture?.value,
+        subjectThema: similarBookBinding.subjectThema?.value,
+        inLanguage: similarBookBinding.inLanguage?.value
+        };
+
+        // Add the book to the array
+        similarBooks.push(similarBook);
+      }
+      } catch (error) {
+      console.error(`Error fetching details for similar book with ISBN ${similarTo}:`, error);
       }
     }
-    return reviews;
-  }
 
-  /**
-   * Processes award information for a book. If an award already exists, it updates the age range.
-   */
-  private processAward(book: Book, binding: Binding) {
-    const awardName = binding.finalAwardName?.value;
-    const awardGenre = binding.finalGenreName?.value;
-    const awardYear = binding.awardYear?.value;
-
-    if (!awardName || !awardGenre || !awardYear) {
-      return;
-    }
-
-    const existingAward = book.awards?.find(
-      (award: Award) =>
-        award.name === awardName &&
-        award.genre === awardGenre &&
-        award.year === awardYear
-    );
-
-    if (!existingAward) {
-      book.awards?.push({
-        year: awardYear,
-        name: awardName,
-        genre: awardGenre,
-        ageRange: binding.ageRange?.value ? [binding.ageRange.value] : [],
-      });
-    } else if (binding.ageRange?.value && !existingAward.ageRange.includes(binding.ageRange.value)) {
-      existingAward.ageRange.push(binding.ageRange.value);
-    }
+    // Emit the similar books through the subject
+    console.log(`Emitting ${similarBooks.length} similar books`);
+    similarBooksSubject.next(similarBooks);
   }
 
   /**

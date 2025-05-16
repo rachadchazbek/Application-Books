@@ -66,17 +66,17 @@ export class SocketSparqlService {
    * Find books similar to a given book
    * @param bookUri URI of the book to find similar books for
    */
-  findSimilarBooks(isbn: string): void {
+  async findSimilarBooks(isbn: string) {
     console.log('Finding similar books for ISBN:', isbn);
 
     const query = similarBooksQuery(isbn);
-
-    this.httpSparqlService.postQuery(query).then(response => {
+    try {
+      const response = await this.httpSparqlService.postQuery(query);
       console.log(`Similar books query returned ${response.results?.bindings?.length || 0} results`);
-      this.booksService.updateData(response);
-    }).catch(error => {
-      console.error('Error finding similar books:', error);
-    });
+      await this.booksService.uploadSimilarBooks(response.results.bindings);
+    } catch (error) {
+      console.error('Error executing similar books query:', error);
+    }
 
   }
   

@@ -9,9 +9,9 @@
 
 <div class="book-detail-container" *ngIf="currentBookData && !loading">
   <div class="book-detail-header">
-    <button class="back-button" (click)="goBack()" (keydown)="handleKeyDown($event)" tabindex="0">
+    <!-- <button class="back-button" (click)="goBack()" (keydown)="handleKeyDown($event)" tabindex="0">
       <i class="fas fa-arrow-left"></i> Retour aux résultats
-    </button>
+    </button> -->
     <h1 class="book-title">{{ currentBookData.title }}</h1>
   </div>
   
@@ -122,9 +122,9 @@
             <span>Trouvés dans</span>
           </div>
           <div class="info-value">
-            <ul class="sources-list">
-              <li *ngFor="let source of bookSources">{{ source }}</li>
-            </ul>
+              <ul class="sources-list">
+                <li *ngFor="let source of bookSources" [hidden]="source === 'MainSource'">{{ source }}</li>
+              </ul>
           </div>
         </div>
         
@@ -145,12 +145,6 @@
       <div class="book-tabs">
         <button class="tab-button" [class.active]="activeTab === 'summary'" (click)="setActiveTab('summary')">
           <i class="fas fa-file-alt"></i> Descriptions
-        </button>
-        <button class="tab-button" [class.active]="activeTab === 'awards'" (click)="setActiveTab('awards')">
-          <i class="fas fa-trophy"></i> Prix
-        </button>
-        <button class="tab-button" [class.active]="activeTab === 'details'" (click)="setActiveTab('details')">
-          <i class="fas fa-list"></i> Détails
         </button>
         <button class="tab-button" [class.active]="activeTab === 'similar'" (click)="setActiveTab('similar')">
           <i class="fas fa-book-open"></i> Livres Similaires
@@ -257,11 +251,22 @@
         <!-- Similar Books tab -->
         <div *ngIf="activeTab === 'similar'" class="tab-pane">
           <div class="similar-books-grid" *ngIf="similarBooks.length > 0">
-            <div class="similar-book-card" *ngFor="let book of similarBooks">
+            <div class="similar-book-card" *ngFor="let book of similarBooks" 
+                (click)="navigateToBook(book.isbn)"
+                (keydown)="handleKeyDown($event)" 
+                tabindex="0"
+                role="button"
+                [attr.aria-label]="'Voir les détails de ' + book.title">
+              
+              <!-- Cover image if available, otherwise icon -->
               <div class="similar-book-cover">
-                <i class="fas fa-book"></i>
+                <img *ngIf="book.premiereCouverture" 
+                     [src]="'http://51.79.51.204/' + book.premiereCouverture" 
+                     [alt]="'Couverture de ' + book.title">
+                <i *ngIf="!book.premiereCouverture" class="fas fa-book"></i>
                 <div class="book-title-overlay">{{ book.title }}</div>
               </div>
+              
               <div class="similar-book-details">
                 <h3 class="similar-book-title">{{ book.title }}</h3>
                 <p *ngIf="book.authorList && book.authorList.length > 0" class="similar-book-author">
@@ -270,9 +275,19 @@
                 <p *ngIf="book.publisher" class="similar-book-publisher">
                   {{ book.publisher }}
                 </p>
+                <p *ngIf="book.datePublished" class="similar-book-year">
+                  {{ book.datePublished }}
+                </p>
                 <div class="similar-book-actions">
-                  <button class="view-author-button" (click)="navigateToAuthor(book.authorList[0])" *ngIf="book.authorList && book.authorList.length > 0">
+                  <!-- Stop propagation to prevent triggering the parent click when clicking on this button -->
+                  <button class="view-author-button" 
+                         (click)="$event.stopPropagation(); navigateToAuthor(book.authorList[0])" 
+                         *ngIf="book.authorList && book.authorList.length > 0"
+                         (keydown)="handleKeyDown($event)">
                     <i class="fas fa-user"></i> Voir l'auteur
+                  </button>
+                  <button class="view-book-button" (click)="$event.stopPropagation(); navigateToBook(book.isbn)">
+                    <i class="fas fa-book-open"></i> Voir le livre
                   </button>
                 </div>
               </div>

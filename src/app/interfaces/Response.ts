@@ -35,6 +35,7 @@ export interface SparqlResponse {
     infoSource?: { value: string };
     similarTo?: { value: string };
     similarBookName?: { value: string };
+    book?: { value: string };
   }
   
     
