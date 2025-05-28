@@ -6,6 +6,23 @@ import { filter, take } from 'rxjs/operators';
 import { bookSummary$, currentBook$, rating$, similarBooks$, urlBabelio$ } from 'src/app/classes/subjects';
 import { Book, SparqlBinding } from 'src/app/interfaces/Book';
 import { SimilarBook } from 'src/app/interfaces/SimilarBook';
+
+// Interfaces for award and price data
+interface BookAward {
+  award: { value: string };
+  book?: { value: string };
+  isbn?: { value: string };
+  name?: { value: string };
+}
+
+interface BookPrice {
+  book?: { value: string };
+  price: { value: string };
+  availability: { value: string };
+  sellerName: { value: string };
+  sellerEmail: { value: string };
+  sellerPhone: { value: string };
+}
 import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 import { Location } from '@angular/common';
 import { IsbnStorageService } from 'src/app/services/isbn-storage.service';
@@ -26,6 +43,14 @@ export class BookComponent implements OnInit, OnDestroy {
   similarBooks: SimilarBook[] = [];
   bookDescriptions = new Map<string, string[]>(); // Map of source -> descriptions
   bookSources: string[] = []; // All sources where the book is found
+  
+  // Awards and price data
+  bookAwards: BookAward[] = [];
+  bookPrices: BookPrice[] = [];
+  
+  // Loading states for different data types
+  awardsLoading = false;
+  pricesLoading = false;
   
   // UI state
   activeTab = 'summary'; // Using string type instead of union for flexibility
@@ -336,8 +361,53 @@ export class BookComponent implements OnInit, OnDestroy {
   /**
    * Set the active tab
    */
-  setActiveTab(tab: 'summary' | 'similar'): void {
+  setActiveTab(tab: 'summary' | 'similar' | 'awards' | 'prices'): void {
     this.activeTab = tab;
+    
+    // Load data for the selected tab if it hasn't been loaded yet
+    if (tab === 'awards' && this.bookAwards.length === 0 && this.currentBookData?.isbn) {
+      this.loadBookAwards(this.currentBookData.isbn);
+    } else if (tab === 'prices' && this.bookPrices.length === 0 && this.currentBookData?.isbn) {
+      this.loadBookPrices(this.currentBookData.isbn);
+    }
+  }
+  
+  /**
+   * Load awards data for the current book
+   */
+  async loadBookAwards(isbn: string): Promise<void> {
+    if (!isbn || this.awardsLoading) return;
+    
+    this.awardsLoading = true;
+    try {
+      const bindings = await this.socketService.fetchBookAwards(isbn);
+      // Using type assertion to satisfy TypeScript
+      this.bookAwards = bindings as unknown as BookAward[];
+      console.log('Loaded awards data:', this.bookAwards);
+    } catch (error) {
+      console.error('Error loading awards data:', error);
+    } finally {
+      this.awardsLoading = false;
+    }
+  }
+  
+  /**
+   * Load price data for the current book
+   */
+  async loadBookPrices(isbn: string): Promise<void> {
+    if (!isbn || this.pricesLoading) return;
+    
+    this.pricesLoading = true;
+    try {
+      const bindings = await this.socketService.fetchBookPrices(isbn);
+      // Using type assertion to satisfy TypeScript
+      this.bookPrices = bindings as unknown as BookPrice[];
+      console.log('Loaded price data:', this.bookPrices);
+    } catch (error) {
+      console.error('Error loading price data:', error);
+    } finally {
+      this.pricesLoading = false;
+    }
   }
   
   /**

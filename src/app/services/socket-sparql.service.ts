@@ -8,6 +8,8 @@ import { BookFilter } from '../interfaces/book-filter.model';
 import { BOOK_QUERY } from '../queries/book';
 import { booksSource, currentBookSubject } from '../classes/subjects';
 import { similarBooksQuery } from '../queries/similar';
+import { AWARDS_QUERY } from '../queries/awards';
+import { PRICE_QUERY } from '../queries/price';
 
 @Injectable({
   providedIn: 'root',
@@ -77,7 +79,41 @@ export class SocketSparqlService {
     } catch (error) {
       console.error('Error executing similar books query:', error);
     }
+  }
 
+  /**
+   * Fetch awards information for a book
+   * @param isbn ISBN of the book to fetch awards for
+   * @returns Promise with the query response
+   */
+  async fetchBookAwards(isbn: string) {
+    console.log('Fetching awards for book with ISBN:', isbn);
+    const query = AWARDS_QUERY(isbn);
+    
+    try {
+      const response = await this.httpSparqlService.postQuery(query);
+      console.log(`Awards query returned ${response.results?.bindings?.length || 0} results`);
+      return response.results.bindings;
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Fetch price information for a book
+   * @param isbn ISBN of the book to fetch price data for
+   * @returns Promise with the query response
+   */
+  async fetchBookPrices(isbn: string) {
+    console.log('Fetching price information for book with ISBN:', isbn);
+    const query = PRICE_QUERY(isbn);
+    
+    try {
+      const response = await this.httpSparqlService.postQuery(query);
+      return response.results.bindings;
+    } catch {
+      return [];
+    }
   }
   
   // /**
