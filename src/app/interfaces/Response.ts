@@ -17,25 +17,10 @@ export interface SparqlResponse {
     subjectThema?: { value: string };
     inLanguage?: { value: string };
     countryOfOrigin?: { value: string };
-    award?: { value: string };
-    awardYear?: { value: string };
-    finalAwardName?: { value: string };
-    finalGenreName?: { value: string };
-    ageRange?: { value: string };
-    reviewAuthor?: { value: string };
-    reviewContent?: { value: string };
-    reviewDatePublished?: { value: string };
-    reviewRating?: { value: string };
-    thumbsUp?: { value: string };
-    reviewURL?: { value: string };
-    avis?: { value: string };
-    source?: { value: string };
-    finalAwardDescription?: { value: string };
     premiereCouverture?: { value: string };
     infoSource?: { value: string };
     similarTo?: { value: string };
     similarBookName?: { value: string };
-    book?: { value: string };
   }
   
     
