@@ -18,8 +18,8 @@ export interface Book {
   subjectThema?: string;
   countryOfOrigin?: string;
   
-  // Allow for extensions with any additional properties
-  [key: string]: any;
+  // Allow for extensions with additional properties
+  [key: string]: string | string[] | undefined | Record<string, unknown> | SparqlBinding[];
 }
 
 // Define the binding type for SPARQL query results

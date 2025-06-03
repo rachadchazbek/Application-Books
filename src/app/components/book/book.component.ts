@@ -9,10 +9,9 @@ import { SimilarBook } from 'src/app/interfaces/SimilarBook';
 
 // Interfaces for award and price data
 interface BookAward {
+  awardName: { value: string };
+  year: { value: string };
   award: { value: string };
-  book?: { value: string };
-  isbn?: { value: string };
-  name?: { value: string };
 }
 
 interface BookPrice {
@@ -188,7 +187,8 @@ export class BookComponent implements OnInit, OnDestroy {
     // Check if we have raw results from the SPARQL query
     // These would be stored in the book data by the socket service
     if (this.currentBookData['rawResults']) {
-      this.processRawBindings(this.currentBookData['rawResults']);
+      // Use type assertion to ensure TypeScript knows we're passing SparqlBinding[]
+      this.processRawBindings(this.currentBookData['rawResults'] as SparqlBinding[]);
       console.log('Processed raw bindings from book data');
     } else {
       // Process the single description if no raw results

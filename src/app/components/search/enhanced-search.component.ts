@@ -67,6 +67,9 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   isBlurredAward = false;
   isBlurredNationality = false;
   
+  // Quebec nationality toggle
+  isQuebecSelected = false;
+  
   // UI state
   loader = false;
   
@@ -255,6 +258,24 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   }
   
   /**
+   * Toggle Quebec nationality
+   * @param event The change event from the checkbox
+   */
+  toggleQuebecNationality(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.isQuebecSelected = isChecked;
+    
+    // Apply the appropriate nationality code
+    if (isChecked) {
+      // Quebec selected
+      this.applyFilter('nationality', 'QC');
+    } else {
+      // Clear the nationality filter when not Quebec
+      this.filterService.clearFilter('nationality');
+    }
+  }
+  
+  /**
    * Remove a filter
    * @param filterType The type of filter to remove
    */
@@ -274,6 +295,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
         break;
       case 'nationality':
         this.nationalityControl.setValue('');
+        this.isQuebecSelected = false;
         break;
       case 'award':
         this.awardControl.setValue('');

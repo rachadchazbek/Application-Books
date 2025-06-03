@@ -90,7 +90,9 @@ export class EnhancedSparqlQueryBuilderService {
     
     if (filters.nationality) {
       const escapedNationality = this.escapeSparqlString(filters.nationality);
-      clauses.push(`FILTER(CONTAINS(LCASE(?nationality), LCASE("${escapedNationality}"))) .`);
+      if (escapedNationality === 'QC') {
+        clauses.push("?author schema:nationality ?nationality ; pbs:fromQuebec true .")
+      }
     }
     
     if (filters.illustrator) {

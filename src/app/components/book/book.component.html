@@ -286,7 +286,7 @@
             <div class="price-card" *ngFor="let priceInfo of bookPrices">
               <div class="price-header">
                 <i class="fas fa-store"></i>
-                <span class="price-value">{{ priceInfo.price.value }} €</span>
+                <span class="price-value">{{ priceInfo.price.value }} CAD $</span>
               </div>
               <div class="price-details">
                 <div class="price-detail-item">
@@ -331,7 +331,11 @@
                 <i class="fas fa-award"></i>
               </div>
               <div class="award-details">
-                <h3 class="award-name">{{ award.award.value }}</h3>
+                <h3 class="award-name">{{ award.awardName.value }}</h3>
+                <div class="award-year" *ngIf="award.year?.value">
+                  <i class="fas fa-calendar"></i>
+                  <span>Année: {{ award.year.value }}</span>
+                </div>
               </div>
             </div>
           </div>

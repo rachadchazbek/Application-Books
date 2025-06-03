@@ -153,29 +153,19 @@
         </div>
       </div>
       
-      <!-- Nationality search -->
+      <!-- Nationality toggle for Quebec -->
       <div class="search-field">
-        <label for="nationality-input">Origine de l'auteur.e</label>
-        <div class="input-with-icon">
-          <i class="fas fa-flag"></i>
-          <input 
-            type="text" 
-            id="nationality-input"
-            [formControl]="nationalityControl" 
-            placeholder="Rechercher par nationalité..." 
-            class="filter-input"
-            (blur)="onBlurNationality()" 
-            (focus)="isBlurredNationality = false"
-            (input)="applyFilter('nationality', nationalityControl.value)">
-          <div class="autocomplete-items" *ngIf="nationalityControl.value && filteredNationalities.length && !isBlurredNationality">
-            <div 
-              *ngFor="let code of filteredNationalities" 
-              (click)="applyFilter('nationality', code); isBlurredNationality = true"
-              tabindex="0" 
-              (keydown)="handleKeyDown($event, code)">
-              {{ getCountryName(code) }} ({{ code }})
-            </div>
-          </div>
+        <label for="quebec-toggle">Origine de l'auteur.e</label>
+        <div class="quebec-toggle-container">
+          <label class="toggle-switch">
+            <input 
+              type="checkbox"
+              id="quebec-toggle" 
+              [checked]="isQuebecSelected"
+              (change)="toggleQuebecNationality($event)">
+            <span class="slider round"></span>
+          </label>
+          <span class="toggle-label">{{ isQuebecSelected ? 'Québec' : 'Non spécifié' }}</span>
         </div>
       </div>
     </div>

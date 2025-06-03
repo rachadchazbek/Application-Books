@@ -50,7 +50,7 @@ export class SocketSparqlService {
     });
     
     // Build and execute unified query that works across all sources
-    const query = this.sparqlQueryBuilder.buildUnifiedQuery(filters);
+    const query = this.sparqlQueryBuilder.buildComprehensiveQuery(filters);
     console.log('Executing unified query:', query.substring(0, 500) + '...');
     
     return this.httpSparqlService.postQuery(query)
