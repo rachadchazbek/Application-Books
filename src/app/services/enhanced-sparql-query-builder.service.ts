@@ -82,6 +82,11 @@ export class EnhancedSparqlQueryBuilderService {
       clauses.push(`FILTER(LCASE(?language) = LCASE("${escapedLanguage}")) .`);
     }
     
+    if (filters.collectionName) {
+      const escapedCollection = this.escapeSparqlString(filters.collectionName);
+      clauses.push(`FILTER(CONTAINS(LCASE(?collectionName), LCASE("${escapedCollection}"))) .`);
+    }
+    
     // Creator properties
     if (filters.author) {
       const escapedAuthor = this.escapeSparqlString(filters.author);

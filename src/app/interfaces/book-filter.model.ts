@@ -11,6 +11,7 @@ export interface BookFilter {
   title?: string;
   isbn?: string;
   inLanguage?: string;
+  collectionName?: string;
   
   // Creator properties
   author?: string;

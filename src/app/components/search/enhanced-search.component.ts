@@ -30,6 +30,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   quickSearchControl = new FormControl('');
   titleControl = new FormControl('');
   isbnControl = new FormControl('');
+  collectionControl = new FormControl('');
   authorControl = new FormControl('');
   nationalityControl = new FormControl('');
   awardControl = new FormControl('');
@@ -312,6 +313,9 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
       case 'isbn':
         this.isbnControl.setValue('');
         break;
+      case 'collectionName':
+        this.collectionControl.setValue('');
+        break;
       case 'author':
         this.authorControl.setValue('');
         break;
@@ -357,6 +361,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
     this.quickSearchControl.setValue('');
     this.titleControl.setValue('');
     this.isbnControl.setValue('');
+    this.collectionControl.setValue('');
     this.authorControl.setValue('');
     this.nationalityControl.setValue('');
     this.awardControl.setValue('');
