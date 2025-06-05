@@ -34,4 +34,5 @@ export interface BookFilter {
   publisher?: string;
   datePublished?: string;
   award?: string;
+  numberOfAwards?: boolean;
 }

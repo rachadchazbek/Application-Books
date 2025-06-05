@@ -131,6 +131,11 @@ export class EnhancedSparqlQueryBuilderService {
       const escapedAward = this.escapeSparqlString(filters.award);
       clauses.push(`FILTER(CONTAINS(LCASE(?awards), LCASE("${escapedAward}")))`);
     }
+    
+    // Filter by presence of awards (numberOfAwards)
+    if (filters.numberOfAwards === true) {
+      clauses.push(`FILTER(bound(?numberOfAwards))`);
+    }
 
     
     // Category-specific filters

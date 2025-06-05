@@ -170,31 +170,20 @@
       </div>
     </div>
     
-    <!-- Award search -->
+    <!-- Award toggle -->
     <div class="search-row">
       <div class="search-field">
-        <label for="award-input">Prix littéraire</label>
-        <div class="input-with-icon">
-          <i class="fas fa-award"></i>
-          <!-- <input 
-            type="text" 
-            id="award-input"
-            [formControl]="awardControl" 
-            placeholder="Rechercher par prix..." 
-            class="filter-input"
-            (blur)="onBlurAward()" 
-            (focus)="isBlurredAward = false"
-            (keydown.enter)="applyFilter('award', awardControl.value)"> -->
-            <input disabled type="text" id="award-input" class="filter-input">
-          <div class="autocomplete-items" *ngIf="awardControl.value && filteredAwards.length && !isBlurredAward">
-            <div 
-              *ngFor="let award of filteredAwards" 
-              (click)="applyFilter('award', award); isBlurredAward = true"
-              tabindex="0" 
-              (keydown)="handleKeyDown($event, award)">
-              {{ award }}
-            </div>
-          </div>
+        <label for="award-toggle">Prix littéraire</label>
+        <div class="quebec-toggle-container">
+          <label class="toggle-switch">
+            <input 
+              type="checkbox"
+              id="award-toggle" 
+              [checked]="isAwardSelected"
+              (change)="toggleAward($event)">
+            <span class="slider round"></span>
+          </label>
+          <span class="toggle-label">{{ isAwardSelected ? 'Gagné' : 'Non spécifié' }}</span>
         </div>
       </div>
     </div>

@@ -70,6 +70,9 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   // Quebec nationality toggle
   isQuebecSelected = false;
   
+  // Award toggle
+  isAwardSelected = false;
+  
   // UI state
   loader = false;
   
@@ -205,13 +208,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
    */
   applyFilter(filterType: keyof BookFilter, value: unknown): void {
     if (value && (typeof value !== 'string' || value.trim() !== '')) {
-      // Special handling for nationality to store the code but display the country name
-      if (filterType === 'nationality' && typeof value === 'string') {
-        // Store the original two-letter code
-        this.filterService.updateFilter(filterType, value);
-      } else {
-        this.filterService.updateFilter(filterType, value);
-      }
+      this.filterService.updateFilter(filterType, value);
     } else {
       this.filterService.clearFilter(filterType);
     }
@@ -272,6 +269,24 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
     } else {
       // Clear the nationality filter when not Quebec
       this.filterService.clearFilter('nationality');
+    }
+  }
+  
+  /**
+   * Toggle award filter
+   * @param event The change event from the checkbox
+   */
+  toggleAward(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.isAwardSelected = isChecked;
+    
+    // Apply the award filter based on the checkbox state
+    if (isChecked) {
+      // Has awards
+      this.applyFilter('numberOfAwards', true);
+    } else {
+      // Clear the award filter
+      this.filterService.clearFilter('numberOfAwards');
     }
   }
   

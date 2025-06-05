@@ -8,7 +8,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?book
         ?isbn
        ?name
-        (GROUP_CONCAT(DISTINCT ?authorName; separator= ", ") AS ?authorList)
+       (GROUP_CONCAT(DISTINCT ?authorName; separator= ", ") AS ?authorList)
        ?datePublished 
        ?publisherName
        ?premiereCouverture
@@ -17,6 +17,11 @@ SELECT ?book
        ?typicalAgeRangeConstellations
        ?typicalAgeRangeBNF
        ?language
+       ?collectionName
+       ?locationPublishedName
+       ?numberOfAwards
+       ?isAvailable
+
 
 WHERE {
   ?book a schema:Book ;
@@ -40,13 +45,24 @@ WHERE {
   OPTIONAL {?book pbs:typicalAgeRangeConstellations ?typicalAgeRangeConstellations;}         
   OPTIONAL {?book pbs:typicalAgeRangeBNF ?typicalAgeRangeBNF;}
   OPTIONAL {?book schema:genre ?genreNode. ?genreNode pbs:nomSDM ?genre .}
+  OPTIONAL {?book schema:award ?numberOfAwards .}
   OPTIONAL{?book schema:inLanguage ?languageNode. ?languageNode rdfs:label ?language .}
 
-    ${filter}
+    OPTIONAL {
+        ?book schema:isPartOf ?collection .
+        ?collection schema:name ?collectionName .
+    }
     
-    BIND(CONCAT(?givenName, " ", ?familyName) AS ?authorName)  
+    OPTIONAL {
+        ?book schema:locationCreated ?locationPublished .
+        ?locationPublished schema:name ?locationPublishedName .
+    }
+
+    ${filter}
+
+    BIND(CONCAT(?givenName, " ", ?familyName) AS ?authorName)
 }
 
-GROUP BY ?book ?name ?isbn ?datePublished ?publisherName ?premiereCouverture ?typicalAgeRangeBTLF ?typicalAgeRangeConstellations ?typicalAgeRangeBNF ?genre ?language
+GROUP BY ?book ?name ?isbn ?datePublished ?publisherName ?premiereCouverture ?typicalAgeRangeBTLF ?typicalAgeRangeConstellations ?typicalAgeRangeBNF ?genre ?language ?collectionName ?locationPublishedName ?numberOfAwards ?isAvailable
 
 `;
