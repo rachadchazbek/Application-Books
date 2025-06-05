@@ -330,6 +330,47 @@
   margin-right: 4px;
 }
 
+/* Age range styling */
+.age-range-filters {
+  margin-top: 10px;
+}
+
+.age-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.age-checkbox-group.horizontal {
+  flex-direction: row;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.age-checkbox {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  padding: 10px 15px;
+  transition: all 0.2s ease;
+  border: 1px solid #ddd;
+}
+
+.age-checkbox:hover {
+  background-color: #eaeaea;
+}
+
+.age-checkbox input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.age-checkbox label {
+  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
 /* Appreciation buttons */
 .appreciation-buttons {
   display: flex;

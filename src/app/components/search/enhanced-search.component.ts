@@ -82,6 +82,13 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   // Selected ages for education tab
   selectedAges: string[] = [];
   
+  // Age range selections - removed 'adult' option
+  selectedAgeRanges: Record<string, boolean> = {
+    '6plus': false,
+    '9plus': false,
+    '12plus': false
+  };
+  
   // Constants
   Appreciation = Appreciation;
   
@@ -376,6 +383,15 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
         checkbox.checked = false;
       }
     }
+    
+    // Reset the new age range checkboxes
+    Object.keys(this.selectedAgeRanges).forEach(key => {
+      this.selectedAgeRanges[key] = false;
+      const checkbox = document.getElementById(`age-${key}`) as HTMLInputElement;
+      if (checkbox) {
+        checkbox.checked = false;
+      }
+    });
   }
   
   /**
@@ -390,7 +406,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * Handle age checkbox changes
+   * Handle age checkbox changes (legacy method, kept for backward compatibility)
    * @param event The change event
    * @param age The age value
    */
@@ -409,6 +425,65 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
     
     // Update the filter
     this.applyFilter('ageRange', this.selectedAges);
+  }
+  
+  /**
+   * Handle the new simplified age range checkboxes
+   * @param event The change event
+   * @param rangeType The type of range: '6plus', '9plus', or '12plus'
+   */
+  handleAgeRangeChange(event: Event, rangeType: string): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    
+    // Update the internal state first
+    this.selectedAgeRanges[rangeType] = isChecked;
+    
+    // Clear previous age selections
+    this.selectedAges = [];
+    
+    // Apply filter or clear it based on checkbox state
+    if (isChecked) {
+      // Ensure only one checkbox is checked at a time
+      for (const key in this.selectedAgeRanges) {
+        if (key !== rangeType) {
+          this.selectedAgeRanges[key] = false;
+          const checkbox = document.getElementById(`age-${key}`) as HTMLInputElement;
+          if (checkbox) {
+            checkbox.checked = false;
+          }
+        }
+      }
+      
+      // Add the appropriate age range based on which checkbox is checked
+      switch (rangeType) {
+        case '6plus':
+          // Add ages 6-16 to the range
+          for (let age = 6; age <= 16; age++) {
+            this.selectedAges.push(age.toString());
+          }
+          break;
+        case '9plus':
+          // Add ages 9-16 to the range
+          for (let age = 9; age <= 16; age++) {
+            this.selectedAges.push(age.toString());
+          }
+          break;
+        case '12plus':
+          // Add ages 12-16 to the range
+          for (let age = 12; age <= 16; age++) {
+            this.selectedAges.push(age.toString());
+          }
+          break;
+      }
+      
+      // Apply the filter with the new range
+      this.applyFilter('ageRange', this.selectedAges);
+    } else {
+      // If all checkboxes are unchecked, clear the filter
+      if (!Object.values(this.selectedAgeRanges).some(val => val)) {
+        this.filterService.clearFilter('ageRange');
+      }
+    }
   }
   
   /**
