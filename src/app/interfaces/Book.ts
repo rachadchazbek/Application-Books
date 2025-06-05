@@ -6,6 +6,7 @@ export interface Book {
   inLanguage: string;
   publisher?: string;
   illustrator?: string[];
+  collectionName?: string;
   
   // Additional fields as requested
   infoSource?: string;

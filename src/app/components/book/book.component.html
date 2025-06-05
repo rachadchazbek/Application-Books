@@ -104,6 +104,17 @@
           </div>
         </div>
         
+        <!-- Collection -->
+        <div class="info-item collection" *ngIf="currentBookData?.['collectionName']">
+          <div class="info-label">
+            <i class="fas fa-bookmark"></i>
+            <span>Collection</span>
+          </div>
+          <div class="info-value">
+            {{ currentBookData['collectionName'] }}
+          </div>
+        </div>
+        
         <!-- ISBN (without save button now) -->
         <div class="info-item isbn" *ngIf="currentBookData?.isbn">
           <div class="info-label">

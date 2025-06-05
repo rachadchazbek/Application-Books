@@ -22,7 +22,7 @@ export class BookListComponent implements OnDestroy {
 
   // Pagination properties
   currentPage = 1;
-  pageSize = 12;
+  pageSize = 112;
   totalPages = 1;
   
   // View options

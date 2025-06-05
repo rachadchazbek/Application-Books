@@ -165,12 +165,13 @@ export class SocketSparqlService {
           title: binding.name?.value || '',
           isbn: binding.isbn?.value || isbn,
           authorList: binding.authorList?.value ? [binding.authorList.value] : [],
-          datePublished: binding.datePublished?.value || '',
+          datePublished: binding.datePublished?.value ?? '',
           publisher: binding.publisherName?.value || '',
           inLanguage: '',
-          premiereCouverture: binding.premiereCouverture?.value || '',
-          description: binding.description?.value || '',
-          infoSource: binding.infoSource?.value || ''
+          premiereCouverture: binding.premiereCouverture?.value ?? '',
+          description: binding.description?.value ?? '',
+          infoSource: binding.infoSource?.value ?? '',
+          collectionName: binding.collectionName?.value 
         };
         
         // Add raw results to allow processing of all bindings

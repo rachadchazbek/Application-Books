@@ -20,6 +20,7 @@ export interface SparqlResponse {
     premiereCouverture?: { value: string };
     infoSource?: { value: string };
     similarTo?: { value: string };
+    collectionName?: { value: string };
     similarBookName?: { value: string };
   }
   

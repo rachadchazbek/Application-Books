@@ -14,6 +14,7 @@ Select ?book
     ?publisherName 
     ?similarTo
     ?similarBookName
+    ?collectionName
 
 WHERE {
   ?book a schema:Book;
@@ -32,8 +33,13 @@ WHERE {
               ?similarTo a schema:Book ;
                   schema:name ?similarBookName .}
 
+  OPTIONAL {
+    ?book schema:isPartOf ?collection .
+    ?collection schema:name ?collectionName .
+  }
+
   OPTIONAL {?book  schema:description ?description .}
 }
-  GROUP BY ?book ?name ?isbn ?premiereCouverture ?datePublished ?publisherName ?description ?infoSource ?similarTo ?similarBookName
+  GROUP BY ?book ?name ?isbn ?premiereCouverture ?datePublished ?publisherName ?description ?infoSource ?similarTo ?similarBookName ?collectionName
 `
 

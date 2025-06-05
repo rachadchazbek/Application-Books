@@ -88,6 +88,7 @@ export class BooksService {
       inLanguage: binding.inLanguage?.value ?? '',
       illustrator: binding.illustrator?.value ? [binding.illustrator.value] : [],
       countryOfOrigin: binding.countryOfOrigin?.value ?? '',
+      collectionName: binding.collectionName?.value ?? '',
       awards: [],
       reviews: [],
       premiereCouverture: binding.premiereCouverture?.value ?? '',
