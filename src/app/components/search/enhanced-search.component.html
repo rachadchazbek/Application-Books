@@ -2,6 +2,19 @@
   <!-- Main search bar with inline filter chips -->
   <div class="main-search-with-filters">
     
+    <!-- Main search input -->
+    <div class="main-search">
+      <div class="search-input-wrapper">
+        <i class="fas fa-search"></i>
+        <input 
+          type="text" 
+          [formControl]="quickSearchControl" 
+          placeholder="Rechercher par mots-clés..." 
+          class="primary-search-input"
+          (input)="quickSearch()">
+      </div>
+    </div>
+    
     <!-- Inline filter chips or message when no filters -->
     <div class="inline-filter-section">
       <div class="inline-filter-chips" *ngIf="activeFilters.length > 0">
@@ -24,19 +37,6 @@
       <div class="no-filters-message" *ngIf="activeFilters.length === 0">
         <i class="fas fa-info-circle"></i>
         <span class="filter-chip">Aucun filtre actif</span>
-      </div>
-    </div>
-
-    <!-- Main search input -->
-    <div class="main-search">
-      <div class="search-input-wrapper">
-        <i class="fas fa-search"></i>
-        <input 
-          type="text" 
-          [formControl]="quickSearchControl" 
-          placeholder="Rechercher par mots-clés..." 
-          class="primary-search-input"
-          (input)="quickSearch()">
       </div>
     </div>
   

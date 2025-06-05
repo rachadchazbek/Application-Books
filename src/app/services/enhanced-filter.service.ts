@@ -142,7 +142,8 @@ export class EnhancedFilterService {
       appreciation: 'Appréciation',
       publisher: 'Éditeur',
       datePublished: 'Date de publication',
-      award: 'Prix'
+      award: 'Prix',
+      numberOfAwards: 'Prix'
     };
     
     return labels[filterType as string] || filterType as string;
@@ -177,6 +178,11 @@ export class EnhancedFilterService {
     // Convert nationality codes to full country names
     if (filterType === 'nationality' && typeof value === 'string') {
       return COUNTRY_NAMES[value] || value;
+    }
+    
+    // Format boolean filter for numberOfAwards
+    if (filterType === 'numberOfAwards' && typeof value === 'boolean') {
+      return value ? 'Prix gagné' : 'Non spécifié';
     }
     
     return value?.toString() ?? '';

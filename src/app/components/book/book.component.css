@@ -835,6 +835,13 @@
   margin: 0 0 10px 0;
 }
 
+.award-year-highlight {
+  color: #f39c12;
+  font-weight: 500;
+  font-size: 0.9em;
+  margin-left: 5px;
+}
+
 .award-year {
   display: flex;
   align-items: center;

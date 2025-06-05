@@ -331,7 +331,12 @@
                 <i class="fas fa-award"></i>
               </div>
               <div class="award-details">
-                <h3 class="award-name">{{ award.awardName.value }}</h3>
+                <h3 class="award-name">
+                  {{ award.awardName.value }}
+                  <span class="award-year-highlight" *ngIf="award.year?.value">
+                    ({{ award.year.value }})
+                  </span>
+                </h3>
                 <div class="award-year" *ngIf="award.year?.value">
                   <i class="fas fa-calendar"></i>
                   <span>Année: {{ award.year.value }}</span>
