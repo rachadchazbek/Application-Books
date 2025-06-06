@@ -198,6 +198,34 @@
   text-align: center;
 }
 
+/* Availability indicator styles */
+.availability-indicator {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.availability-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.availability-dot.available {
+  background-color: #4CAF50; /* Green for available */
+}
+
+.availability-dot.unavailable {
+  background-color: #F44336; /* Red for unavailable */
+}
+
+.availability-text {
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
 .author-link {
   color: #5c6bc0;
   cursor: pointer;

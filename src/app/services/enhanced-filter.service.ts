@@ -143,7 +143,8 @@ export class EnhancedFilterService {
       publisher: 'Éditeur',
       datePublished: 'Date de publication',
       award: 'Prix',
-      numberOfAwards: 'Prix'
+      numberOfAwards: 'Prix',
+      collectionName: 'Collection'
     };
     
     return labels[filterType as string] || filterType as string;

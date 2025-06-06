@@ -59,6 +59,12 @@
           <h2 class="book-title" (click)="navigateToBook(book)" tabindex="0" (keydown)="handleKeyDown($event, book)">{{ book.title }}</h2>
           
           <div class="book-meta">
+            <!-- Availability indicator -->
+            <p class="availability-indicator">
+              <span class="availability-dot" [ngClass]="{'available': book['isAvailable'], 'unavailable': !book['isAvailable']}"></span>
+              <span class="availability-text">{{ book['isAvailable'] ? 'Disponible' : 'Non disponible' }}</span>
+            </p>
+            
             <p class="book-authors">
               <i class="fas fa-user"></i>
               <ng-container *ngFor="let author of book.authorList; let i = index">

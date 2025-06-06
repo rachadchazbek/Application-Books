@@ -18,9 +18,10 @@ export interface Book {
   // Keep these for backward compatibility
   subjectThema?: string;
   countryOfOrigin?: string;
+  isAvailable?: boolean;
   
   // Allow for extensions with additional properties
-  [key: string]: string | string[] | undefined | Record<string, unknown> | SparqlBinding[];
+  [key: string]: string | string[] | undefined | Record<string, unknown> | SparqlBinding[] | boolean;
 }
 
 // Define the binding type for SPARQL query results

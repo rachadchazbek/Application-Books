@@ -14,31 +14,31 @@
           (input)="quickSearch()">
       </div>
     </div>
-    
-    <!-- Inline filter chips or message when no filters -->
-    <div class="inline-filter-section">
-      <div class="inline-filter-chips" *ngIf="activeFilters.length > 0">
-        <div class="filter-chip" *ngFor="let filter of activeFilters">
-          {{ filter.label }}: {{ filter.value }}
-          <button 
-            class="remove-filter" 
-            (click)="removeFilter(filter.type)" 
-            (keydown.enter)="removeFilter(filter.type)"
-            [attr.aria-label]="'Supprimer le filtre ' + filter.label">×</button>
-        </div>
+  
+  <!-- Inline filter chips or message when no filters -->
+  <div class="inline-filter-section">
+    <div class="inline-filter-chips" *ngIf="activeFilters.length > 0">
+      <div class="filter-chip" *ngFor="let filter of activeFilters">
+        {{ filter.label }}: {{ filter.value }}
         <button 
-          class="clear-all-filters" 
-          (click)="clearAllFilters()" 
-          (keydown.enter)="clearAllFilters()"
-          [attr.aria-label]="'Supprimer tous les filtres'">Supprimer les filtres</button>
+          class="remove-filter" 
+          (click)="removeFilter(filter.type)" 
+          (keydown.enter)="removeFilter(filter.type)"
+          [attr.aria-label]="'Supprimer le filtre ' + filter.label">×</button>
       </div>
-      
-      <!-- No filters message -->
-      <div class="no-filters-message" *ngIf="activeFilters.length === 0">
-        <i class="fas fa-info-circle"></i>
-        <span class="filter-chip">Aucun filtre actif</span>
-      </div>
+      <button 
+        class="clear-all-filters" 
+        (click)="clearAllFilters()" 
+        (keydown.enter)="clearAllFilters()"
+        [attr.aria-label]="'Supprimer tous les filtres'">Supprimer les filtres</button>
     </div>
+    
+    <!-- No filters message -->
+    <div class="no-filters-message" *ngIf="activeFilters.length === 0">
+      <i class="fas fa-info-circle"></i>
+      <span class="filter-chip">Aucun filtre actif</span>
+    </div>
+  </div>
   
   <!-- All filters in a single section -->
   <div class="all-filters">
@@ -104,10 +104,7 @@
             (input)="applyFilter('collectionName', collectionControl.value)">
         </div>
       </div>
-    </div>
-    
-    <!-- Genre and Language filters -->
-    <div class="search-row">
+
       <!-- Genre filter -->
       <div class="search-field">
         <label for="genre-select">Genre</label>
@@ -124,26 +121,11 @@
           </select>
         </div>
       </div>
+
       
-      <!-- Language filter -->
-      <div class="search-field">
-        <label for="language-select">Langue</label>
-        <div class="input-with-icon">
-          <i class="fas fa-language"></i>
-          <select 
-            id="language-select"
-            [(ngModel)]="selectedLanguage" 
-            (change)="applyFilter('inLanguage', selectedLanguage)" 
-            class="filter-input">
-            <option value="" disabled selected>Sélectionner une langue...</option>
-            <option value="">Aucune langue sélectionnée</option>
-            <option *ngFor="let language of languages">{{ language }}</option>
-          </select>
-        </div>
-      </div>
     </div>
     
-    <!-- Author and Nationality filters -->
+    <!-- Genre and Language filters -->
     <div class="search-row">
       <!-- Author search -->
       <div class="search-field">
@@ -171,6 +153,28 @@
         </div>
       </div>
       
+      <!-- Language filter -->
+      <div class="search-field">
+        <label for="language-select">Langue</label>
+        <div class="input-with-icon">
+          <i class="fas fa-language"></i>
+          <select 
+            id="language-select"
+            [(ngModel)]="selectedLanguage" 
+            (change)="applyFilter('inLanguage', selectedLanguage)" 
+            class="filter-input">
+            <option value="" disabled selected>Sélectionner une langue...</option>
+            <option value="">Aucune langue sélectionnée</option>
+            <option *ngFor="let language of languages">{{ language }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Author and Nationality filters -->
+    <div class="search-row">
+      
+      
       <!-- Nationality toggle for Quebec -->
       <div class="search-field">
         <label for="quebec-toggle">Origine de l'auteur.e</label>
@@ -186,11 +190,8 @@
           <span class="toggle-label">{{ isQuebecSelected ? 'Québec' : 'Non spécifié' }}</span>
         </div>
       </div>
-    </div>
-    
-    <!-- Award toggle -->
-    <div class="search-row">
-      <div class="search-field">
+
+            <div class="search-field">
         <label for="award-toggle">Prix littéraire</label>
         <div class="quebec-toggle-container">
           <label class="toggle-switch">

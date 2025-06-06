@@ -115,20 +115,6 @@ export class SocketSparqlService {
       return [];
     }
   }
-  
-  // /**
-  //  * Get enhanced author information
-  //  * @param authorName Name of the author to search for
-  //  */
-  // getEnhancedAuthorInfo(authorName: string): void {
-  //   const query = this.sparqlQueryBuilder.buildEnhancedAuthorQuery(authorName);
-  //   this.httpSparqlService.postQuery(query).then(response => {
-  //     this.booksService.updateData(response);
-  //   }).catch(error => {
-  //     console.error('Error getting author info:', error);
-  //   });
-  // }
-
 
 
   /**
@@ -199,70 +185,4 @@ export class SocketSparqlService {
     }
   }
 
-
-  // async bingSearchBook(book: Book) {
-  //   currentBookSubject.next(book);
-  //   const query = `${book.title} ${book.authorList[0]} site:babelio.com`;
-  //   const encodedQuery = encodeURIComponent(query);
-  //   const url = `https://api.bing.microsoft.com/v7.0/search?q=${encodedQuery}`;
-
-  //   try {
-  //     const response = await axios.get(url, {
-  //       headers: {
-  //         'Ocp-Apim-Subscription-Key': '4529dde1556f4695ae08290082c14988',
-  //       },
-  //     });
-  //     const firstLink = response.data.webPages.value[0].url;
-  //     this.scrapeWebsite(firstLink);
-  //     urlBabelioSubject.next(firstLink);
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   } catch (error: any) {
-  //     console.error(`An error occurred: ${error.message}`);
-  //   }
-  // }
-
-  // async bingSearchPublisher(publisher: string) {
-  //   const query = `Éditions ${publisher}`;
-  //   const encodedQuery = encodeURIComponent(query);
-  //   const url = `https://api.bing.microsoft.com/v7.0/search?q=${encodedQuery}`;
-
-  //   try {
-  //     const response = await axios.get(url, {
-  //       headers: {
-  //         'Ocp-Apim-Subscription-Key': '4529dde1556f4695ae08290082c14988',
-  //       },
-  //     });
-  //     const firstLink = response.data.webPages.value[0].url;
-
-  //     // Open the firstLink in a new browser window or tab
-  //     window.open(firstLink, '_blank');
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   } catch (error: any) {
-  //     console.error(`An error occurred: ${error.message}`);
-  //   }
-  // }
-
-  // async scrapeWebsite(url: string): Promise<void> {
-  //   const encodedUrl = encodeURIComponent(url);
-  //   const proxyUrl = `http://localhost:3000/proxy?url=${encodedUrl}`;
-
-  //   try {
-  //     const response = await axios.get(proxyUrl, { responseType: 'text' });
-
-  //     const rawHtml = response.data;
-
-  //     const $ = load(rawHtml, { decodeEntities: false });
-
-  //     const bookSummary = $('.livre_resume').text().trim();
-  //     bookSummarySubject.next(bookSummary);
-  //     console.log(bookSummary);
-
-  //     const rating = $('.grosse_note').text().trim();
-  //     ratingSubject.next(rating);
-  //     console.log(rating);
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   } catch (error: any) {
-  //     console.error(`An error occurred: ${error.message}`);
-  //   }
-  // }
 }

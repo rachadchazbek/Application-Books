@@ -185,17 +185,6 @@
             </div>
           </div>
           
-          <!-- Babelio summary is merged with descriptions now
-          <div class="source-descriptions" *ngIf="summaryBook && isString(summaryBook)">
-            <div class="source-header">
-              <i class="fas fa-bookmark"></i>
-              <span class="source-name">Source: Babelio</span>
-            </div>
-            <div class="description-content">
-              <p [innerHTML]="summaryBook"></p>
-            </div>
-          </div> -->
-          
           <div class="no-content" *ngIf="(!summaryBook || !isString(summaryBook)) && !hasDescriptions()">
             <p>Aucune description disponible pour ce livre.</p>
           </div>
@@ -348,10 +337,6 @@
                     ({{ award.year.value }})
                   </span>
                 </h3>
-                <div class="award-year" *ngIf="award.year?.value">
-                  <i class="fas fa-calendar"></i>
-                  <span>Année: {{ award.year.value }}</span>
-                </div>
               </div>
             </div>
           </div>

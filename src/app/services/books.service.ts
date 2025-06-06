@@ -92,6 +92,7 @@ export class BooksService {
       awards: [],
       reviews: [],
       premiereCouverture: binding.premiereCouverture?.value ?? '',
+      isAvailable: binding.isAvailable?.value === 'true'
     };
     return newBook;
   }

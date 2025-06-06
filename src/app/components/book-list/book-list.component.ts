@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgClass } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -8,7 +8,7 @@ import { SocketSparqlService } from 'src/app/services/socket-sparql.service';
 
 @Component({
   selector: 'app-book-list',
-  imports: [NgIf, NgFor],
+  imports: [NgIf, NgFor, NgClass],
   templateUrl: './book-list.component.html',
   styleUrl: './book-list.component.css'
 })

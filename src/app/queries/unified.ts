@@ -40,6 +40,8 @@ WHERE {
 
   ?publisher schema:name ?publisherName .
 
+
+  OPTIONAL {?book schema:offers ?isAvailable .}
   OPTIONAL {?book pbs:premiereCouverture ?premiereCouverture }
   OPTIONAL{?book pbs:typicalAgeRangeBTLF ?typicalAgeRangeBTLF;}
   OPTIONAL {?book pbs:typicalAgeRangeConstellations ?typicalAgeRangeConstellations;}         

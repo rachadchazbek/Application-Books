@@ -190,6 +190,13 @@
   gap: 20px; /* Increased spacing between filters */
   margin-bottom: 30px; /* Increased spacing between rows */
   flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+/* Ensure each search field takes up exactly 48% width for 2 columns */
+.search-field {
+  flex: 0 0 48%;
+  min-width: 250px;
 }
 
 /* Source checkboxes */
@@ -228,14 +235,10 @@
   margin-top: var(--spacing-md);
 }
 
+/* Updated to remove the margin-right that was causing alignment issues */
 .search-field {
-  flex: 1;
+  flex: 0 0 48%;
   min-width: 250px;
-  margin-right: 20px; /* Add consistent right margin for spacing */
-}
-
-.search-field:last-child {
-  margin-right: 0; /* Remove margin from the last field in a row */
 }
 
 .search-field label {

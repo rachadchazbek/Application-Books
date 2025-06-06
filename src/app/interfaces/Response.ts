@@ -22,6 +22,7 @@ export interface SparqlResponse {
     similarTo?: { value: string };
     collectionName?: { value: string };
     similarBookName?: { value: string };
+    isAvailable?: { value: string };
   }
   
     
