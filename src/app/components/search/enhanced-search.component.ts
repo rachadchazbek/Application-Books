@@ -43,7 +43,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   selectedAppreciation = '';
   
   // Multi-select sources
-  availableSources: string[] = ['Babelio', 'Constellations', 'BNF', 'Lurelu', 'BTLF', 'Kaleidoscope'];
+  availableSources: string[] = ['Babelio', 'Constellations', 'BNF', 'Lurelu', 'BTLF', 'Kaléidoscope'];
   selectedSources: string[] = [];
   
   // Data lists
@@ -325,6 +325,9 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
         break;
       case 'award':
         this.awardControl.setValue('');
+        break;
+      case 'numberOfAwards':
+        this.isAwardSelected = false;
         break;
       case 'genre':
         this.selectedGenre = '';

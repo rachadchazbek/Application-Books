@@ -200,6 +200,7 @@
   background-color: #f9f9f9; /* Kept same as main container for consistency */
   border-radius: 8px;
   padding: 20px;
+  justify-content: left;
   border: 1px solid #e0e0e0; /* Added border to distinguish the section */
 }
 

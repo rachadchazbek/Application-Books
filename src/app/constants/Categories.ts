@@ -12,7 +12,7 @@ export enum Source {
     BNF = 'BNF',
     BTLF = 'BTLF',
     Lurelu = 'Lurelu',
-    Kaleidoscope = 'Kaleidoscope',
+    Kaleidoscope = 'Kaléidoscope',
     Unassigned = 'Unassigned'
 }
 
