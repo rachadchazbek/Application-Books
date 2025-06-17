@@ -282,7 +282,7 @@ export class BookComponent implements OnInit, OnDestroy {
     });
     
     // Sort the sources alphabetically for consistent display
-    this.bookSources.sort();
+    this.bookSources.sort((a, b) => a.localeCompare(b));
   }
   
   /**

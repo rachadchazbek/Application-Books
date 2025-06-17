@@ -136,6 +136,9 @@ export class BookListComponent implements OnDestroy {
    * Apply the current sort option to the books array
    */
   applySort(): void {
+    if (this.allBooks === null) {
+      return; // No books to sort
+    }
     if (this.sortOption === 'none') {
       return; // No sorting needed
     }
@@ -163,12 +166,10 @@ export class BookListComponent implements OnDestroy {
       return this.sortDirection === 'asc' ? comparison : -comparison;
     });
   }
+
   navigateToBook(book: Book): void {
     // Just open the book details in a new tab
-    window.open(`/book/${book.isbn}`, '_blank');
-    
-    // Don't call socketService.bingSearchBook which would clear the books list
-  }
+    window.open(`/book/${book.isbn}`, '_blank');  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   navigateToPublisher(publisher: string) {
