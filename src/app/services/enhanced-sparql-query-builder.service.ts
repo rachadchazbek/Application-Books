@@ -42,14 +42,14 @@ export class EnhancedSparqlQueryBuilderService {
     if (filters.advancedKeywords && filters.advancedKeywords.length > 0) {
       // Build a Lucene query with proper operators
       const luceneQuery = filters.advancedKeywords.map((keyword, index) => {
+        const escapedKeyword = `\\"${this.escapeSparqlString(keyword.keyword)}\\"`;
         // First keyword doesn't have an operator
-        if (index === 0) return this.escapeSparqlString(keyword.keyword);
+        if (index === 0) return escapedKeyword;
         
         // For subsequent keywords, use the specified operator
         const operator = keyword.operator || 'AND';
-        return `${operator} ${this.escapeSparqlString(keyword.keyword)}`;
+        return `${operator} ${escapedKeyword}`;
       }).join(' ');
-      
       clauses.push(`
       ?search a luc-index:all_fields_3 ;
         luc:query "${luceneQuery}" ;
