@@ -1,20 +1,7 @@
 <div class="search-container">
   <!-- Main search bar with inline filter chips -->
-  <div class="main-search-with-filters">
-    
-    <!-- Main search input -->
-    <div class="main-search">
-      <div class="search-input-wrapper">
-        <i class="fas fa-search"></i>
-        <input 
-          type="text" 
-          [formControl]="quickSearchControl" 
-          placeholder="Rechercher par mots-clés..." 
-          class="primary-search-input"
-          (input)="quickSearch()">
-      </div>
-    </div>
-  
+
+
   <!-- Inline filter chips or message when no filters -->
   <div class="inline-filter-section">
     <div class="inline-filter-chips" *ngIf="activeFilters.length > 0">
@@ -39,6 +26,69 @@
       <span class="filter-chip">Aucun filtre actif</span>
     </div>
   </div>
+
+  <div class="main-search-with-filters">
+    <!-- Advanced keyword input -->
+    <div class="advanced-keyword-input">
+      <div class="keyword-input-wrapper">
+        <input 
+          type="text" 
+          [formControl]="keywordInputControl" 
+          placeholder="Ajouter un mot-clé..." 
+          class="keyword-input"
+          (keydown.enter)="addKeyword(keywordInputControl.value || ''); $event.preventDefault()">
+        
+        <!-- Operator selection for next keyword -->
+        <div class="next-operator-selector" *ngIf="advancedKeywords.length > 0">
+          <select 
+            id="next-operator"
+            [(ngModel)]="currentOperator" 
+            (change)="setCurrentOperator(currentOperator)"
+            class="operator-select">
+            <option value="AND">ET</option>
+            <option value="OR">OU</option>
+            <option value="NOT">SAUF</option>
+          </select>
+        </div>
+        
+        <button 
+          class="add-keyword-button" 
+          (click)="addKeyword(keywordInputControl.value || '')"
+          [disabled]="!keywordInputControl.value">
+          <i class="fas fa-plus"></i> Ajouter
+        </button>
+      </div>
+    </div>
+    
+    <!-- Advanced keyword search section -->
+    <div class="advanced-keyword-section" *ngIf="advancedKeywords.length > 0">
+      <div class="keyword-tokens">
+        <div class="keyword-token-group" *ngFor="let keyword of advancedKeywords; let i = index">
+          <!-- First keyword doesn't have an operator -->
+          <div class="operator-selector" *ngIf="i > 0">
+            <select 
+              [attr.id]="'operator-' + i"
+              [(ngModel)]="keyword.operator" 
+              (change)="changeOperator(i, keyword.operator || 'AND')"
+              class="operator-select">
+              <option value="AND">ET</option>
+              <option value="OR">OU</option>
+              <option value="NOT">SAUF</option>
+            </select>
+          </div>
+          
+          <!-- Keyword token -->
+          <div class="keyword-token">
+            {{ keyword.keyword }}
+            <button 
+              class="remove-keyword" 
+              (click)="removeKeyword(i)"
+              [attr.aria-label]="'Supprimer le mot-clé ' + keyword.keyword">×</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
   
   <!-- All filters in a single section -->
   <div class="all-filters">

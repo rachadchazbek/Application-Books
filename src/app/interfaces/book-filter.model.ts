@@ -6,6 +6,11 @@ import { Appreciation } from '../constants/Appreciation';
  */
 export interface BookFilter {
   mots?: string;
+  // Advanced keyword search with operators
+  advancedKeywords?: {
+    keyword: string;
+    operator?: 'AND' | 'OR' | 'NOT';
+  }[];
 
   // Basic book properties (schema:Book)
   title?: string;

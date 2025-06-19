@@ -37,7 +37,28 @@ export class EnhancedSparqlQueryBuilderService {
    */
   buildUnifiedFilterClauses(filters: BookFilter): string[] {
     const clauses: string[] = [];
-    if (filters.mots) {
+    
+    // Handle advanced keywords with operators
+    if (filters.advancedKeywords && filters.advancedKeywords.length > 0) {
+      // Build a Lucene query with proper operators
+      const luceneQuery = filters.advancedKeywords.map((keyword, index) => {
+        // First keyword doesn't have an operator
+        if (index === 0) return this.escapeSparqlString(keyword.keyword);
+        
+        // For subsequent keywords, use the specified operator
+        const operator = keyword.operator || 'AND';
+        return `${operator} ${this.escapeSparqlString(keyword.keyword)}`;
+      }).join(' ');
+      
+      clauses.push(`
+      ?search a luc-index:all_fields_3 ;
+        luc:query "${luceneQuery}" ;
+        luc:entities ?book . 
+      ?book luc:score ?score .
+      `);
+    }
+    // Basic keywords search (fallback)
+    else if (filters.mots) {
       clauses.push(`
       ?search a luc-index:all_fields_3 ;
         luc:query "${filters.mots}" ;

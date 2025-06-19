@@ -144,7 +144,9 @@ export class EnhancedFilterService {
       datePublished: 'Date de publication',
       award: 'Prix',
       numberOfAwards: 'Prix',
-      collectionName: 'Collection'
+      collectionName: 'Collection',
+      mots: 'Mots-clés',
+      advancedKeywords: 'Mots-clés'
     };
     
     return labels[filterType as string] || filterType as string;
@@ -157,6 +159,27 @@ export class EnhancedFilterService {
    * @returns A formatted string representation of the value
    */
   private formatFilterValue(filterType: keyof BookFilter, value: unknown): string {
+    // Special handling for advanced keywords with operators
+    if (filterType === 'advancedKeywords' && Array.isArray(value)) {
+      return (value as {keyword: string, operator?: 'AND' | 'OR' | 'NOT'}[])
+        .map((item, index) => {
+          // First keyword doesn't have an operator prefix
+          if (index === 0) return item.keyword;
+          
+          // Map English operators to French for display
+          let frenchOperator: string;
+          switch(item.operator) {
+            case 'AND': frenchOperator = 'ET'; break;
+            case 'OR': frenchOperator = 'OU'; break;
+            case 'NOT': frenchOperator = 'SAUF'; break;
+            default: frenchOperator = 'ET';
+          }
+          
+          return `${frenchOperator} ${item.keyword}`;
+        })
+        .join(' ');
+    }
+    
     if (Array.isArray(value)) {
       return value.join(', ');
     }

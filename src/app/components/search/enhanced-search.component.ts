@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { NgIf, NgFor } from '@angular/common';
+import { KeyValuePipe } from '@angular/common';
 import { TITLES } from 'src/app/constants/titles';
 import { Appreciation } from 'src/app/constants/Appreciation';
 import { SOURCE_Categories } from 'src/app/constants/Categories';
@@ -20,7 +21,7 @@ import { NATIONALITIES, COUNTRY_NAMES } from 'src/app/constants/nationalities';
   templateUrl: './enhanced-search.component.html',
   styleUrls: ['./enhanced-search.component.css'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor]
+  imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor, KeyValuePipe]
 })
 export class EnhancedSearchComponent implements OnInit, OnDestroy {
   // Tab management - kept for backward compatibility
@@ -28,6 +29,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   
   // Form controls
   quickSearchControl = new FormControl('');
+  keywordInputControl = new FormControl('');
   titleControl = new FormControl('');
   isbnControl = new FormControl('');
   collectionControl = new FormControl('');
@@ -76,6 +78,23 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
   
   // UI state
   loader = false;
+  
+  // Advanced keyword search
+  advancedKeywords: {keyword: string, operator?: 'AND' | 'OR' | 'NOT'}[] = [];
+  currentOperator: 'AND' | 'OR' | 'NOT' = 'AND';
+  
+  // Operator mappings between French UI and English filter
+  readonly OPERATOR_MAPPING: Record<string, 'AND' | 'OR' | 'NOT'> = {
+    'ET': 'AND',
+    'OU': 'OR',
+    'SAUF': 'NOT'
+  };
+  
+  readonly REVERSE_OPERATOR_MAPPING: Record<string, string> = {
+    'AND': 'ET',
+    'OR': 'OU',
+    'NOT': 'SAUF'
+  };
   
   // Active filters for display
   activeFilters: {type: string, label: string, value: string}[] = [];
@@ -191,6 +210,13 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
    */
   quickSearch(): void {
     const searchTerm = this.quickSearchControl.value;
+    
+    // If advanced keywords are used, prioritize them
+    if (this.advancedKeywords.length > 0) {
+      this.applyAdvancedKeywordFilter();
+      return;
+    }
+    
     if (searchTerm) {
       // Filter out common French articles using regex
       const filteredTerm = searchTerm.replace(/\b(les|un|une|l'|la|le)\b/gi, '').trim();
@@ -207,6 +233,94 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
     } else {
       this.filterService.clearFilter('mots');
     }
+  }
+  
+  /**
+   * Add a keyword to the advanced search
+   * @param keyword The keyword to add
+   */
+  addKeyword(keyword: string): void {
+    if (!keyword || keyword.trim() === '') {
+      return;
+    }
+    
+    // If this is the first keyword, no operator is needed
+    if (this.advancedKeywords.length === 0) {
+      this.advancedKeywords.push({ keyword: keyword.trim() });
+    } else {
+      // For subsequent keywords, add with the selected operator
+      this.advancedKeywords.push({
+        keyword: keyword.trim(),
+        operator: this.currentOperator
+      });
+    }
+    
+    // Clear the input field
+    this.keywordInputControl.setValue('');
+    
+    // Apply the filter
+    this.applyAdvancedKeywordFilter();
+  }
+  
+  /**
+   * Remove a keyword from the advanced search
+   * @param index The index of the keyword to remove
+   */
+  removeKeyword(index: number): void {
+    this.advancedKeywords.splice(index, 1);
+    
+    // If we removed all keywords, clear the filter
+    if (this.advancedKeywords.length === 0) {
+      this.filterService.clearFilter('advancedKeywords');
+      return;
+    }
+    
+    // Ensure the first keyword doesn't have an operator
+    if (this.advancedKeywords.length > 0) {
+      delete this.advancedKeywords[0].operator;
+    }
+    
+    // Apply the updated filter
+    this.applyAdvancedKeywordFilter();
+  }
+  
+  /**
+   * Change the operator for a keyword
+   * @param index The index of the keyword
+   * @param operator The new operator
+   */
+  changeOperator(index: number, operator: 'AND' | 'OR' | 'NOT'): void {
+    // Cannot change operator of the first keyword
+    if (index === 0) return;
+    
+    this.advancedKeywords[index].operator = operator;
+    
+    // Apply the updated filter
+    this.applyAdvancedKeywordFilter();
+  }
+  
+  /**
+   * Set the current operator to use for the next keyword
+   * @param operator The operator to use
+   */
+  setCurrentOperator(operator: 'AND' | 'OR' | 'NOT'): void {
+    this.currentOperator = operator;
+  }
+  
+  /**
+   * Apply the advanced keyword filter
+   */
+  applyAdvancedKeywordFilter(): void {
+    if (this.advancedKeywords.length === 0) {
+      this.filterService.clearFilter('advancedKeywords');
+      return;
+    }
+    
+    // Apply the advanced keywords filter
+    this.applyFilter('advancedKeywords', this.advancedKeywords);
+    
+    // Clear the basic 'mots' filter as we're using advanced search
+    this.filterService.clearFilter('mots');
   }
   
   /**
@@ -307,6 +421,12 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
     
     // Reset UI controls based on the removed filter
     switch (filterType) {
+      case 'advancedKeywords':
+        this.advancedKeywords = [];
+        break;
+      case 'mots':
+        this.quickSearchControl.setValue('');
+        break;
       case 'title':
         this.titleControl.setValue('');
         break;
@@ -362,6 +482,7 @@ export class EnhancedSearchComponent implements OnInit, OnDestroy {
     
     // Reset all UI controls
     this.quickSearchControl.setValue('');
+    this.advancedKeywords = [];
     this.titleControl.setValue('');
     this.isbnControl.setValue('');
     this.collectionControl.setValue('');
